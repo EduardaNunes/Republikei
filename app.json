@@ -4,6 +4,7 @@
     "slug": "Republikei",
     "version": "1.0.0",
     "orientation": "portrait",
+    "scheme": "republikei",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
@@ -23,7 +24,12 @@
       "edgeToEdgeEnabled": true
     },
     "web": {
+      "bundler": "metro",
+      "output": "static",
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
