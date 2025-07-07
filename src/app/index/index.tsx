@@ -26,7 +26,6 @@ export default function Index() {
         style={styles.background}
         resizeMode="cover"
       />
-      <LandlordName />
       <View style={styles.containerTextAndButton}>
         <View>
           <View style={styles.titleContainer}>
