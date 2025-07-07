@@ -18,13 +18,13 @@ import LandlordName from "@/components/landlordName";
 export default function Index() {
   return (
     <View style={styles.container}>
-      <LandlordName />
 
       <Image
         source={require("@/assets/background.png")}
         style={styles.background}
         resizeMode="cover"
       />
+      <LandlordName />
       <View style={styles.containerTextAndButton}>
         <View>
           <View style={styles.titleContainer}>
