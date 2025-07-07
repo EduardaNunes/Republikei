@@ -13,15 +13,14 @@ import { styles } from "./styles";
 import { colors } from "@/styles/colors";
 import { SquareButton } from "@/components/button";
 import { Text } from "@/components/text";
-import { Input } from '@/components/input';
-import { Category } from '@/components/category';
-import { Categories } from '@/components/categories';
+import { Input } from "@/components/input";
+import { Category } from "@/components/category";
+import { Categories } from "@/components/categories";
 import LandlordName from "@/components/landlordName";
 
 export default function Index() {
   return (
     <View style={styles.container}>
-
       <Image
         source={require("@/assets/background.png")}
         style={styles.background}
@@ -44,10 +43,9 @@ export default function Index() {
           </Text>
         </View>
         <View style={styles.buttonContainer}>
-            <SquareButton name="Cadastro Locador" variant="secondary" />
-            <SquareButton name="Cadastro Locatário" variant="secondary" />
-            <SquareButton name="Login" />
-
+          <SquareButton name="Cadastro Locador" variant="secondary" />
+          <SquareButton name="Cadastro Locatário" variant="secondary" />
+          <SquareButton name="Login" />
         </View>
       </View>
     </View>
