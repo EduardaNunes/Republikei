@@ -44,22 +44,22 @@ export const styles = StyleSheet.create({
   // Titles
   primaryTitle: {
     color: colors.gray[100],
-    fontSize: fontSize.text.small,
+    fontSize: fontSize.text.medium,
     fontWeight: "500",
   },
   secondaryTitle: {
     color: colors.gray[100],
-    fontSize: fontSize.text.small,
+    fontSize: fontSize.text.medium,
     fontWeight: "500",
   },
   shortPrimaryTitle: {
     color: colors.gray[100],
-    fontSize: 14,
+    fontSize: fontSize.text.medium,
     fontWeight: "500",
   },
   shortSecondaryTitle: {
     color: colors.gray[100],
-    fontSize: 14,
+    fontSize: fontSize.text.medium,
     fontWeight: "500",
   },
 });

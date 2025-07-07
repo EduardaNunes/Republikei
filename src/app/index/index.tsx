@@ -13,6 +13,9 @@ import { styles } from "./styles";
 import { colors } from "@/styles/colors";
 import { SquareButton } from "@/components/button";
 import { Text } from "@/components/text";
+import { Input } from '@/components/input';
+import { Category } from '@/components/category';
+import { Categories } from '@/components/categories';
 import LandlordName from "@/components/landlordName";
 
 export default function Index() {
@@ -30,20 +33,21 @@ export default function Index() {
           <View style={styles.titleContainer}>
             <MaterialIcons
               name="location-on"
-              size={32}
+              size={40}
               color={colors.orange[300]}
             />
-            <Text style={styles.title}>Republikei</Text>
+            <Text style={styles.title}>REPUBLIKEI</Text>
           </View>
-          <Text>
+          <Text style={styles.text}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua.
           </Text>
         </View>
         <View style={styles.buttonContainer}>
-          <SquareButton name="Cadastro Locador" variant="secondary" />
-          <SquareButton name="Cadastro Locatário" variant="secondary" />
-          <SquareButton name="Login" />
+            <SquareButton name="Cadastro Locador" variant="secondary" />
+            <SquareButton name="Cadastro Locatário" variant="secondary" />
+            <SquareButton name="Login" />
+
         </View>
       </View>
     </View>
