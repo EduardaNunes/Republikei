@@ -9,11 +9,29 @@ export const styles = StyleSheet.create({
     flexDirection:"column",
     padding:20,
   },
-  background: {
-    alignItems:"flex-start",
-    justifyContent:"flex-start",
-    width: Dimensions.get("window").width,
-    height: "45%"
+  inputContainer: {
+    gap:20,
+  },
+  signInContainer:{
+    flexDirection: "row",
+    justifyContent:"flex-end",
+    gap:10,
+    fontSize:fontSize.text.medium,
+  },
+  signInText:{
+    color:colors.orange[300],
+    fontWeight:"700"
+  },
+  imgContainer:{
+    justifyContent:"center",
+    alignItems:"center",
+    gap:10,
+  },
+  backButton:{
+        position: "absolute",
+        left: 30,
+        top: 50,
+        zIndex: 1,
   },
   title: {
     color: colors.orange[300],
