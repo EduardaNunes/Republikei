@@ -5,12 +5,14 @@ import { colors } from "@/styles/colors";
 type BottomContainerProps = {
   children: React.ReactNode;
   backgroundColor?: string;
+  style?: object;
 };
 
-export default function BottomContainer({children, backgroundColor}: BottomContainerProps) {
+export default function BottomContainer({children, backgroundColor, style}: BottomContainerProps) {
   return (
     <View style={[
-      styles.container, 
+      styles.container,
+      style,
       { backgroundColor: backgroundColor || colors.orange[300] }
     ]}>
         {children}

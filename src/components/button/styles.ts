@@ -28,7 +28,6 @@ export const styles = StyleSheet.create({
     paddingHorizontal: fontSize.text.small,
     borderRadius: 8,
     alignItems: "center",
-    alignSelf: "flex-start",
   },
   shortSecondaryContainer: {
     backgroundColor: colors.gray[800],
@@ -38,7 +37,6 @@ export const styles = StyleSheet.create({
     paddingHorizontal: fontSize.text.small,
     borderRadius: 8,
     alignItems: "center",
-    alignSelf: "flex-start",
   },
 
   // Titles
