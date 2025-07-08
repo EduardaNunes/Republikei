@@ -1,0 +1,16 @@
+import { colors } from "@/styles/colors";
+import { StyleSheet, Dimensions } from "react-native";
+
+export const styles = StyleSheet.create({
+  container: {
+    borderColor: colors.orange[300],
+    borderWidth: 3,
+    borderStyle: "solid",
+    borderRadius: "50%",
+    width: 60,
+    height: 60,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

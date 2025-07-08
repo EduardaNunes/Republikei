@@ -1,22 +1,10 @@
-import {
-  Image,
-  View,
-  TouchableOpacity,
-  FlatList,
-  Modal,
-  Alert,
-  Linking,
-} from "react-native";
+import { Image, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import { styles } from "./styles";
 import { colors } from "@/styles/colors";
 import { SquareButton } from "@/components/button";
 import { Text } from "@/components/text";
-import { Input } from "@/components/input";
-import { Category } from "@/components/category";
-import { Categories } from "@/components/categories";
-import LandlordName from "@/components/landlordName";
 
 export default function Index() {
   return (
