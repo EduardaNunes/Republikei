@@ -5,10 +5,11 @@ import { colors } from "@/styles/colors";
 import { styles } from "./styles";
 
 type StatusPostProps = {
-  type: string;
+  type: "visibility" | "favorite";
+  style: object;
 };
 
-export default function StatusPost({ type }: StatusPostProps) {
+export default function StatusPost({ type, style }: StatusPostProps) {
   const [favoriteIcon, setfavoriteIcon] = useState<
     "favorite" | "favorite-border"
   >("favorite-border");
@@ -20,6 +21,7 @@ export default function StatusPost({ type }: StatusPostProps) {
     <View
       style={[
         styles.container,
+        style,
         type === "visibility" && visibilityIcon === "visibility-off"
           ? { backgroundColor: colors.orange[300] }
           : null,

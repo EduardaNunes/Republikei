@@ -3,15 +3,26 @@ import { fontSize } from "@/styles/fontSize";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  container: {
+  containerFavorite: {
     display: "flex",
     flexDirection: "column",
     width: "43%",
     height: 210,
   },
-  image: {
+    containerPreview: {
+    display: "flex",
+    flexDirection: "column",
+    width: "90%",
+    height: 290,
+    position: "relative",
+  },
+  imageFavorite: {
     width: "100%",
     height: 140,
+  },
+  imagePreview: {
+    width: "100%",
+    height: 220,
   },
   title: {
     color: colors.orange[300],
@@ -21,5 +32,11 @@ export const styles = StyleSheet.create({
   price: {
     fontSize: fontSize.text.big,
     color: "#fff",
+  },
+  status: {
+    position: "absolute",
+    top: 4,
+    right: 6,
+    zIndex: 1,
   },
 });
