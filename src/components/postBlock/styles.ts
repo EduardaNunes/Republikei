@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     width: "43%",
     height: 210,
   },
-    containerPreview: {
+  containerPreview: {
     display: "flex",
     flexDirection: "column",
     width: "90%",

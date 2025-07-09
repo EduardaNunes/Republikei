@@ -8,7 +8,7 @@ type LandlordNameProps = {
   phone?: string;
 };
 
-export default function LandlordName({name, phone}: LandlordNameProps) {
+export default function LandlordName({ name, phone }: LandlordNameProps) {
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>

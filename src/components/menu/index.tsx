@@ -6,10 +6,10 @@ import BottomContainer from "../bottomContainer";
 export default function Menu() {
   return (
     <BottomContainer style={styles.container}>
-        <MaterialIcons name="search" size={32} color={"#fff"} />
-        <MaterialIcons name="favorite" size={32} color={"#fff"} />
-        <MaterialIcons name="map" size={32} color={"#fff"} />
-        <MaterialIcons name="person" size={32} color={"#fff"} />
+      <MaterialIcons name="search" size={32} color={"#fff"} />
+      <MaterialIcons name="favorite" size={32} color={"#fff"} />
+      <MaterialIcons name="map" size={32} color={"#fff"} />
+      <MaterialIcons name="person" size={32} color={"#fff"} />
     </BottomContainer>
   );
 }

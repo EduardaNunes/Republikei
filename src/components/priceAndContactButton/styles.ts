@@ -13,5 +13,5 @@ export const styles = StyleSheet.create({
   priceText: {
     fontSize: fontSize.title.big,
     color: colors.orange[300],
-  }
+  },
 });

@@ -8,14 +8,20 @@ type BottomContainerProps = {
   style?: object;
 };
 
-export default function BottomContainer({children, backgroundColor, style}: BottomContainerProps) {
+export default function BottomContainer({
+  children,
+  backgroundColor,
+  style,
+}: BottomContainerProps) {
   return (
-    <View style={[
-      styles.container,
-      style,
-      { backgroundColor: backgroundColor || colors.orange[300] }
-    ]}>
-        {children}
+    <View
+      style={[
+        styles.container,
+        style,
+        { backgroundColor: backgroundColor || colors.orange[300] },
+      ]}
+    >
+      {children}
     </View>
   );
 }

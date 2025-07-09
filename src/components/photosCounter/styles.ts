@@ -19,6 +19,5 @@ export const styles = StyleSheet.create({
     color: colors.orange[300],
     fontSize: fontSize.text.big,
     fontWeight: "bold",
-
   },
 });

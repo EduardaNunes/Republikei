@@ -15,12 +15,23 @@ export default function PostBlock({
   title,
   price,
   type = "preview",
-  statusType = "visibility"
+  statusType = "visibility",
 }: PostBlockProps) {
   return (
-    <View style={type === "favorite" ? styles.containerFavorite : styles.containerPreview}>
-      {type === "favorite" ? <></> : <StatusPost style={styles.status} type={statusType}/>}
-      <Image source={{ uri: image }} style={type === "favorite" ? styles.imageFavorite : styles.imagePreview} />
+    <View
+      style={
+        type === "favorite" ? styles.containerFavorite : styles.containerPreview
+      }
+    >
+      {type === "favorite" ? (
+        <></>
+      ) : (
+        <StatusPost style={styles.status} type={statusType} />
+      )}
+      <Image
+        source={{ uri: image }}
+        style={type === "favorite" ? styles.imageFavorite : styles.imagePreview}
+      />
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.price}>R$ {price}/mês</Text>
     </View>

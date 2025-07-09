@@ -4,56 +4,56 @@ import { fontSize } from "@/styles/fontSize";
 
 export const styles = StyleSheet.create({
   container: {
-    flex:1,
+    flex: 1,
     width: Dimensions.get("window").width,
-    flexDirection:"column",
-    padding:20,
+    flexDirection: "column",
+    padding: 20,
   },
   inputContainer: {
-    gap:20,
+    gap: 20,
   },
-  signInContainer:{
+  signInContainer: {
     flexDirection: "row",
-    justifyContent:"flex-end",
-    gap:10,
-    fontSize:fontSize.text.medium,
+    justifyContent: "flex-end",
+    gap: 10,
+    fontSize: fontSize.text.medium,
   },
-  signInText:{
-    color:colors.orange[300],
-    fontWeight:"700"
+  signInText: {
+    color: colors.orange[300],
+    fontWeight: "700",
   },
-  imgContainer:{
-    justifyContent:"center",
-    alignItems:"center",
-    gap:10,
+  imgContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
   },
-  backButton:{
-        position: "absolute",
-        left: 30,
-        top: 50,
-        zIndex: 1,
+  backButton: {
+    position: "absolute",
+    left: 30,
+    top: 50,
+    zIndex: 1,
   },
   title: {
     color: colors.orange[300],
     fontSize: fontSize.title.big,
-    fontWeight:"700",
+    fontWeight: "700",
   },
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 12,
-    gap:10,
+    gap: 10,
   },
-  text:{
+  text: {
     fontSize: fontSize.text.medium,
   },
   buttonContainer: {
     gap: 10,
     marginTop: 24,
   },
-  containerTextAndButton:{
-    justifyContent: 'space-between',
-    flex:1,
-    paddingBottom:50,
-  }
+  containerTextAndButton: {
+    justifyContent: "space-between",
+    flex: 1,
+    paddingBottom: 50,
+  },
 });

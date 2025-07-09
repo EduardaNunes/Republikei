@@ -14,10 +14,13 @@ export function BackButton({ icon, variant = "medium", ...rest }: Props) {
     medium: styles.mediumContainer,
   };
 
-
   return (
     <TouchableOpacity style={containerVariants[variant]} {...rest}>
-        <MaterialIcons name={icon} color={colors.gray[100]} size={24}></MaterialIcons>
+      <MaterialIcons
+        name={icon}
+        color={colors.gray[100]}
+        size={24}
+      ></MaterialIcons>
     </TouchableOpacity>
   );
 }
