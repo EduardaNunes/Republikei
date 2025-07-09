@@ -4,7 +4,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./styles";
 import { colors } from "@/styles/colors";
 import { SquareButton } from "@/components/button";
-import { Text } from "@/components/text";
+import AppText from "@/components/appText";
 
 export default function Index() {
   return (
@@ -22,12 +22,12 @@ export default function Index() {
               size={40}
               color={colors.orange[300]}
             />
-            <Text style={styles.title}>REPUBLIKEI</Text>
+            <AppText style={styles.title}>REPUBLIKEI</AppText>
           </View>
-          <Text style={styles.text}>
+          <AppText style={styles.text}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </Text>
+          </AppText>
         </View>
         <View style={styles.buttonContainer}>
           <SquareButton name="Cadastro Locador" variant="secondary" />

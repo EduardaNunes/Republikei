@@ -2,26 +2,16 @@ import {
   Image,
   View,
   TouchableOpacity,
-  FlatList,
-  Modal,
   Alert,
-  Linking,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
-
 import { styles } from "./styles";
-import { colors } from "@/styles/colors";
 import { SquareButton } from "@/components/button";
-import { Text } from "@/components/text";
+import AppText from "@/components/appText";
 import { Input } from "@/components/input";
-import { Category } from "@/components/category";
-import { Categories } from "@/components/categories";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { BackButton } from "@/components/backButton";
-
 import { Session } from "@supabase/supabase-js";
 
 export default function Login() {
@@ -71,11 +61,11 @@ export default function Login() {
       <BackButton style={styles.backButton} icon={"arrow-back"} />
       <SafeAreaView style={styles.imgContainer}>
         <Image source={require("@/assets/login-icon.png")} />
-        <Text style={styles.title}> LOGIN </Text>
+        <AppText style={styles.title}> LOGIN </AppText>
       </SafeAreaView>
 
       <View style={styles.containerTextAndButton}>
-        {session && session.user && <Text>{session.user.id}</Text>}
+        {session && session.user && <AppText>{session.user.id}</AppText>}
         <View style={styles.inputContainer}>
           <Input
             title="Email"
@@ -102,9 +92,9 @@ export default function Login() {
             onPress={() => signInWithEmail()}
           />
           <View style={styles.signInContainer}>
-            <Text>Não tem Login?</Text>
+            <AppText>Não tem Login?</AppText>
             <TouchableOpacity>
-              <Text style={styles.signInText}>Cadastrar</Text>
+              <AppText style={styles.signInText}>Cadastrar</AppText>
             </TouchableOpacity>
           </View>
         </View>

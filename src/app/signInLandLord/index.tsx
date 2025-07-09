@@ -1,24 +1,15 @@
 import {
   Image,
   View,
-  TouchableOpacity,
-  FlatList,
-  Modal,
-  Alert,
-  Linking,
   ScrollView,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
 
 import { styles } from "./styles";
-import { colors } from "@/styles/colors";
 import { SquareButton } from "@/components/button";
-import { Text } from "@/components/text";
 import { Input } from "@/components/input";
-import { Category } from "@/components/category";
-import { Categories } from "@/components/categories";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { BackButton } from "@/components/backButton";
+import AppText from "@/components/appText";
 
 export default function SignInLandLord() {
   return (
@@ -26,7 +17,7 @@ export default function SignInLandLord() {
       <BackButton style={styles.backButton} icon={"arrow-back"} />
       <SafeAreaView style={styles.imgContainer}>
         <Image source={require("@/assets/cadLocat-icon.png")} />
-        <Text style={styles.title}> CADASTRO LOCADOR </Text>
+        <AppText style={styles.title}> CADASTRO LOCADOR </AppText>
       </SafeAreaView>
 
       <View style={styles.containerTextAndButton}>

@@ -1,6 +1,7 @@
 import { Text, View } from "react-native";
 import { styles } from "./styles";
 import { useState } from "react";
+import AppText from "../appText";
 
 type PhotosCounterProps = {
   total: number;
@@ -12,9 +13,9 @@ export default function PhotosCounter({ total }: PhotosCounterProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>
+      <AppText style={styles.text}>
         {count}/{total}
-      </Text>
+      </AppText>
     </View>
   );
 }

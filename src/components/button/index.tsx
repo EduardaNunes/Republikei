@@ -1,8 +1,8 @@
-import { TouchableOpacity, TouchableOpacityProps } from "react-native";
+import { TouchableOpacity, TouchableOpacityProps, Text } from "react-native";
 import { styles } from "./styles";
 import { colors } from "@/styles/colors";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Text } from "@/components/text";
+import AppText from "../appText";
 
 type Props = TouchableOpacityProps & {
   name: string;
@@ -26,7 +26,7 @@ export function SquareButton({ name, variant = "primary", ...rest }: Props) {
 
   return (
     <TouchableOpacity style={containerVariants[variant]} {...rest}>
-      <Text style={titleVariants[variant]}>{name}</Text>
+      <AppText style={titleVariants[variant]}>{name}</AppText>
     </TouchableOpacity>
   );
 }

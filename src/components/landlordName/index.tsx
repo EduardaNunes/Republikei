@@ -2,6 +2,7 @@ import { View, Text } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { colors } from "@/styles/colors";
 import { styles } from "./styles";
+import AppText from "../appText";
 
 type LandlordNameProps = {
   name?: string;
@@ -15,8 +16,8 @@ export default function LandlordName({ name, phone }: LandlordNameProps) {
         <MaterialIcons name="person" size={32} color={colors.orange[300]} />
       </View>
       <View style={styles.textContainer}>
-        <Text style={styles.textName}>{name}</Text>
-        <Text style={styles.textNumber}>{phone}</Text>
+        <AppText style={styles.textName}>{name}</AppText>
+        <AppText style={styles.textNumber}>{phone}</AppText>
       </View>
       <MaterialIcons
         style={styles.button}

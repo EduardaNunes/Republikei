@@ -1,6 +1,7 @@
 import { View, Text, Image } from "react-native";
 import { styles } from "./styles";
 import StatusPost from "../statusPost";
+import AppText from "../appText";
 
 type PostBlockProps = {
   image: string;
@@ -32,8 +33,8 @@ export default function PostBlock({
         source={{ uri: image }}
         style={type === "favorite" ? styles.imageFavorite : styles.imagePreview}
       />
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.price}>R$ {price}/mês</Text>
+      <AppText style={styles.title}>{title}</AppText>
+      <AppText style={styles.price}>R$ {price}/mês</AppText>
     </View>
   );
 }
