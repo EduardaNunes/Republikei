@@ -11,7 +11,7 @@ export default function PriceAndContactButton({ price }: PriceAndContactButtonPr
   return (
     <BottomContainer backgroundColor="#fff" style={styles.container}>
       <Text style={styles.priceText}>R$ {price}/mês</Text>
-      <SquareButton name="Contato" variant="shortP" />
+      <SquareButton name="Mapa" variant="shortP" />
     </BottomContainer>
   );
 }
