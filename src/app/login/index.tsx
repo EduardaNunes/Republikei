@@ -5,16 +5,21 @@ import {
   Alert,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import { supabase } from "../../lib/supabase";
-import { styles } from "./styles";
+import { styles } from "../../components/styles/loginStyles";
 import { SquareButton } from "@/components/button";
 import AppText from "@/components/appText";
 import { Input } from "@/components/input";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { BackButton } from "@/components/backButton";
+
 import { Session } from "@supabase/supabase-js";
+import { supabase } from "../../lib/supabase";
+import { useRouter } from "expo-router";
 
 export default function Login() {
+
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -41,24 +46,13 @@ export default function Login() {
     setLoading(false);
   }
 
-  async function signUpWithEmail() {
-    setLoading(true);
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
-    if (error) Alert.alert(error.message);
-    if (!session)
-      Alert.alert("Please check your inbox for email verification!");
-    setLoading(false);
-  }
-
   return (
     <SafeAreaProvider style={styles.container}>
-      <BackButton style={styles.backButton} icon={"arrow-back"} />
+      <BackButton 
+        style={styles.backButton}
+        icon={"arrow-back"} 
+        onPress={() => router.back()}
+      />
       <SafeAreaView style={styles.imgContainer}>
         <Image source={require("@/assets/login-icon.png")} />
         <AppText style={styles.title}> LOGIN </AppText>
