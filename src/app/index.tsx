@@ -1,12 +1,17 @@
 import { Image, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { styles } from "./styles";
+import { styles } from "../components/styles/indexStyles";
 import { colors } from "@/styles/colors";
 import { SquareButton } from "@/components/button";
 import AppText from "@/components/appText";
 
+import { useRouter } from "expo-router";
+
 export default function Index() {
+
+  const router = useRouter();
+
   return (
     <View style={styles.container}>
       <Image
@@ -30,9 +35,9 @@ export default function Index() {
           </AppText>
         </View>
         <View style={styles.buttonContainer}>
-          <SquareButton name="Cadastro Locador" variant="secondary" />
-          <SquareButton name="Cadastro Locatário" variant="secondary" />
-          <SquareButton name="Login" />
+          <SquareButton name="Cadastro Locador" variant="secondary" onPress={() => router.push("/signInLandLord")}/>
+          <SquareButton name="Cadastro Locatário" variant="secondary" onPress={() => router.push("")}/>
+          <SquareButton name="Login" onPress={() => router.push("/login")}/>
         </View>
       </View>
     </View>
