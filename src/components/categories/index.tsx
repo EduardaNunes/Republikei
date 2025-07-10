@@ -1,8 +1,10 @@
-import { FlatList, Text } from "react-native";
+import { FlatList } from "react-native";
 import { styles } from "./styles";
 import { categories } from "@/utils/categories";
 import { Category } from "@/components/category";
 
+// analisar se precisa de um contexto para saber qual vai ser clicado
+// analisar se mais de um pode ser clicado ou não
 export function Categories() {
   return (
     <>
