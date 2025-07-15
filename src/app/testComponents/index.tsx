@@ -13,7 +13,7 @@ import StatusPost from "@/components/statusPost";
 import { useRouter } from "expo-router";
 import { styles } from "./styles";
 
-export default function Index() {
+export default function TestComponents() {
   const router = useRouter();
 
   return (

@@ -46,8 +46,8 @@ export const styles = StyleSheet.create({
     marginTop: 24,
   },
   containerTextAndButton: {
-    justifyContent: "space-between",
-    flex: 1,
+    display: 'flex',
+    gap: 30,
     paddingBottom: 50,
   },
 });

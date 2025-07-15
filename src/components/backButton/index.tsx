@@ -15,7 +15,7 @@ export default function BackButton({ icon, variant = "medium", ...rest }: Props)
   };
 
   return (
-    <TouchableOpacity style={containerVariants[variant]} {...rest}>
+    <TouchableOpacity style={[containerVariants[variant], styles.container]} {...rest}>
       <MaterialIcons
         name={icon}
         color={colors.gray[100]}

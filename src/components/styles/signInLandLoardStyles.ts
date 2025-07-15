@@ -27,12 +27,6 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
   },
-  backButton: {
-    position: "absolute",
-    left: 30,
-    top: 50,
-    zIndex: 1,
-  },
   title: {
     color: colors.orange[300],
     fontSize: fontSize.title.big,

@@ -49,7 +49,6 @@ export default function Login() {
   return (
     <SafeAreaProvider style={styles.container}>
       <BackButton 
-        style={styles.backButton}
         icon={"arrow-back"} 
         onPress={() => router.back()}
       />

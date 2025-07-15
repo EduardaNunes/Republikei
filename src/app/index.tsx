@@ -36,7 +36,7 @@ export default function Index() {
         </View>
         <View style={styles.buttonContainer}>
           <SquareButton name="Cadastro Locador" variant="secondary" onPress={() => router.push("/signInLandLord")}/>
-          <SquareButton name="Cadastro Locatário" variant="secondary" onPress={() => router.push("")}/>
+          <SquareButton name="Cadastro Locatário" variant="secondary" onPress={() => router.push("/signInRenter")}/>
           <SquareButton name="Login" onPress={() => router.push("/login")}/>
           <SquareButton name="Teste componentes" onPress={() => router.push("/testComponents")} />
         </View>
