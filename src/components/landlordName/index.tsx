@@ -5,8 +5,8 @@ import { styles } from "./styles";
 import AppText from "../appText";
 
 type LandlordNameProps = {
-  name?: string;
-  phone?: string;
+  name: string;
+  phone: string;
 };
 
 export default function LandlordName({ name, phone }: LandlordNameProps) {

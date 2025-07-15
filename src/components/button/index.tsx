@@ -9,7 +9,7 @@ type Props = TouchableOpacityProps & {
   variant?: "primary" | "secondary" | "shortP" | "shortS";
 };
 
-export function SquareButton({ name, variant = "primary", ...rest }: Props) {
+export default function SquareButton({ name, variant = "primary", ...rest }: Props) {
   const containerVariants = {
     primary: styles.primaryContainer,
     secondary: styles.secondaryContainer,

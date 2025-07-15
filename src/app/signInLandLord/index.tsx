@@ -7,10 +7,10 @@ import {
 
 import React, { useState, useEffect } from "react";
 import { styles } from "../../components/styles/signInLandLoardStyles";
-import { SquareButton } from "@/components/button";
-import { Input } from "@/components/input";
+import SquareButton from "@/components/button";
+import Input from "@/components/input";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { BackButton } from "@/components/backButton";
+import BackButton from "@/components/backButton";
 import AppText from "@/components/appText";
 
 import { Session } from "@supabase/supabase-js";

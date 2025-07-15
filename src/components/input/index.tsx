@@ -4,10 +4,10 @@ import { colors } from "@/styles/colors";
 import AppText from "../appText";
 
 type Props = TextInputProps & {
-  title?: string;
+  title: string;
 };
 
-export function Input({ title, ...rest }: Props) {
+export default function Input({ title, ...rest }: Props) {
   return (
     <>
       <AppText style={styles.text}> {title}</AppText>

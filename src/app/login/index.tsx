@@ -6,11 +6,11 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { styles } from "../../components/styles/loginStyles";
-import { SquareButton } from "@/components/button";
+import SquareButton from "@/components/button";
 import AppText from "@/components/appText";
-import { Input } from "@/components/input";
+import Input from "@/components/input";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { BackButton } from "@/components/backButton";
+import BackButton from "@/components/backButton";
 
 import { Session } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";

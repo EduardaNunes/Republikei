@@ -8,7 +8,7 @@ type Props = TouchableOpacityProps & {
   variant?: "small" | "medium";
 };
 
-export function BackButton({ icon, variant = "medium", ...rest }: Props) {
+export default function BackButton({ icon, variant = "medium", ...rest }: Props) {
   const containerVariants = {
     small: styles.smallContainer,
     medium: styles.mediumContainer,

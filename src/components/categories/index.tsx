@@ -5,7 +5,7 @@ import { Category } from "@/components/category";
 
 // analisar se precisa de um contexto para saber qual vai ser clicado
 // analisar se mais de um pode ser clicado ou não
-export function Categories() {
+export default function Categories() {
   return (
     <>
       <FlatList

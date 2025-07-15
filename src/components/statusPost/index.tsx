@@ -6,7 +6,7 @@ import { styles } from "./styles";
 
 type StatusPostProps = {
   type: "visibility" | "favorite";
-  style: object;
+  style?: object;
 };
 
 export default function StatusPost({ type, style }: StatusPostProps) {

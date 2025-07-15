@@ -3,7 +3,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import { styles } from "../components/styles/indexStyles";
 import { colors } from "@/styles/colors";
-import { SquareButton } from "@/components/button";
+import SquareButton from "@/components/button";
 import AppText from "@/components/appText";
 
 import { useRouter } from "expo-router";
@@ -38,6 +38,7 @@ export default function Index() {
           <SquareButton name="Cadastro Locador" variant="secondary" onPress={() => router.push("/signInLandLord")}/>
           <SquareButton name="Cadastro Locatário" variant="secondary" onPress={() => router.push("")}/>
           <SquareButton name="Login" onPress={() => router.push("/login")}/>
+          <SquareButton name="Teste componentes" onPress={() => router.push("/testComponents")} />
         </View>
       </View>
     </View>
