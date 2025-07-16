@@ -19,7 +19,7 @@ export default function TestComponents() {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <BackButton icon={"arrow-back"} onPress={() => router.back()} />
+        <BackButton onPress={() => router.back()}/>
         <Categories />
         <Input title={"Input"} />
         <LandlordName name={"Nome"} phone={"(83) 93784-3947"} />

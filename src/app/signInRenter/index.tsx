@@ -1,9 +1,4 @@
-import {
-  Image,
-  View,
-  ScrollView,
-  Alert,
-} from "react-native";
+import { Image, View, ScrollView, Alert } from "react-native";
 
 import React, { useState, useEffect } from "react";
 import { styles } from "../../components/styles/signInRenterStyles";
@@ -18,61 +13,57 @@ import { supabase } from "../../lib/supabase";
 import { useRouter } from "expo-router";
 
 export default function signInRenter() {
-
   const router = useRouter();
 
-//   const [userName, setUserName] = useState("");
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [passwordConfirmation, setPasswordConfirmation] = useState("");
-//   const [loading, setLoading] = useState(false);
+  //   const [userName, setUserName] = useState("");
+  //   const [email, setEmail] = useState("");
+  //   const [password, setPassword] = useState("");
+  //   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  //   const [loading, setLoading] = useState(false);
 
-//   const [session, setSession] = useState<Session | null>(null);
-//   useEffect(() => {
-//     supabase.auth.getSession().then(({ data: { session } }) => {
-//       setSession(session);
-//     });
-//     supabase.auth.onAuthStateChange((_event, session) => {
-//       setSession(session);
-//     });
-//   }, []);
+  //   const [session, setSession] = useState<Session | null>(null);
+  //   useEffect(() => {
+  //     supabase.auth.getSession().then(({ data: { session } }) => {
+  //       setSession(session);
+  //     });
+  //     supabase.auth.onAuthStateChange((_event, session) => {
+  //       setSession(session);
+  //     });
+  //   }, []);
 
-//   async function signUp() {
+  //   async function signUp() {
 
-//     if(!checkIfPasswordIsValid()) return;
+  //     if(!checkIfPasswordIsValid()) return;
 
-//     setLoading(true);
+  //     setLoading(true);
 
-//     const {
-//       data: { session },
-//       error,
-//     } = await supabase.auth.signUp({
-//       email: email,
-//       password: password,
-//       options:{
-//         data:{
-//           displayName: userName,
-//         }
-//       }
-//     });
+  //     const {
+  //       data: { session },
+  //       error,
+  //     } = await supabase.auth.signUp({
+  //       email: email,
+  //       password: password,
+  //       options:{
+  //         data:{
+  //           displayName: userName,
+  //         }
+  //       }
+  //     });
 
-//     if (error) Alert.alert(error.message);
-//     if (!session)
-//       Alert.alert("Please check your inbox for email verification!");
-//     setLoading(false);
-//   }
+  //     if (error) Alert.alert(error.message);
+  //     if (!session)
+  //       Alert.alert("Please check your inbox for email verification!");
+  //     setLoading(false);
+  //   }
 
-//   function checkIfPasswordIsValid(){
-//     if(password === passwordConfirmation) return true;
-//     else return false
-//   }
+  //   function checkIfPasswordIsValid(){
+  //     if(password === passwordConfirmation) return true;
+  //     else return false
+  //   }
 
   return (
     <ScrollView style={styles.container}>
-      <BackButton 
-        icon={"arrow-back"}
-        onPress={() => router.back()} 
-      />
+      <BackButton onPress={() => router.back()} />
       <SafeAreaView style={styles.imgContainer}>
         <Image source={require("@/assets/cadLocat-icon.png")} />
         <AppText style={styles.title}> CADASTRO LOCATÁRIO </AppText>
@@ -80,7 +71,6 @@ export default function signInRenter() {
 
       <View style={styles.containerTextAndButton}>
         <View style={styles.inputContainer}>
-
           <Input
             title="Usuário"
             // onChangeText={(text: string) => setUserName(text)}
@@ -123,15 +113,13 @@ export default function signInRenter() {
             autoCapitalize="none"
           />
           {/* {!checkIfPasswordIsValid() && <AppText>As senhas precisam ser iguais</AppText>} */}
-
         </View>
         <SquareButton
           name="Cadastrar"
-        //   disabled={loading}
-        //   onPress={() => signUp()}
+          //   disabled={loading}
+          //   onPress={() => signUp()}
         />
       </View>
     </ScrollView>
-
   );
 }

@@ -1,9 +1,4 @@
-import {
-  Image,
-  View,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
+import { Image, View, TouchableOpacity, Alert } from "react-native";
 import React, { useState, useEffect } from "react";
 import { styles } from "../../components/styles/loginStyles";
 import SquareButton from "@/components/button";
@@ -17,7 +12,6 @@ import { supabase } from "../../lib/supabase";
 import { useRouter } from "expo-router";
 
 export default function Login() {
-
   const router = useRouter();
 
   const [email, setEmail] = useState("");
@@ -48,10 +42,7 @@ export default function Login() {
 
   return (
     <SafeAreaProvider style={styles.container}>
-      <BackButton 
-        icon={"arrow-back"} 
-        onPress={() => router.back()}
-      />
+      <BackButton onPress={() => router.back()} />
       <SafeAreaView style={styles.imgContainer}>
         <Image source={require("@/assets/login-icon.png")} />
         <AppText style={styles.title}> LOGIN </AppText>

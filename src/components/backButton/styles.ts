@@ -3,10 +3,16 @@ import { colors } from "@/styles/colors";
 import { fontSize } from "@/styles/fontSize";
 
 export const styles = StyleSheet.create({
-  container:{
+  containerBack:{
     position: "absolute",
     left: 10,
     top: 50,
+    zIndex: 1,
+  },
+  containerPlus:{
+    position: "absolute",
+    right: 10,
+    bottom: 50,
     zIndex: 1,
   },
   mediumContainer: {

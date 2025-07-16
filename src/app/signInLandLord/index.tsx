@@ -1,9 +1,4 @@
-import {
-  Image,
-  View,
-  ScrollView,
-  Alert,
-} from "react-native";
+import { Image, View, ScrollView, Alert } from "react-native";
 
 import React, { useState, useEffect } from "react";
 import { styles } from "../../components/styles/signInLandLoardStyles";
@@ -18,7 +13,6 @@ import { supabase } from "../../lib/supabase";
 import { useRouter } from "expo-router";
 
 export default function SignInLandLord() {
-
   const router = useRouter();
 
   const [userName, setUserName] = useState("");
@@ -39,8 +33,7 @@ export default function SignInLandLord() {
   }, []);
 
   async function signUp() {
-
-    if(!checkIfPasswordIsValid()) return;
+    if (!checkIfPasswordIsValid()) return;
 
     setLoading(true);
 
@@ -51,11 +44,11 @@ export default function SignInLandLord() {
       phone: phoneNumber,
       email: email,
       password: password,
-      options:{
-        data:{
+      options: {
+        data: {
           displayName: userName,
-        }
-      }
+        },
+      },
     });
 
     if (error) Alert.alert(error.message);
@@ -64,17 +57,14 @@ export default function SignInLandLord() {
     setLoading(false);
   }
 
-  function checkIfPasswordIsValid(){
-    if(password === passwordConfirmation) return true;
-    else return false
+  function checkIfPasswordIsValid() {
+    if (password === passwordConfirmation) return true;
+    else return false;
   }
 
   return (
     <ScrollView style={styles.container}>
-      <BackButton 
-        icon={"arrow-back"}
-        onPress={() => router.back()} 
-      />
+      <BackButton onPress={() => router.back()} />
       <SafeAreaView style={styles.imgContainer}>
         <Image source={require("@/assets/cadLocat-icon.png")} />
         <AppText style={styles.title}> CADASTRO LOCADOR </AppText>
@@ -82,7 +72,6 @@ export default function SignInLandLord() {
 
       <View style={styles.containerTextAndButton}>
         <View style={styles.inputContainer}>
-
           <Input
             title="Usuário"
             onChangeText={(text: string) => setUserName(text)}
@@ -124,8 +113,9 @@ export default function SignInLandLord() {
             placeholder="Confirmar Senha"
             autoCapitalize="none"
           />
-          {!checkIfPasswordIsValid() && <AppText>As senhas precisam ser iguais</AppText>}
-
+          {!checkIfPasswordIsValid() && (
+            <AppText>As senhas precisam ser iguais</AppText>
+          )}
         </View>
         <SquareButton
           name="Cadastrar"
