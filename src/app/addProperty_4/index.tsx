@@ -6,6 +6,7 @@ import Input from "@/components/input";
 import AppText from "@/components/appText";
 import Menu from "@/components/menu";
 import { Category } from "@/components/category";
+import SelectableBlock from "@/components/selectableBlock";
 
 
 
@@ -20,33 +21,13 @@ export default function AddProperty_4() {
         </View>
         <View style={styles.geralContainer}>
             <View  style={styles.inputContainer}>
-                <View style={styles.subCategoryContainer}>
-                    <Category name="Apartamento"></Category>
-                    <Category name="Kitnet"></Category>
-                    <Category name="Casa"></Category>
-                </View>
+                <SelectableBlock type="completeHouseType"/>
                 <AppText style={styles.subtitle}>QUANTIDADE</AppText>
                 <View style={styles.subinputContainer}>
                     <Input variant="secondary" title="Quartos" containerStyle={{ width: "48%" }} ></Input>
                 </View>
                 <AppText style={styles.subtitle}>SELECIONAR MÓVEIS</AppText>
-                <View style={styles.subCategoryContainer}>
-                    <Category name="Cama"></Category>
-                    <Category name="Colchão"></Category>
-                    <Category name="Mesa Jantar"></Category>
-                    <Category name="Varal"></Category>
-                    <Category name="Geladeira"></Category>
-                    <Category name="Guarda Roupa"></Category>
-                    <Category name="AirFryer"></Category>
-                    <Category name="Armário"></Category>
-                    <Category name="Escrivaninha"></Category>
-                    <Category name="Microondas"></Category>
-                    <Category name="Ar Condicionado"></Category>
-                    <Category name="Fogão"></Category>
-                    <Category name="Televisão"></Category>
-                    <Category name="Máquina de Lavar Roupa Roupa"></Category>
-                    <Category name="Máquina de Lavar Louça"></Category>
-                </View>
+                <SelectableBlock type="furniture"/>
             </View>
             <View  style={styles.buttonsContainer}>
                 <SquareButton name="Voltar" variant="mediumS"></SquareButton>

@@ -12,6 +12,8 @@ import StatusPost from "@/components/statusPost";
 
 import { useRouter } from "expo-router";
 import { styles } from "./styles";
+import { SelectableIten } from "@/components/selectableIten";
+import SelectableBlock from "@/components/selectableBlock";
 
 export default function TestComponents() {
   const router = useRouter();
@@ -34,6 +36,8 @@ export default function TestComponents() {
         <StatusPost type={"favorite"} />
         <StatusPost type={"visibility"} />
         <SquareButton name={"Clique"} />
+        <SelectableIten text="aaa"></SelectableIten>
+        <SelectableBlock type="vacancyType"></SelectableBlock>
       </ScrollView>
       <PriceAndContactButton price={800} />
     </View>

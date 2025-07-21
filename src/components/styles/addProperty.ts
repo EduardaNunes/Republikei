@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
   },
   subtitle: {
     color: colors.gray[100],
-    fontSize: fontSize.title.big,
+    fontSize: fontSize.title.medium,
     fontWeight: "700",
   },
   titleContainer: {

@@ -6,6 +6,8 @@ import Input from "@/components/input";
 import AppText from "@/components/appText";
 import Menu from "@/components/menu";
 import { Category } from "@/components/category";
+import SelectableBlock from "@/components/selectableBlock";
+import { router } from "expo-router";
 
 
 
@@ -20,35 +22,16 @@ export default function AddProperty_3() {
         </View>
         <View style={styles.geralContainer}>
             <View  style={styles.inputContainer}>
-                <View style={styles.subCategoryContainer}>
-                    <Category name="Permite animais"></Category>
-                    <Category name="Permite fumantes"></Category>
-                    <Category name="Com Quintal"></Category>
-                    <Category name="Com Piscina"></Category>
-                    <Category name="Luz Inclusa"></Category>
-                    <Category name="Água Inclusa"></Category>
-                    <Category name="Condomínio Incluso"></Category>
-                    <Category name="Internet Inclusa"></Category>
-                </View>
+                <SelectableBlock type="characteristics"/>
                 <AppText style={styles.subtitle}>TIPO DE VAGA</AppText>
-                <View style={styles.subCategoryContainer}>
-                    <Category name="Feminina"></Category>
-                    <Category name="Masculina"></Category>
-                    <Category name="Mista"></Category>    
-                </View>
+                <SelectableBlock type="vacancyType"/>
                 <AppText style={styles.subtitle}>TIPO DE MORADIA</AppText>
-                <View style={styles.subCategoryContainer}>
-                    <Category name="Compartilhada"></Category>
-                    <Category name="Completa"></Category>
-                </View>
+                <SelectableBlock type="housingType"/>
                 <AppText style={styles.subtitle}>MOBILIADO?</AppText>
-                <View style={styles.subCategoryContainer}>
-                    <Category name="Sim"></Category>
-                    <Category name="Não"></Category>
-                </View>
+                <SelectableBlock type="question"/>
             </View>
             <View  style={styles.buttonsContainer}>
-                <SquareButton name="Voltar" variant="mediumS"></SquareButton>
+                <SquareButton name="Voltar" variant="mediumS" onPress={()=> router.back()}></SquareButton>
                 <SquareButton name="Continuar" variant="mediumP"></SquareButton>
             </View>
         </View>

@@ -5,6 +5,7 @@ import SquareButton from "@/components/button";
 import Input from "@/components/input";
 import AppText from "@/components/appText";
 import Menu from "@/components/menu";
+import { router } from "expo-router";
 
 
 
@@ -29,7 +30,7 @@ export default function AddProperty_1() {
             </View>
             <View  style={styles.buttonsContainer}>
                 <SquareButton name="Cancelar" variant="mediumS"></SquareButton>
-                <SquareButton name="Continuar" variant="mediumP"></SquareButton>
+                <SquareButton name="Continuar" variant="mediumP" onPress={()=> router.push("/addProperty_2")}></SquareButton>
             </View>
         </View>
     </View>
