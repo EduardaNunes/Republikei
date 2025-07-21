@@ -13,11 +13,21 @@ export const styles = StyleSheet.create({
     gap: 20,
     marginBottom: 28,
   },
+  geralContainer:{
+    justifyContent: "space-between",
+    height:"70%"
+  },
   buttonsContainer: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
+    marginTop: 20,
     gap: 10,
-    fontSize: fontSize.text.medium,
+  },
+  subinputContainer:{
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 10,
+
   },
   title: {
     color: colors.orange[300],
@@ -35,9 +45,11 @@ export const styles = StyleSheet.create({
     alignItems: "flex-start",
     marginVertical: 28,
   },
-  subinputContainer:{
-    flexDirection:'row'
 
+  subCategoryContainer:{
+    flexWrap:"wrap",
+    flexDirection:"row",
+    gap:10,
   },
   
 });

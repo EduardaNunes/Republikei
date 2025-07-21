@@ -7,10 +7,9 @@ import { useState } from "react";
 
 type Props = PressableProps & {
   name: string;
-  icon: keyof typeof MaterialIcons.glyphMap;
 };
 
-export function Category({ name, icon, ...rest }: Props) {
+export function Category({ name, ...rest }: Props) {
   const [color, setColor] = useState(colors.gray[800]);
 
   const handlePress = () => {
