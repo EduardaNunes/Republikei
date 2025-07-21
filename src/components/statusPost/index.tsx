@@ -29,7 +29,7 @@ export default function StatusPost({ type, style }: StatusPostProps) {
     >
       <MaterialIcons
         name={type === "favorite" ? favoriteIcon : visibilityIcon}
-        size={34}
+        size={24}
         color={
           type === "visibility" && visibilityIcon === "visibility-off"
             ? "#fff"

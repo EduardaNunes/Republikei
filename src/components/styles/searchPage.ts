@@ -15,19 +15,13 @@ export const styles = StyleSheet.create({
   },
   geralContainer:{
     justifyContent: "space-between",
-    height:"70%"
+    height:"20%"
   },
   buttonsContainer: {
-    flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 20,
     gap: 10,
-  },
-  subinputContainer:{
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 10,
-
+    marginBottom:70,
   },
   title: {
     color: colors.orange[300],
@@ -44,12 +38,6 @@ export const styles = StyleSheet.create({
     justifyContent:"flex-start",
     alignItems: "flex-start",
     marginVertical: 28,
-  },
-
-  subCategoryContainer:{
-    flexWrap:"wrap",
-    flexDirection:"row",
-    gap:10,
   },
   
 });

@@ -61,3 +61,8 @@ export const question: enums[] = [
   { id: "question-1", name: "Sim" },
   { id: "question-2", name: "Não" },
 ];
+
+export const ranking: enums[] = [
+  { id: "ranking-1", name: "Preço min" },
+  { id: "ranking-2", name: "Preço max" },
+];

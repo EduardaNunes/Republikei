@@ -8,26 +8,30 @@ export const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
     flexDirection: "column",
     padding: 20,
+    borderRadius:20,
+    marginTop:250,
+    backgroundColor:colors.gray[800],
   },
+  image: {
+    width: "100%",
+    height: 300,
+    position:"absolute"
+    },
+
   inputContainer: {
     gap: 20,
     marginBottom: 28,
   },
   geralContainer:{
     justifyContent: "space-between",
-    height:"70%"
+    height:"20%",
+    paddingVertical:30,
   },
   buttonsContainer: {
-    flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 20,
     gap: 10,
-  },
-  subinputContainer:{
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 10,
-
+    marginBottom:70,
   },
   title: {
     color: colors.orange[300],
@@ -40,16 +44,10 @@ export const styles = StyleSheet.create({
     fontWeight: "700",
   },
   titleContainer: {
-    flexDirection: "column",
-    justifyContent:"flex-start",
-    alignItems: "flex-start",
-    marginVertical: 28,
-  },
-
-  subCategoryContainer:{
-    flexWrap:"wrap",
-    flexDirection:"row",
-    gap:10,
+    flexDirection: "row",
+    justifyContent:"space-between",
+    alignItems: "center",
+    marginVertical: 16,
   },
   
 });
