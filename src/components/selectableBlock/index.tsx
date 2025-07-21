@@ -9,6 +9,7 @@ import {
   housingType,
   question,
   sharedHouseType,
+  ranking
 } from "@/utils/enums";
 
 type SelectableBlockProps = {
@@ -19,7 +20,8 @@ type SelectableBlockProps = {
     | "housingType"
     | "completeHouseType"
     | "sharedHouseType"
-    | "question";
+    | "question"
+    | "ranking"
 };
 
 const enumMap = {
@@ -30,6 +32,7 @@ const enumMap = {
   completeHouseType,
   sharedHouseType,
   question,
+  ranking,
 };
 
 export default function SelectableBlock({ type }: SelectableBlockProps) {
