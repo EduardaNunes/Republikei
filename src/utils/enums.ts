@@ -4,39 +4,60 @@ type enums = {
 };
 
 export const characteristics: enums[] = [
-  { id: "1", name: "Aceita Animais"},
-  { id: "2", name: "Aceita Fumantes"},
-  { id: "3", name: "Com Piscina"},
-  { id: "4", name: "Com Quintal"},
-  { id: "5", name: "Luz Inclusa"},
-  { id: "6", name: "IPTU Incluso"},
-  { id: "7", name: "Condomínio Incluso"},
-  { id: "8", name: "Água Inclusa"},
-  { id: "9", name: "Gás Incluso"},
-  { id: "10", name: "Intenet Inclusa"},
-  { id: "11", name: "Serviço de Limpeza Incluso"},
+  { id: "characteristics-1", name: "Aceita Animais" },
+  { id: "characteristics-2", name: "Aceita Fumantes" },
+  { id: "characteristics-3", name: "Com Piscina" },
+  { id: "characteristics-4", name: "Com Quintal" },
+  { id: "characteristics-5", name: "Luz Inclusa" },
+  { id: "characteristics-6", name: "IPTU Incluso" },
+  { id: "characteristics-7", name: "Condomínio Incluso" },
+  { id: "characteristics-8", name: "Água Inclusa" },
+  { id: "characteristics-9", name: "Gás Incluso" },
+  { id: "characteristics-10", name: "Intenet Inclusa" },
+  { id: "characteristics-11", name: "Serviço de Limpeza Incluso" },
 ];
 
 export const vacancyType: enums[] = [
-  { id: "1", name: "Masculina"},
-  { id: "2", name: "Feminina"},
-  { id: "3", name: "Mista"},
+  { id: "vacancyType-1", name: "Masculina" },
+  { id: "vacancyType-2", name: "Feminina" },
+  { id: "vacancyType-3", name: "Mista" },
 ];
 
 export const furniture: enums[] = [
-  { id: "1", name: "Cama"},
-  { id: "2", name: "Fogão"},
-  { id: "3", name: "Geladeira"},
-  { id: "4", name: "Armário"},
-  { id: "5", name: "Máquina de Lavar Roupa"},
-  { id: "6", name: "Máquina de Lavar Louça"},
-  { id: "7", name: "Guarda Roupa"},
-  { id: "8", name: "Microondas"},
-  { id: "9", name: "Varal"},
-  { id: "10", name: "Mesa de Estudos"},
-  { id: "11", name: "Air Fryer"},
-  { id: "12", name: "Mesa de Jantar"},
-  { id: "13", name: "Ar Condicionado"},
-  { id: "14", name: "Colchão"},
-  { id: "15", name: "Televisão"},
+  { id: "furniture-1", name: "Cama" },
+  { id: "furniture-2", name: "Fogão" },
+  { id: "furniture-3", name: "Geladeira" },
+  { id: "furniture-4", name: "Armário" },
+  { id: "furniture-5", name: "Máquina de Lavar Roupa" },
+  { id: "furniture-6", name: "Guarda Roupa" },
+  { id: "furniture-7", name: "Microondas" },
+  { id: "furniture-8", name: "Máquina de Lavar Louça" },
+  { id: "furniture-9", name: "Varal" },
+  { id: "furniture-10", name: "Mesa de Estudos" },
+  { id: "furniture-11", name: "Air Fryer" },
+  { id: "furniture-12", name: "Mesa de Jantar" },
+  { id: "furniture-13", name: "Ar Condicionado" },
+  { id: "furniture-14", name: "Colchão" },
+  { id: "furniture-15", name: "Televisão" },
+];
+
+export const housingType: enums[] = [
+  { id: "housingType-1", name: "Compartilhada" },
+  { id: "housingType-2", name: "Completa" },
+];
+
+export const completeHouseType: enums[] = [
+  { id: "completeHouseType-1", name: "Apartamento" },
+  { id: "completeHouseType-2", name: "Kitnet" },
+  { id: "completeHouseType-3", name: "Casa" },
+];
+
+export const sharedHouseType: enums[] = [
+  { id: "sharedHouseType-1", name: "República" },
+  { id: "sharedHouseType-2", name: "Quarto" },
+];
+
+export const question: enums[] = [
+  { id: "question-1", name: "Sim" },
+  { id: "question-2", name: "Não" },
 ];
