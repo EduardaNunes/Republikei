@@ -5,8 +5,11 @@ import SquareButton from "@/components/button";
 import AppText from "@/components/appText";
 import Menu from "@/components/menu";
 import SelectableBlock from "@/components/selectableBlock";
+import { useRouter } from "expo-router";
 
 export default function AddProperty_3() {
+  const router = useRouter();
+
   return (
     <>
       <View style={styles.container}>
@@ -25,8 +28,16 @@ export default function AddProperty_3() {
             <SelectableBlock type="question"></SelectableBlock>
           </View>
           <View style={styles.buttonsContainer}>
-            <SquareButton name="Voltar" variant="mediumS"></SquareButton>
-            <SquareButton name="Continuar" variant="mediumP"></SquareButton>
+            <SquareButton
+              name="Voltar"
+              variant="mediumS"
+              onPress={() => router.back()}
+            ></SquareButton>
+            <SquareButton
+              name="Continuar"
+              variant="mediumP"
+              onPress={() => router.push("/addProperty_4_completa")} // precisamos depois fazer a lógica pra cada um ir pra uma
+            ></SquareButton>
           </View>
         </View>
       </View>
