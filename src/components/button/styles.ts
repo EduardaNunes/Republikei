@@ -39,6 +39,25 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
 
+  mediumPrimaryContainer: {
+    backgroundColor: colors.orange[300],
+    paddingVertical: 10,
+    paddingHorizontal: fontSize.text.small,
+    borderRadius: 8,
+    width: "48%",
+    alignItems: "center",
+  },
+  mediumSecondaryContainer: {
+    backgroundColor: colors.gray[800],
+    borderWidth: 1,
+    width: "48%",
+    borderColor: colors.orange[300],
+    paddingVertical: 10,
+    paddingHorizontal: fontSize.text.small,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+
   // Titles
   primaryTitle: {
     color: colors.gray[100],
@@ -50,6 +69,18 @@ export const styles = StyleSheet.create({
     fontSize: fontSize.text.medium,
     fontWeight: "500",
   },
+  mediumPrimaryTitle: {
+    color: colors.gray[100],
+    fontSize: fontSize.text.big,
+    fontWeight: "500",
+  },
+  mediumSecondaryTitle: {
+    color: colors.gray[100],
+    fontSize: fontSize.text.big,
+    fontWeight: "500",
+  },
+
+
   shortPrimaryTitle: {
     color: colors.gray[100],
     fontSize: fontSize.text.medium,
