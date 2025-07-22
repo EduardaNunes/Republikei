@@ -4,7 +4,7 @@ import { colors } from "@/styles/colors";
 import AppText from "../appText";
 
 type Props = TextInputProps & {
-  title: string;
+  title?: string;
   variant?: "primary" | "secondary";
   containerStyle?: object;
 };

@@ -14,7 +14,6 @@ export default function Categories() {
         renderItem={({ item }) => (
           <Category
             name={item.name}
-            icon={item.icon}
           />
         )}
         horizontal
