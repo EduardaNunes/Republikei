@@ -9,6 +9,11 @@ export const styles = StyleSheet.create({
     flexDirection: "column",
     padding: 20,
   },
+  scrollViewContent: {
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    flexGrow: 1,
+  },
   inputContainer: {
     gap: 20,
   },
@@ -46,7 +51,7 @@ export const styles = StyleSheet.create({
     marginTop: 24,
   },
   containerTextAndButton: {
-    display: 'flex',
+    display: "flex",
     gap: 30,
     paddingBottom: 50,
   },

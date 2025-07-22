@@ -17,6 +17,15 @@ import BackButton from "@/components/backButton";
 
 export default function PvuLandLord() {
 
+const characteristics = [
+  { id: "characteristics-1", name: "Aceita Animais" },
+  { id: "characteristics-3", name: "Com Piscina" },
+  { id: "characteristics-4", name: "Com Quintal" },
+  { id: "characteristics-8", name: "Água Inclusa" },
+  { id: "characteristics-9", name: "Gás Incluso" },
+  { id: "characteristics-10", name: "Intenet Inclusa" },
+];
+
   return (
     <>
     <ScrollView >
@@ -35,7 +44,7 @@ export default function PvuLandLord() {
                     <AppText style={styles.subtitle}>TIPO DE MORADIA</AppText>
                     <SelectableBlock type="housingType"/>
                     <AppText style={styles.subtitle}>CARACTERÍSTICAS</AppText>
-                    <SelectableBlock type="characteristics"/>
+                    <SelectableBlock readOnly objects={characteristics}/>
                     <AppText style={styles.subtitle}>MOBÍLIA</AppText>
                     <SelectableBlock type="furniture"/>
                 </View>
