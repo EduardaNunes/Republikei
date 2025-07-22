@@ -23,6 +23,7 @@ type SelectableBlockProps = {
     | "sharedHouseType"
     | "question"
     | "ranking";
+  returnSelected?: (item: string | string[]) => void;
 };
 
 const enumMap = {
@@ -45,7 +46,10 @@ const singleSelectTypes = [
   "vacancyType",
 ];
 
-export default function SelectableBlock({ type }: SelectableBlockProps) {
+export default function SelectableBlock({
+  type,
+  returnSelected = () => {},
+}: SelectableBlockProps) {
   const isSingleSelect = singleSelectTypes.includes(type);
 
   const [selectedSingle, setSelectedSingle] = useState<string | null>(null);
@@ -56,15 +60,21 @@ export default function SelectableBlock({ type }: SelectableBlockProps) {
 
   const handleSelect = (itemId: string) => {
     if (isSingleSelect) {
-      setSelectedSingle((current) => (current === itemId ? null : itemId));
+      const singleAux = selectedSingle === itemId ? "" : itemId;
+
+      setSelectedSingle(singleAux);
+      returnSelected(singleAux);
     } else {
-      setSelectedMultiple((current) => {
-        if (current.includes(itemId)) {
-          return current.filter((id) => id !== itemId);
-        } else {
-          return [...current, itemId];
-        }
-      });
+      let multipleAux: string[];
+
+      if (selectedMultiple.includes(itemId)) {
+        multipleAux = selectedMultiple.filter((id) => id !== itemId);
+      } else {
+        multipleAux = [...selectedMultiple, itemId];
+      }
+
+      setSelectedMultiple(multipleAux);
+      returnSelected(multipleAux);
     }
   };
 
