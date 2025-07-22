@@ -47,9 +47,26 @@ const characteristics = [
                     <SelectableBlock readOnly objects={characteristics}/>
                     <AppText style={styles.subtitle}>MOBÍLIA</AppText>
                     <SelectableBlock type="furniture"/>
-                </View>
+                    <AppText style={styles.subtitle}>ENDEREÇO</AppText>
+                <AppText>Rua xxx, Bairro YYY </AppText>
+                <AppText style={styles.subtitle}>MAIS INFORMAÇÕES</AppText>
+                <AppText>Nº Banheiros: </AppText>
+                <AppText>Nº Salas de Estar: </AppText>
+                <AppText>Nº Áreas de Serviço: </AppText>
+                <AppText>Nº Vagas de Garagem : </AppText>
+                <AppText>Nº Cozinhas: </AppText>
+                <AppText>Nº Saças de Jantar: </AppText>
+                <AppText>Nº Varanda: </AppText>
+                <AppText>Nº Banheiros: </AppText>
+                {/* Se for moradia completa */}
+                <AppText>Nº Quartos: </AppText>
+                {/* Se for moradia Compartilhada */}
+                <AppText>Nº Pessoas/Quarto: </AppText>
+                <AppText>Nº Pessoas/Moradia: </AppText>
+
                 <AppText style={styles.subtitle}>LOCADOR</AppText>
                 <LandlordName name={"Nome"} phone={"(83) 93784-3947"} />
+                </View>
             </View>
 
         </View>
