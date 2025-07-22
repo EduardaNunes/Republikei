@@ -2,26 +2,26 @@ import { Pressable } from "react-native";
 import { colors } from "@/styles/colors";
 import { styles } from "./styles";
 import AppText from "../appText";
-import { useState } from "react";
 
 type SelectableItenProps = {
   text: string;
+  isSelected: boolean;
+  onPress: () => void;
 };
 
-export function SelectableIten({ text, ...rest }: SelectableItenProps) {
-  const [color, setColor] = useState(colors.gray[800]);
-
-  const handlePress = () => {
-    const aux =
-      color === colors.orange[300] ? colors.gray[800] : colors.orange[300];
-    setColor(aux);
-  };
-
+export function SelectableIten({
+  text,
+  isSelected,
+  onPress,
+}: SelectableItenProps) {
   return (
     <Pressable
-      style={[styles.container, { backgroundColor: color }]}
-      {...rest}
-      onPress={handlePress}
+      style={[
+        styles.container,
+        { backgroundColor: colors.gray[800] },
+        isSelected && { backgroundColor: colors.orange[300] },
+      ]}
+      onPress={onPress}
     >
       <AppText style={[{ color: colors.gray[100] }]}>{text}</AppText>
     </Pressable>
