@@ -1,4 +1,12 @@
-import { Image, View, TouchableOpacity, Alert } from "react-native";
+import {
+  Image,
+  View,
+  TouchableOpacity,
+  Alert,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import { styles } from "../../components/styles/loginStyles";
 import SquareButton from "@/components/button";
@@ -10,6 +18,7 @@ import BackButton from "@/components/backButton";
 import { Session } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "expo-router";
+import { KeyboardAvoidingView, ScrollView } from "react-native";
 
 export default function Login() {
   const router = useRouter();
@@ -41,48 +50,60 @@ export default function Login() {
   }
 
   return (
-    <SafeAreaProvider style={styles.container}>
-      <BackButton onPress={() => router.back()} />
-      <SafeAreaView style={styles.imgContainer}>
-        <Image source={require("@/assets/login-icon.png")} />
-        <AppText style={styles.title}> LOGIN </AppText>
-      </SafeAreaView>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+          <BackButton onPress={() => router.back()} />
+          <SafeAreaView style={styles.imgContainer}>
+            <Image source={require("@/assets/login-icon.png")} />
+            <AppText style={styles.title}> LOGIN </AppText>
+          </SafeAreaView>
 
-      <View style={styles.containerTextAndButton}>
-        {session && session.user && <AppText>{session.user.id}</AppText>}
-        <View style={styles.inputContainer}>
-          <Input
-            title="Email"
-            onChangeText={(text: string) => setEmail(text)}
-            value={email}
-            placeholder="email@address.com"
-            autoCapitalize="none"
-          />
+          <View style={styles.containerTextAndButton}>
+            {session && session.user && <AppText>{session.user.id}</AppText>}
+            <View style={styles.inputContainer}>
+              <Input
+                title="Email"
+                onChangeText={(text: string) => setEmail(text)}
+                value={email}
+                placeholder="email@address.com"
+                autoCapitalize="none"
+                keyboardType="email-address"
+              />
 
-          <Input
-            title="Senha"
-            onChangeText={(text: string) => setPassword(text)}
-            value={password}
-            secureTextEntry
-            placeholder="Password"
-            autoCapitalize="none"
-          />
-        </View>
+              <Input
+                title="Senha"
+                onChangeText={(text: string) => setPassword(text)}
+                value={password}
+                secureTextEntry
+                placeholder="Password"
+                autoCapitalize="none"
+              />
+            </View>
 
-        <View style={styles.buttonContainer}>
-          <SquareButton
-            name="Entrar"
-            disabled={loading}
-            onPress={() => signInWithEmail()}
-          />
-          <View style={styles.signInContainer}>
-            <AppText>Não tem Login?</AppText>
-            <TouchableOpacity>
-              <AppText style={styles.signInText}>Cadastrar</AppText>
-            </TouchableOpacity>
+            <View style={styles.buttonContainer}>
+              <SquareButton
+                name="Entrar"
+                disabled={loading}
+                onPress={() => signInWithEmail()}
+              />
+              <View style={styles.signInContainer}>
+                <AppText>Não tem Login?</AppText>
+                <TouchableOpacity
+                  onPress={() => {
+                    /* Adicione sua navegação para cadastro aqui */
+                  }}
+                >
+                  <AppText style={styles.signInText}>Cadastrar</AppText>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-        </View>
-      </View>
-    </SafeAreaProvider>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }

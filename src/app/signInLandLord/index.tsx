@@ -1,7 +1,14 @@
-import { Image, View, ScrollView, Alert } from "react-native";
-
+import {
+  Image,
+  View,
+  ScrollView,
+  Alert,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
 import React, { useState, useEffect } from "react";
-import { styles } from "../../components/styles/signInLandLoardStyles";
+import { styles } from "../../components/styles/signInLandLordStyles";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -11,6 +18,7 @@ import AppText from "@/components/appText";
 import { Session } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "expo-router";
+import { KeyboardAvoidingView } from "react-native";
 
 export default function SignInLandLord() {
   const router = useRouter();
@@ -63,66 +71,79 @@ export default function SignInLandLord() {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <BackButton onPress={() => router.back()} />
-      <SafeAreaView style={styles.imgContainer}>
-        <Image source={require("@/assets/cadLocat-icon.png")} />
-        <AppText style={styles.title}> CADASTRO LOCADOR </AppText>
-      </SafeAreaView>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={styles.scrollViewContent}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+        >
+          <BackButton onPress={() => router.back()} />
+          <SafeAreaView style={styles.imgContainer}>
+            <Image source={require("@/assets/cadLocat-icon.png")} />{" "}
+            <AppText style={styles.title}> CADASTRO LOCADOR </AppText>
+          </SafeAreaView>
 
-      <View style={styles.containerTextAndButton}>
-        <View style={styles.inputContainer}>
-          <Input
-            title="Usuário"
-            onChangeText={(text: string) => setUserName(text)}
-            value={userName}
-            placeholder="Usuário"
-            autoCapitalize="none"
-          />
+          <View style={styles.containerTextAndButton}>
+            <View style={styles.inputContainer}>
+              <Input
+                title="Usuário"
+                onChangeText={(text: string) => setUserName(text)}
+                value={userName}
+                placeholder="Usuário"
+                autoCapitalize="none"
+              />
 
-          <Input
-            title="Email"
-            onChangeText={(text: string) => setEmail(text)}
-            value={email}
-            placeholder="email@address.com"
-            autoCapitalize="none"
-          />
+              <Input
+                title="Email"
+                onChangeText={(text: string) => setEmail(text)}
+                value={email}
+                placeholder="email@address.com"
+                autoCapitalize="none"
+              />
 
-          <Input
-            title="Telefone"
-            onChangeText={(text: string) => setPhoneNumber(text)}
-            value={phoneNumber}
-            placeholder="(00) 0 0000-0000"
-            autoCapitalize="none"
-          />
+              <Input
+                title="Telefone"
+                onChangeText={(text: string) => setPhoneNumber(text)}
+                value={phoneNumber}
+                placeholder="(00) 0 0000-0000"
+                autoCapitalize="none"
+                keyboardType="phone-pad"
+              />
 
-          <Input
-            title="Senha"
-            secureTextEntry={true}
-            onChangeText={(text: string) => setPassword(text)}
-            value={password}
-            placeholder="Senha"
-            autoCapitalize="none"
-          />
+              <Input
+                title="Senha"
+                secureTextEntry={true}
+                onChangeText={(text: string) => setPassword(text)}
+                value={password}
+                placeholder="Senha"
+                autoCapitalize="none"
+              />
 
-          <Input
-            title="Confirmar Senha"
-            secureTextEntry={true}
-            onChangeText={(text: string) => setPasswordConfirmation(text)}
-            value={passwordConfirmation}
-            placeholder="Confirmar Senha"
-            autoCapitalize="none"
-          />
-          {!checkIfPasswordIsValid() && (
-            <AppText>As senhas precisam ser iguais</AppText>
-          )}
-        </View>
-        <SquareButton
-          name="Cadastrar"
-          disabled={loading}
-          onPress={() => signUp()}
-        />
-      </View>
-    </ScrollView>
+              <Input
+                title="Confirmar Senha"
+                secureTextEntry={true}
+                onChangeText={(text: string) => setPasswordConfirmation(text)}
+                value={passwordConfirmation}
+                placeholder="Confirmar Senha"
+                autoCapitalize="none"
+              />
+              {!checkIfPasswordIsValid() && (
+                <AppText>As senhas precisam ser iguais</AppText>
+              )}
+            </View>
+            <SquareButton
+              name="Cadastrar"
+              disabled={loading}
+              onPress={() => signUp()}
+            />
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }

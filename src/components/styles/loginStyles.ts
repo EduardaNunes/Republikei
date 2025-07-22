@@ -22,6 +22,11 @@ export const styles = StyleSheet.create({
     color: colors.orange[300],
     fontWeight: "700",
   },
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+    padding: 20,
+  },
   imgContainer: {
     justifyContent: "center",
     alignItems: "center",
