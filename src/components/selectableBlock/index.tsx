@@ -14,7 +14,7 @@ import {
 } from "@/utils/enums";
 
 type SelectableBlockProps = {
-  type:
+  type?:
     | "vacancyType"
     | "characteristics"
     | "furniture"
@@ -24,6 +24,11 @@ type SelectableBlockProps = {
     | "question"
     | "ranking";
   returnSelected?: (item: string | string[]) => void;
+  readOnly?: boolean;
+  objects?: {
+    id: string;
+    name: string;
+  }[];
 };
 
 const enumMap = {
@@ -47,8 +52,10 @@ const singleSelectTypes = [
 ];
 
 export default function SelectableBlock({
-  type,
+  type = "question",
   returnSelected = () => {},
+  readOnly = false,
+  objects,
 }: SelectableBlockProps) {
   const isSingleSelect = singleSelectTypes.includes(type);
 
@@ -56,7 +63,7 @@ export default function SelectableBlock({
   const [selectedMultiple, setSelectedMultiple] = useState<string[]>([]);
 
   const selectedEnum = enumMap[type];
-  const data = Object.values(selectedEnum);
+  const data = readOnly && objects ? objects : Object.values(selectedEnum);
 
   const handleSelect = (itemId: string) => {
     if (isSingleSelect) {
@@ -88,7 +95,7 @@ export default function SelectableBlock({
           return (
             <SelectableIten
               key={item.id}
-              isSelected={isSelected}
+              isSelected={readOnly ? false : isSelected}
               text={item.name}
               onPress={() => handleSelect(item.id)}
             />
