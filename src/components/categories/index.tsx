@@ -2,25 +2,31 @@ import { FlatList } from "react-native";
 import { styles } from "./styles";
 import { categories } from "@/utils/categories";
 import { Category } from "@/components/category";
+import { useState } from "react";
 
-// analisar se precisa de um contexto para saber qual vai ser clicado
-// analisar se mais de um pode ser clicado ou não
 export default function Categories() {
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("0"); 
+
+  const handleSelect = (id: string) => {
+    setSelectedCategoryId(id); 
+  };
+
   return (
-    <>
-      <FlatList
-        data={categories}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <Category
-            name={item.name}
-          />
-        )}
-        horizontal
-        style={styles.container}
-        contentContainerStyle={styles.content}
-        showsHorizontalScrollIndicator={false}
-      />
-    </>
+    <FlatList
+      data={categories}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <Category
+          name={item.name}
+          id={item.id}
+          isSelected={item.id === selectedCategoryId}
+          onPress={() => handleSelect(item.id)}
+        />
+      )}
+      horizontal
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      showsHorizontalScrollIndicator={false}
+    />
   );
 }

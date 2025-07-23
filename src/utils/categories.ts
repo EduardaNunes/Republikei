@@ -6,6 +6,7 @@ type Category = {
 };
 
 export const categories: Category[] = [
+  { id: "0", name: "Todos"  },
   { id: "1", name: "República"  },
   { id: "2", name: "Apartamento"},
   { id: "3", name: "Kitnet" },
