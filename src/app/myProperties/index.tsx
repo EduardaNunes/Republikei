@@ -18,7 +18,7 @@ export default function SearchResult() {
             <View  style={styles.titleContainer}>
                 <AppText style={styles.title}>MEUS IMÓVEIS</AppText>
             </View>
-            <PostBlock  image="@/assets/Imagem.png" title="Quarto" price={800}/>
+            <PostBlock  image={require("@/assets/Imagem.png")} title="Quarto" price={800}/>
             
         </ScrollView>
         <BackButton type="plus" onPress={() => router.back()} />
