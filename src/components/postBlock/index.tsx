@@ -4,7 +4,7 @@ import StatusPost from "../statusPost";
 import AppText from "../appText";
 
 type PostBlockProps = {
-  image: string;
+  image: any;
   title: string;
   price: number;
   type?: "favorite" | "preview";
@@ -30,7 +30,7 @@ export default function PostBlock({
         <StatusPost style={styles.status} type={statusType} />
       )}
       <Image
-        source={{ uri: image }}
+        source={image}
         style={type === "favorite" ? styles.imageFavorite : styles.imagePreview}
       />
       <AppText style={styles.title}>{title}</AppText>
