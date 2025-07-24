@@ -27,6 +27,16 @@ const characteristics = [
   { id: "characteristics-10", name: "Intenet Inclusa" },
 ];
 
+const furniture = [
+  { id: "furniture-geladeira", name: "Geladeira" },
+  { id: "furniture-armario", name: "Armário" },
+  { id: "furniture-microondas", name: "Microondas" },
+  { id: "furniture-lavar_louca", name: "Máquina de Lavar Louça" },
+  { id: "furniture-varal", name: "Varal" },
+  { id: "furniture-mesa_jantar", name: "Mesa de Jantar" },
+  { id: "furniture-tv", name: "Televisão" },
+];
+
 const images = [
   require('@/assets/Imagem.png'),
   require('@/assets/Imagem.png'),
@@ -50,13 +60,13 @@ const images = [
             <View style={styles.geralContainer}>
                 <View  style={styles.inputContainer}>
                     <AppText style={styles.subtitle}>TIPO DE MORADOR</AppText>
-                    <SelectableBlock type="vacancyType"/>
+                    <SelectableBlock objects={[{id: "1" , name: "Feminina"}]} readOnly/>
                     <AppText style={styles.subtitle}>TIPO DE MORADIA</AppText>
-                    <SelectableBlock type="housingType"/>
+                    <SelectableBlock objects={[{id: "1" , name: "Compartilhada"}]} readOnly/>
                     <AppText style={styles.subtitle}>CARACTERÍSTICAS</AppText>
                     <SelectableBlock readOnly objects={characteristics}/>
                     <AppText style={styles.subtitle}>MOBÍLIA</AppText>
-                    <SelectableBlock type="furniture"/>
+                    <SelectableBlock readOnly objects={furniture}/>
                     <AppText style={styles.subtitle}>ENDEREÇO</AppText>
                 <AppText>Rua xxx, Bairro YYY </AppText>
                 <AppText style={styles.subtitle}>MAIS INFORMAÇÕES</AppText>
