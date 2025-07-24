@@ -12,6 +12,7 @@ import StatusPost from "@/components/statusPost";
 import LandlordName from "@/components/landlordName";
 import PriceAndContactButton from "@/components/priceAndContactButton";
 import BackButton from "@/components/backButton";
+import { ImageCarousel } from "@/components/imagesCarrossel";
 
 
 
@@ -26,11 +27,20 @@ const characteristics = [
   { id: "characteristics-10", name: "Intenet Inclusa" },
 ];
 
+const images = [
+  require('@/assets/Imagem.png'),
+  require('@/assets/Imagem.png'),
+  require('@/assets/Imagem.png'),
+  require('@/assets/Imagem.png'),
+  require('@/assets/Imagem.png'),
+  require('@/assets/Imagem.png'),
+]
+
   return (
     <>
     <ScrollView >
         <BackButton onPress={() => router.back()}/>
-        <Image source={require("@/assets/Imagem.png")} style={styles.image} ></Image>
+        <ImageCarousel images={images} style={styles.image}/>
         <View style={styles.container}>
             <View  style={styles.titleContainer}>
                 <AppText style={styles.title}>QUARTO CENTRO</AppText>
