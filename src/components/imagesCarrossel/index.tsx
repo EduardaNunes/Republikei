@@ -6,17 +6,18 @@ import {
   Dimensions,
   NativeSyntheticEvent,
   NativeScrollEvent,
+  ImageSourcePropType,
 } from "react-native";
 import { styles } from "./styles";
 
-// código puro gemini (mudar estilo e comportamento em caso de necessidade no momento da implementação)
 const { width } = Dimensions.get("window");
 
 interface ImageCarouselProps {
-  images: string[];
+  images: ImageSourcePropType[];
   autoPlay?: boolean;
   autoPlayInterval?: number;
   showPagination?: boolean;
+  style?: object
 }
 
 export function ImageCarousel({
@@ -24,30 +25,29 @@ export function ImageCarousel({
   autoPlay = false,
   autoPlayInterval = 3000,
   showPagination = true,
+  style,
 }: ImageCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  const scrollToNextImage = (animated: boolean = true) => {
-    const nextIndex = (activeIndex + 1) % images.length;
-    scrollViewRef.current?.scrollTo({ x: nextIndex * width, animated });
-    setActiveIndex(nextIndex);
-  };
 
   useEffect(() => {
-    if (autoPlay && images.length > 1) {
-      intervalRef.current = setInterval(() => {
-        scrollToNextImage();
-      }, autoPlayInterval);
+    if (!autoPlay || images.length <= 1) {
+      return;
     }
 
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [activeIndex, autoPlay, autoPlayInterval, images.length]);
+    const interval = setInterval(() => {
+      setActiveIndex((prevIndex) => {
+        const nextIndex = (prevIndex + 1) % images.length;
+        scrollViewRef.current?.scrollTo({
+          x: nextIndex * width,
+          animated: true,
+        });
+        return nextIndex;
+      });
+    }, autoPlayInterval);
+
+    return () => clearInterval(interval);
+  }, [autoPlay, autoPlayInterval, images.length]);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const scrollPosition = event.nativeEvent.contentOffset.x;
@@ -57,37 +57,21 @@ export function ImageCarousel({
     }
   };
 
-  const handleScrollBeginDrag = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-  };
-
-  const handleScrollEndDrag = () => {
-    if (autoPlay && images.length > 1) {
-      intervalRef.current = setInterval(() => {
-        scrollToNextImage();
-      }, autoPlayInterval);
-    }
-  };
-
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <ScrollView
         ref={scrollViewRef}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
-        onScrollBeginDrag={handleScrollBeginDrag}
-        onScrollEndDrag={handleScrollEndDrag}
+        onMomentumScrollEnd={handleScroll}
         scrollEventThrottle={16}
       >
-        {images.map((imageUri, index) => (
+        {images.map((imageSource, index) => (
           <Image
-            key={index.toString()}
-            source={{ uri: imageUri }}
-            style={styles.image}
+            key={index}
+            source={imageSource}
+            style={[styles.image, { width: width }]}
             resizeMode="cover"
           />
         ))}
