@@ -19,7 +19,7 @@ export default function AddProperty_3() {
     } else if (housingTypeSelected === "housingType-completa") {
       router.push("/addProperty_4_completa");
     } else {
-      alert(housingTypeSelected);
+      alert("Selecione o tipo de moradia");
     }
   };
 
