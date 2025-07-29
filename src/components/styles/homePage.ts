@@ -10,11 +10,24 @@ export const styles = StyleSheet.create({
     padding: 20,
     gap:10,
   },
+  fakeInput: {
+  backgroundColor: colors.gray[800],
+  borderRadius: 12,
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+  marginTop: 28,
+  borderWidth:2,
+  borderColor: colors.orange[300],
+},
+
+fakeInputText: {
+  color: colors.gray[100],
+  fontSize: 16,
+},
+
   postContainer: {
-    gap: 16,
-    marginBottom: 28,
-    flexDirection:"row",
-    flexWrap: "wrap",
+    gap: 32,
+    marginBottom: 100,
     alignItems:'center',
     justifyContent: "space-between",
 

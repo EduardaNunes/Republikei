@@ -1,11 +1,7 @@
 import { Image, View, ScrollView, Alert } from "react-native";
 
 import { styles } from "../../components/styles/pvuLandLord";
-import SquareButton from "@/components/button";
-import Input from "@/components/input";
 import AppText from "@/components/appText";
-import Menu from "@/components/menu";
-import { Category } from "@/components/category";
 import SelectableBlock from "@/components/selectableBlock";
 import { router } from "expo-router";
 import StatusPost from "@/components/statusPost";
