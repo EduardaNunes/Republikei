@@ -28,6 +28,6 @@ export const styles = StyleSheet.create({
   },
   text: {
     color: colors.orange[300],
-    fontSize: fontSize.text.medium,
+    fontSize: fontSize.text.small,
   },
 });

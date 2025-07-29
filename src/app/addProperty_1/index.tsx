@@ -1,4 +1,9 @@
-import { View } from "react-native";
+import {
+  View,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+} from "react-native";
 
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
@@ -12,44 +17,56 @@ export default function AddProperty_1() {
 
   return (
     <>
-      <View style={styles.container}>
-        <View style={styles.titleContainer}>
-          <AppText style={styles.title}>ADICIONAR IMÓVEL</AppText>
-          <AppText style={styles.subtitle}>LOCALIZAÇÃO</AppText>
-        </View>
-        <View style={styles.geralContainer}>
-          <View style={styles.inputContainer}>
-            <Input title="CEP"></Input>
-            <Input title="Rua"></Input>
-            <Input title="Bairro"></Input>
-            <View style={styles.subinputContainer}>
-              <Input
-                variant="secondary"
-                title="Número"
-                containerStyle={{ width: "48%" }}
-              ></Input>
-              <Input
-                variant="secondary"
-                title="Complemento"
-                containerStyle={{ width: "48%" }}
-              ></Input>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
+      >
+        <ScrollView contentContainerStyle={{
+            flexGrow: 1,
+            paddingTop: 20,
+            paddingHorizontal: 20,
+          }}
+          keyboardShouldPersistTaps="handled">
+          <View style={styles.titleContainer}>
+            <AppText style={styles.title}>ADICIONAR IMÓVEL</AppText>
+            <AppText style={styles.subtitle}>LOCALIZAÇÃO</AppText>
+          </View>
+
+          <View style={styles.geralContainer}>
+            <View style={styles.inputContainer}>
+              <Input title="CEP" />
+              <Input title="Rua" />
+              <Input title="Bairro" />
+              <View style={styles.subinputContainer}>
+                <Input
+                  variant="secondary"
+                  title="Número"
+                  containerStyle={{ width: "48%" }}
+                />
+                <Input
+                  variant="secondary"
+                  title="Complemento"
+                  containerStyle={{ width: "48%" }}
+                />
+              </View>
             </View>
           </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
           <View style={styles.buttonsContainer}>
-            <SquareButton
-              name="Cancelar"
-              variant="mediumS"
-              onPress={() => router.back()}
-            ></SquareButton>
-            <SquareButton
-              name="Continuar"
-              variant="mediumP"
-              onPress={() => router.push("/addProperty_2")}
-            ></SquareButton>
-          </View>
-        </View>
-      </View>
-      <Menu></Menu>
+              <SquareButton
+                name="Cancelar"
+                variant="mediumS"
+                onPress={() => router.back()}
+              />
+              <SquareButton
+                name="Continuar"
+                variant="mediumP"
+                onPress={() => router.push("/addProperty_2")}
+              />
+            </View>
+      <Menu />
     </>
   );
 }
