@@ -19,6 +19,10 @@ export default function AddProperty_3() {
       alert("Selecione o tipo de moradia");
       return;
     }
+    if (furnished === null) {
+      alert("Informe se a moradia é mobiliada ou não");
+      return;
+    }
 
     const isFurnished = (furnished === "question-sim").toString(); // "true" ou "false" como string
 
