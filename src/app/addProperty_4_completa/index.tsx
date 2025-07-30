@@ -6,10 +6,12 @@ import Input from "@/components/input";
 import AppText from "@/components/appText";
 import Menu from "@/components/menu";
 import SelectableBlock from "@/components/selectableBlock";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 
 export default function addProperty_4_completa() {
   const router = useRouter();
+  const { isFurnished } = useLocalSearchParams();
+  const showFurniture = isFurnished === "true";
 
   return (
     <>
@@ -40,8 +42,12 @@ export default function addProperty_4_completa() {
                 containerStyle={{ width: "48%" }}
               ></Input>
             </View>
-            <AppText style={styles.subtitle}>SELECIONAR MÓVEIS</AppText>
-            <SelectableBlock type="furniture"></SelectableBlock>
+            {showFurniture && (
+            <>
+              <AppText style={styles.subtitle}>SELECIONAR MÓVEIS</AppText>
+              <SelectableBlock type="furniture" />
+            </>
+          )}
           </View>
           </View>
         </ScrollView>
