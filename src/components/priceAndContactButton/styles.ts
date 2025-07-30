@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
     zIndex:2,
   },
   priceText: {
-    fontSize: fontSize.title.big,
+    fontSize: fontSize.title.medium,
     color: colors.orange[300],
   },
 });
