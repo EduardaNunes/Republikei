@@ -12,15 +12,15 @@ export const styles = StyleSheet.create({
   containerPlus:{
     position: "absolute",
     right: 10,
-    bottom: 50,
+    bottom: 100,
     zIndex: 1,
   },
   mediumContainer: {
     padding: 13,
     borderRadius: 50,
     elevation: 5,
-    height: 52,
-    width: 52,
+    height: 60,
+    width: 60,
     backgroundColor: colors.orange[300],
   },
   smallContainer: {

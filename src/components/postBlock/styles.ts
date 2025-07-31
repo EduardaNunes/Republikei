@@ -12,8 +12,8 @@ export const styles = StyleSheet.create({
   containerPreview: {
     display: "flex",
     flexDirection: "column",
-    width: "90%",
-    height: 290,
+    width: "95%",
+    height: 280,
     position: "relative",
   },
   imageFavorite: {
@@ -30,12 +30,12 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   price: {
-    fontSize: fontSize.text.big,
+    fontSize: fontSize.text.small,
     color: "#fff",
   },
   status: {
     position: "absolute",
-    top: 4,
+    top: 6,
     right: 6,
     zIndex: 1,
   },

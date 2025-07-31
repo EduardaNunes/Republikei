@@ -31,7 +31,7 @@ export default function BackButton({
       <MaterialIcons
         name={type === "back" ? "arrow-back" : "add"}
         color={colors.gray[100]}
-        size={24}
+        size={32}
       ></MaterialIcons>
     </TouchableOpacity>
   );

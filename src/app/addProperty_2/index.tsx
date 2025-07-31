@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
@@ -12,8 +12,18 @@ export default function AddProperty_2() {
 
   return (
     <>
-      <View style={styles.container}>
-        <View style={styles.titleContainer}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
+      >
+        <ScrollView contentContainerStyle={{
+            flexGrow: 1,
+            paddingTop: 20,
+            paddingHorizontal: 20,
+          }}
+          keyboardShouldPersistTaps="handled">
+          <View style={styles.titleContainer}>
           <AppText style={styles.title}>INFORMAÇÕES</AppText>
           <AppText style={styles.subtitle}>NÚMERO DE ...</AppText>
         </View>
@@ -68,21 +78,22 @@ export default function AddProperty_2() {
               ></Input>
             </View>
           </View>
-          <View style={styles.buttonsContainer}>
-            <SquareButton
-              name="Voltar"
-              variant="mediumS"
-              onPress={() => router.back()}
-            ></SquareButton>
-            <SquareButton
-              name="Continuar"
-              variant="mediumP"
-              onPress={() => router.push("/addProperty_3")}
-            ></SquareButton>
-          </View>
         </View>
-      </View>
-      <Menu></Menu>
+        </ScrollView>
+      </KeyboardAvoidingView>
+          <View style={styles.buttonsContainer}>
+              <SquareButton
+                name="Voltar"
+                variant="mediumS"
+                onPress={() => router.back()}
+              />
+              <SquareButton
+                name="Continuar"
+                variant="mediumP"
+                onPress={() => router.push("/addProperty_3")}
+              />
+            </View>
+      <Menu />
     </>
   );
 }

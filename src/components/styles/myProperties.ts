@@ -8,24 +8,18 @@ export const styles = StyleSheet.create({
     flex: 1,
     width: Dimensions.get("window").width,
     flexDirection: "column",
-    marginBottom: 80,
+    marginBottom: 10,
+    marginTop: 20,
     gap:10,
   },
     container: {
     flex: 1,
     width: Dimensions.get("window").width,
     flexDirection: "column",
-    padding: 20,
+    paddingHorizontal: 20,
+    marginBottom: 80,
     gap:10,
-  },
-  postContainer: {
-    gap: 16,
-    marginBottom: 28,
-    flexDirection:"row",
-    flexWrap: "wrap",
-    alignItems:'center',
-    justifyContent: "space-between",
-
+  
   },
   title: {
     color: colors.orange[300],
@@ -36,13 +30,6 @@ export const styles = StyleSheet.create({
     justifyContent:"center",
     alignItems: "center",
     marginVertical: 28,
-  },
-
-    buttonContainer: {
-    flexDirection:"row",
-    alignItems: "center",
-    marginVertical: 28,
-    gap:12,
   },
   
 });

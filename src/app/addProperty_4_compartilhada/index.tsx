@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
@@ -6,15 +6,28 @@ import Input from "@/components/input";
 import AppText from "@/components/appText";
 import Menu from "@/components/menu";
 import SelectableBlock from "@/components/selectableBlock";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 export default function AddProperty_4_compartilhada() {
   const router = useRouter();
+    const { isFurnished } = useLocalSearchParams();
+    const showFurniture = isFurnished === "true";
 
   return (
     <>
-      <View style={styles.container}>
-        <View style={styles.titleContainer}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
+      >
+        <ScrollView contentContainerStyle={{
+            flexGrow: 1,
+            paddingTop: 20,
+            paddingHorizontal: 20,
+            paddingBottom:90,
+          }}
+          keyboardShouldPersistTaps="handled">
+          <View style={styles.titleContainer}>
           <AppText style={styles.title}>COMPARTILHADA</AppText>
         </View>
         <View style={styles.geralContainer}>
@@ -34,24 +47,29 @@ export default function AddProperty_4_compartilhada() {
                 containerStyle={{ width: "48%" }}
               ></Input>
             </View>
-            <AppText style={styles.subtitle}>SELECIONAR MÓVEIS</AppText>
-            <SelectableBlock type="furniture"></SelectableBlock>
+            {showFurniture && (
+            <>
+              <AppText style={styles.subtitle}>SELECIONAR MÓVEIS</AppText>
+              <SelectableBlock type="furniture" />
+            </>
+          )}
           </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
           <View style={styles.buttonsContainer}>
-            <SquareButton
-              name="Voltar"
-              variant="mediumS"
-              onPress={() => router.back()}
-            ></SquareButton>
-            <SquareButton
-              name="Continuar"
-              variant="mediumP"
-              onPress={() => router.push("/addProperty_5")}
-            ></SquareButton>
-          </View>
-        </View>
-      </View>
-      <Menu></Menu>
+              <SquareButton
+                name="Voltar"
+                variant="mediumS"
+                onPress={() => router.back()}
+              />
+              <SquareButton
+                name="Continuar"
+                variant="mediumP"
+                onPress={() => router.push("/addProperty_5")}
+              />
+            </View>
+      <Menu />
     </>
   );
 }

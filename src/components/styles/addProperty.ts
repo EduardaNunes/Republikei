@@ -15,13 +15,20 @@ export const styles = StyleSheet.create({
   },
   geralContainer:{
     justifyContent: "space-between",
-    height:"70%"
+    flex:1,
+    paddingBottom:70,
   },
   buttonsContainer: {
+    position: "absolute",
+    bottom: 70,
+    left: 20,
+    right: 20,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 20,
     gap: 10,
+    paddingBottom:40,
+    backgroundColor: colors.gray[800]
+
   },
   subinputContainer:{
     flexDirection: "row",

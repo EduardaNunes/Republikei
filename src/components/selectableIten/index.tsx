@@ -2,6 +2,7 @@ import { Pressable } from "react-native";
 import { colors } from "@/styles/colors";
 import { styles } from "./styles";
 import AppText from "../appText";
+import { fontSize } from "@/styles/fontSize";
 
 type SelectableItenProps = {
   text: string;
@@ -23,7 +24,7 @@ export function SelectableIten({
       ]}
       onPress={onPress}
     >
-      <AppText style={[{ color: colors.gray[100] }]}>{text}</AppText>
+      <AppText style={[{ color: colors.gray[100], fontSize: fontSize.text.small }]}>{text}</AppText>
     </Pressable>
   );
 }

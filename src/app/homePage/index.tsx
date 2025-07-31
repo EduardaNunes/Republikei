@@ -1,31 +1,56 @@
-import { Image, View, ScrollView, Alert } from "react-native";
-
-import React, { useState, useEffect } from "react";
+import { Image, View, ScrollView, Alert, TouchableOpacity } from "react-native";
+import React from "react";
 import { styles } from "../../components/styles/homePage";
-import Input from "@/components/input";
 import AppText from "@/components/appText";
 import Menu from "@/components/menu";
 import Categories from "@/components/categories";
-import { colors } from "@/styles/colors"; 
 import PostBlock from "@/components/postBlock";
+import { useRouter } from "expo-router";
 
 export default function HomePage() {
+  const router = useRouter();
 
   return (
     <>
-    <ScrollView style={styles.container}>
-        <Input placeholder="Pesquisar" placeholderTextColor={colors.gray[100]}></Input>
-        <Categories></Categories>
-        <View  style={styles.titleContainer}>
-            <AppText style={styles.title}>SUGESTÕES</AppText>
+      <ScrollView style={styles.container}>
+        <TouchableOpacity
+          onPress={() => router.push("/searchPage")}
+          style={styles.fakeInput}
+          activeOpacity={0.8}
+        >
+          <AppText style={styles.fakeInputText}>Pesquisar</AppText>
+        </TouchableOpacity>
+
+        <Categories />
+
+        <View style={styles.titleContainer}>
+          <AppText style={styles.title}>SUGESTÕES</AppText>
         </View>
-        <PostBlock type="favorite" statusType="favorite" image="@/assets/Imagem.png" title="Quarto" price={800}/>
 
+        <View style={styles.postContainer}>
+          <PostBlock
+            statusType="favorite"
+            image={require("@/assets/Imagem.png")}
+            title="Quarto"
+            price={800}
+          />
 
-        
-        
-    </ScrollView>
-    <Menu></Menu>
+          <PostBlock
+            statusType="favorite"
+            image={require("@/assets/Imagem.png")}
+            title="Quarto"
+            price={800}
+          />
+          <PostBlock
+            statusType="favorite"
+            image={require("@/assets/Imagem.png")}
+            title="Quarto"
+            price={800}
+          />
+        </View>
+
+      </ScrollView>
+      <Menu />
     </>
   );
 }

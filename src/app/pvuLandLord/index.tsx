@@ -1,11 +1,7 @@
 import { Image, View, ScrollView, Alert } from "react-native";
 
 import { styles } from "../../components/styles/pvuLandLord";
-import SquareButton from "@/components/button";
-import Input from "@/components/input";
 import AppText from "@/components/appText";
-import Menu from "@/components/menu";
-import { Category } from "@/components/category";
 import SelectableBlock from "@/components/selectableBlock";
 import { router } from "expo-router";
 import StatusPost from "@/components/statusPost";
@@ -13,6 +9,7 @@ import LandlordName from "@/components/landlordName";
 import PriceAndContactButton from "@/components/priceAndContactButton";
 import BackButton from "@/components/backButton";
 import { ImageCarousel } from "@/components/imagesCarrossel";
+import HouseInfoList from "@/components/houseInfoList/houseInfoList";
 
 
 
@@ -46,6 +43,24 @@ const images = [
   require('@/assets/Imagem.png'),
 ]
 
+const houseData = {
+  banheiros: 2,
+  salasEstar: 1,
+  cozinhas: 1,
+  pessoasPorMoradia: 5,
+  pessoasPorQuarto: 2,
+};
+
+const desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+
+const endereco = {
+  rua: "Rua das Flores",
+  numero: "123",
+  bairro: "Jardim Primavera",
+  complemento: "Apto 301", 
+};
+
+
   return (
     <>
     <ScrollView >
@@ -56,7 +71,7 @@ const images = [
                 <AppText style={styles.title}>QUARTO CENTRO</AppText>
                 <StatusPost type={"visibility"} />
             </View>
-            <AppText>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</AppText>
+            <AppText>{desc}</AppText>
             <View style={styles.geralContainer}>
                 <View  style={styles.inputContainer}>
                     <AppText style={styles.subtitle}>TIPO DE MORADOR</AppText>
@@ -68,21 +83,12 @@ const images = [
                     <AppText style={styles.subtitle}>MOBÍLIA</AppText>
                     <SelectableBlock readOnly objects={furniture}/>
                     <AppText style={styles.subtitle}>ENDEREÇO</AppText>
-                <AppText>Rua xxx, Bairro YYY </AppText>
-                <AppText style={styles.subtitle}>MAIS INFORMAÇÕES</AppText>
-                <AppText>Nº Banheiros: </AppText>
-                <AppText>Nº Salas de Estar: </AppText>
-                <AppText>Nº Áreas de Serviço: </AppText>
-                <AppText>Nº Vagas de Garagem : </AppText>
-                <AppText>Nº Cozinhas: </AppText>
-                <AppText>Nº Saças de Jantar: </AppText>
-                <AppText>Nº Varanda: </AppText>
-                <AppText>Nº Banheiros: </AppText>
-                {/* Se for moradia completa */}
-                <AppText>Nº Quartos: </AppText>
-                {/* Se for moradia Compartilhada */}
-                <AppText>Nº Pessoas/Quarto: </AppText>
-                <AppText>Nº Pessoas/Moradia: </AppText>
+                    <AppText>
+                      {`${endereco.rua}, nº ${endereco.numero}, Bairro ${endereco.bairro}`}
+                      {endereco.complemento ? `, ${endereco.complemento}` : ""}
+                    </AppText>
+                    <AppText style={styles.subtitle}>MAIS INFORMAÇÕES</AppText>
+                    <HouseInfoList data={houseData}/>
 
                 <AppText style={styles.subtitle}>LOCADOR</AppText>
                 <LandlordName name={"Nome"} phone={"(83) 93784-3947"} />
