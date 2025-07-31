@@ -1,11 +1,6 @@
-import { MaterialIcons } from "@expo/vector-icons";
+import { tipoPadrao } from "./typesAux";
 
-type Category = {
-  id: string;
-  name: string;
-};
-
-export const categories: Category[] = [
+export const categories: tipoPadrao[] = [
   { id: "0", name: "Todos"  },
   { id: "1", name: "República"  },
   { id: "2", name: "Apartamento"},
