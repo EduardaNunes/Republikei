@@ -33,6 +33,7 @@ interface NewPostContextData {
     individual: number,
     moveisDisponiveis?: tipoPadrao[]
   ): void;
+  addProperty5(descricao: string, preco: number): void;
 }
 
 interface NewPostProviderProps {
@@ -76,7 +77,7 @@ function NewPostProvider({ children }: NewPostProviderProps) {
       id: "",
       name: "",
     });
-  const [oculto, setOculto] = useState<boolean>(true);
+  const [oculto, setOculto] = useState<boolean>(false);
   const [preco, setPreco] = useState<number>(0);
   const [individual, setIndividual] = useState<number>(0);
   const [quantPessoasCasa, setQuantPessoasCasa] = useState<number>(0);
@@ -121,6 +122,11 @@ function NewPostProvider({ children }: NewPostProviderProps) {
     moveisDisponiveis ? setMoveisDisponiveis(moveisDisponiveis) : "";
   };
 
+  const addProperty5 = (descricao: string, preco: number) => {
+    setDescricao(descricao);
+    setPreco(preco);
+  };
+
   return (
     <NewPostContext.Provider
       value={{
@@ -143,6 +149,7 @@ function NewPostProvider({ children }: NewPostProviderProps) {
         addProperty2,
         addProperty3,
         addProperty4,
+        addProperty5,
       }}
     >
       {children}
