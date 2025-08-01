@@ -1,9 +1,6 @@
-type enums = {
-  id: string;
-  name: string;
-};
+import { tipoPadrao } from "./typesAux";
 
-export const characteristics: enums[] = [
+export const characteristics: tipoPadrao[] = [
   { id: "characteristics-animais", name: "Aceita Animais" },
   { id: "characteristics-fumantes", name: "Aceita Fumantes" },
   { id: "characteristics-piscina", name: "Com Piscina" },
@@ -17,13 +14,13 @@ export const characteristics: enums[] = [
   { id: "characteristics-limpeza", name: "Serviço de Limpeza Incluso" },
 ];
 
-export const vacancyType: enums[] = [
+export const vacancyType: tipoPadrao[] = [
   { id: "vacancyType-masc", name: "Masculina" },
   { id: "vacancyType-fem", name: "Feminina" },
   { id: "vacancyType-mista", name: "Mista" },
 ];
 
-export const furniture: enums[] = [
+export const furniture: tipoPadrao[] = [
   { id: "furniture-cama", name: "Cama" },
   { id: "furniture-fogao", name: "Fogão" },
   { id: "furniture-geladeira", name: "Geladeira" },
@@ -41,28 +38,28 @@ export const furniture: enums[] = [
   { id: "furniture-tv", name: "Televisão" },
 ];
 
-export const housingType: enums[] = [
+export const housingType: tipoPadrao[] = [
   { id: "housingType-compartilhada", name: "Compartilhada" },
   { id: "housingType-completa", name: "Completa" },
 ];
 
-export const completeHouseType: enums[] = [
+export const completeHouseType: tipoPadrao[] = [
   { id: "completeHouseType-ape", name: "Apartamento" },
   { id: "completeHouseType-kitnet", name: "Kitnet" },
   { id: "completeHouseType-casa", name: "Casa" },
 ];
 
-export const sharedHouseType: enums[] = [
+export const sharedHouseType: tipoPadrao[] = [
   { id: "sharedHouseType-republica", name: "República" },
   { id: "sharedHouseType-quarto", name: "Quarto" },
 ];
 
-export const question: enums[] = [
+export const question: tipoPadrao[] = [
   { id: "question-sim", name: "Sim" },
   { id: "question-nao", name: "Não" },
 ];
 
-export const ranking: enums[] = [
+export const ranking: tipoPadrao[] = [
   { id: "ranking-min", name: "Preço min" },
   { id: "ranking-max", name: "Preço max" },
 ];

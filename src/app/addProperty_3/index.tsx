@@ -6,13 +6,34 @@ import AppText from "@/components/appText";
 import Menu from "@/components/menu";
 import SelectableBlock from "@/components/selectableBlock";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { NewPostContext, NewPostProvider } from "@/contexts/NewPostContext";
+import { tipoPadrao } from "@/utils/typesAux";
 
 export default function AddProperty_3() {
   const router = useRouter();
 
-  const [housingTypeSelected, setHousingTypeSelected] = useState<string | null>(null);
-  const [furnished, setFurnished] = useState<string | null>(null); // "question-sim" ou "question-nao"
+  const [housingTypeSelected, setHousingTypeSelected] = useState<tipoPadrao>({
+    id: "",
+    name: "",
+  });
+  const [furnished, setFurnished] = useState<tipoPadrao>({
+    id: "",
+    name: "",
+  });
+
+  const [caracteristicas, setCaracteristicas] = useState<tipoPadrao[]>([]);
+  const [tipoVaga, setTipoVaga] = useState<tipoPadrao>({
+    id: "",
+    name: "",
+  });
+
+  const { addProperty3 } = useContext(NewPostContext);
+
+  const handleEnvio = () => {
+    const auxMobiliado = furnished.id === "question-sim" ? true : false;
+    addProperty3(caracteristicas, tipoVaga, housingTypeSelected, auxMobiliado);
+  };
 
   const handleContinue = () => {
     if (!housingTypeSelected) {
@@ -24,12 +45,18 @@ export default function AddProperty_3() {
       return;
     }
 
-    const isFurnished = (furnished === "question-sim").toString(); // "true" ou "false" como string
+    const isFurnished = (furnished.id === "question-sim").toString();
 
-    if (housingTypeSelected === "housingType-compartilhada") {
-      router.push({ pathname: "/addProperty_4_compartilhada", params: { isFurnished } });
-    } else if (housingTypeSelected === "housingType-completa") {
-      router.push({ pathname: "/addProperty_4_completa", params: { isFurnished } });
+    if (housingTypeSelected.id === "housingType-compartilhada") {
+      router.push({
+        pathname: "/addProperty_4_compartilhada",
+        params: { isFurnished },
+      });
+    } else if (housingTypeSelected.id === "housingType-completa") {
+      router.push({
+        pathname: "/addProperty_4_completa",
+        params: { isFurnished },
+      });
     }
   };
 
@@ -56,21 +83,27 @@ export default function AddProperty_3() {
           <View style={styles.geralContainer}>
             <View style={styles.inputContainer}>
               <AppText style={styles.subtitle}>CARACTERÍSTICAS</AppText>
-              <SelectableBlock type="characteristics" />
+              <SelectableBlock
+                type="characteristics"
+                returnSelected={(resposta) => setCaracteristicas(resposta)}
+              />
 
               <AppText style={styles.subtitle}>TIPO DE VAGA</AppText>
-              <SelectableBlock type="vacancyType" />
+              <SelectableBlock
+                type="vacancyType"
+                returnSelected={(resposta) => setTipoVaga(resposta)}
+              />
 
               <AppText style={styles.subtitle}>TIPO DE MORADIA</AppText>
               <SelectableBlock
                 type="housingType"
-                returnSelected={(resposta) => setHousingTypeSelected(resposta as string)}
+                returnSelected={(resposta) => setHousingTypeSelected(resposta)}
               />
 
               <AppText style={styles.subtitle}>MOBILIADO?</AppText>
               <SelectableBlock
                 type="question"
-                returnSelected={(resposta) => setFurnished(resposta as string)}
+                returnSelected={(resposta) => setFurnished(resposta)}
               />
             </View>
           </View>
@@ -86,7 +119,10 @@ export default function AddProperty_3() {
         <SquareButton
           name="Continuar"
           variant="mediumP"
-          onPress={handleContinue}
+          onPress={() => {
+            handleContinue;
+            handleEnvio;
+          }}
         />
       </View>
 
