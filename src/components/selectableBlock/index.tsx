@@ -12,6 +12,7 @@ import {
   sharedHouseType,
   ranking,
 } from "@/utils/enums";
+import { tipoPadrao } from "@/utils/typesAux";
 
 type SelectableBlockProps = {
   type?:
@@ -23,12 +24,9 @@ type SelectableBlockProps = {
     | "sharedHouseType"
     | "question"
     | "ranking";
-  returnSelected?: (item: string | string[]) => void;
+  returnSelected?: (item: tipoPadrao | tipoPadrao[] | null) => void;
   readOnly?: boolean;
-  objects?: {
-    id: string;
-    name: string;
-  }[];
+  objects?: tipoPadrao[];
 };
 
 const enumMap = {
@@ -59,25 +57,31 @@ export default function SelectableBlock({
 }: SelectableBlockProps) {
   const isSingleSelect = singleSelectTypes.includes(type);
 
-  const [selectedSingle, setSelectedSingle] = useState<string | null>(null);
-  const [selectedMultiple, setSelectedMultiple] = useState<string[]>([]);
+  const [selectedSingle, setSelectedSingle] = useState<tipoPadrao | null>(null);
+  const [selectedMultiple, setSelectedMultiple] = useState<tipoPadrao[]>([]);
 
   const selectedEnum = enumMap[type];
   const data = readOnly && objects ? objects : Object.values(selectedEnum);
 
-  const handleSelect = (itemId: string) => {
+  const handleSelect = (item: tipoPadrao) => {
     if (isSingleSelect) {
-      const singleAux = selectedSingle === itemId ? "" : itemId;
+      const singleAux = selectedSingle?.id === item.id ? null : item;
 
       setSelectedSingle(singleAux);
       returnSelected(singleAux);
     } else {
-      let multipleAux: string[];
+      let multipleAux: tipoPadrao[];
 
-      if (selectedMultiple.includes(itemId)) {
-        multipleAux = selectedMultiple.filter((id) => id !== itemId);
+      const isAlreadySelected = selectedMultiple.some(
+        (selectedItem) => selectedItem.id === item.id
+      );
+
+      if (isAlreadySelected) {
+        multipleAux = selectedMultiple.filter(
+          (selectedItem) => selectedItem.id !== item.id
+        );
       } else {
-        multipleAux = [...selectedMultiple, itemId];
+        multipleAux = [...selectedMultiple, item];
       }
 
       setSelectedMultiple(multipleAux);
@@ -86,22 +90,23 @@ export default function SelectableBlock({
   };
 
   return (
-    <>
-      <View style={styles.container}>
-        {data.map((item) => {
-          const isSelected = isSingleSelect
-            ? selectedSingle === item.id
-            : selectedMultiple.includes(item.id);
-          return (
-            <SelectableIten
-              key={item.id}
-              isSelected={readOnly ? false : isSelected}
-              text={item.name}
-              onPress={() => handleSelect(item.id)}
-            />
-          );
-        })}
-      </View>
-    </>
+    <View style={styles.container}>
+      {data.map((item) => {
+        const isSelected = isSingleSelect
+          ? selectedSingle?.id === item.id
+          : selectedMultiple.some(
+              (selectedItem) => selectedItem.id === item.id
+            );
+
+        return (
+          <SelectableIten
+            key={item.id}
+            isSelected={readOnly ? false : isSelected}
+            text={item.name}
+            onPress={() => handleSelect(item)}
+          />
+        );
+      })}
+    </View>
   );
 }

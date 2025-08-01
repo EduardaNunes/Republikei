@@ -13,11 +13,26 @@ interface NewPostContextData {
   oculto: boolean;
   preco: number;
   imagens: ImageSourcePropType[];
+  tipoMoradia: tipoPadrao;
+  tipoMoradiaEspecifico: tipoPadrao;
   individual?: number;
   quantPessoasCasa?: number;
   quantQuartos?: number;
   addProperty1(localizacao: Localizacao): void;
   addProperty2(espacoFisico: EspacoFisico, quantPessoasCasa: number): void;
+  addProperty3(
+    caracteristicas: tipoPadrao[],
+    tipoVaga: tipoPadrao,
+    tipoMoradia: tipoPadrao,
+    mobiliado: boolean
+  ): void;
+  addProperty4(
+    tipoMoradiaEspecifico: tipoPadrao,
+    quantPessoasCasa: number,
+    quantQuartos: number,
+    individual: number,
+    moveisDisponiveis?: tipoPadrao[]
+  ): void;
 }
 
 interface NewPostProviderProps {
@@ -52,6 +67,15 @@ function NewPostProvider({ children }: NewPostProviderProps) {
   const [mobiliado, setMobiliado] = useState<boolean>(false);
   const [moveisDisponiveis, setMoveisDisponiveis] = useState<tipoPadrao[]>([]);
   const [descricao, setDescricao] = useState<string>("");
+  const [tipoMoradia, setTipoMoradia] = useState<tipoPadrao>({
+    id: "",
+    name: "",
+  });
+  const [tipoMoradiaEspecifico, setTipoMoradiaEspecifico] =
+    useState<tipoPadrao>({
+      id: "",
+      name: "",
+    });
   const [oculto, setOculto] = useState<boolean>(true);
   const [preco, setPreco] = useState<number>(0);
   const [individual, setIndividual] = useState<number>(0);
@@ -71,6 +95,32 @@ function NewPostProvider({ children }: NewPostProviderProps) {
     setEspacoFisico(espacoFisico);
   };
 
+  const addProperty3 = (
+    caracteristicas: tipoPadrao[],
+    tipoVaga: tipoPadrao,
+    tipoMoradia: tipoPadrao,
+    mobiliado: boolean
+  ) => {
+    setCaracteristicas(caracteristicas);
+    setTipoMoradia(tipoMoradia);
+    setTipoVaga(tipoVaga);
+    setMobiliado(mobiliado);
+  };
+
+  const addProperty4 = (
+    tipoMoradiaEspecifico: tipoPadrao,
+    quantPessoasCasa: number,
+    quantQuartos: number,
+    individual: number,
+    moveisDisponiveis?: tipoPadrao[]
+  ) => {
+    setTipoMoradiaEspecifico(tipoMoradiaEspecifico);
+    setQuantPessoasCasa(quantPessoasCasa);
+    setQuantQuartos(quantQuartos);
+    setIndividual(individual);
+    moveisDisponiveis ? setMoveisDisponiveis(moveisDisponiveis) : "";
+  };
+
   return (
     <NewPostContext.Provider
       value={{
@@ -86,9 +136,13 @@ function NewPostProvider({ children }: NewPostProviderProps) {
         imagens,
         individual,
         quantPessoasCasa,
+        tipoMoradia,
+        tipoMoradiaEspecifico,
         quantQuartos,
         addProperty1,
         addProperty2,
+        addProperty3,
+        addProperty4,
       }}
     >
       {children}
