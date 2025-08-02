@@ -1,6 +1,5 @@
 import { Localizacao, EspacoFisico, tipoPadrao } from "@/utils/typesAux";
 import React, { createContext, useState } from "react";
-import { ImageSourcePropType } from "react-native";
 
 interface NewPostContextData {
   localizacao: Localizacao;
@@ -12,7 +11,7 @@ interface NewPostContextData {
   descricao: string;
   oculto: boolean;
   preco: number;
-  imagens: ImageSourcePropType[];
+  imagens: string[];
   tipoMoradia: tipoPadrao;
   tipoMoradiaEspecifico: tipoPadrao;
   individual?: number;
@@ -33,7 +32,11 @@ interface NewPostContextData {
     individual: number,
     moveisDisponiveis?: tipoPadrao[]
   ): void;
-  addProperty5(descricao: string, preco: number): void;
+  addProperty5(
+    descricao: string,
+    preco: number,
+    images: string[]
+  ): void;
 }
 
 interface NewPostProviderProps {
@@ -82,7 +85,7 @@ function NewPostProvider({ children }: NewPostProviderProps) {
   const [individual, setIndividual] = useState<number>(0);
   const [quantPessoasCasa, setQuantPessoasCasa] = useState<number>(0);
   const [quantQuartos, setQuantQuartos] = useState<number>(0);
-  const [imagens, setImagens] = useState<ImageSourcePropType[]>([]);
+  const [imagens, setImagens] = useState<string[]>([]);
 
   const addProperty1 = (localizacao: Localizacao) => {
     setLocalizacao(localizacao);
@@ -122,9 +125,14 @@ function NewPostProvider({ children }: NewPostProviderProps) {
     moveisDisponiveis ? setMoveisDisponiveis(moveisDisponiveis) : "";
   };
 
-  const addProperty5 = (descricao: string, preco: number) => {
+  const addProperty5 = (
+    descricao: string,
+    preco: number,
+    images: string[]
+  ) => {
     setDescricao(descricao);
     setPreco(preco);
+    setImagens(images);
   };
 
   return (
