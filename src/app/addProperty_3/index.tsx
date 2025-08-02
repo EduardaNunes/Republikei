@@ -7,7 +7,7 @@ import Menu from "@/components/menu";
 import SelectableBlock from "@/components/selectableBlock";
 import { useRouter } from "expo-router";
 import { useState, useContext } from "react";
-import { NewPostContext, NewPostProvider } from "@/contexts/NewPostContext";
+import { NewPostContext } from "@/contexts/NewPostContext";
 import { tipoPadrao } from "@/utils/typesAux";
 
 export default function AddProperty_3() {
@@ -61,7 +61,7 @@ export default function AddProperty_3() {
   };
 
   return (
-    <NewPostProvider>
+    <>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -127,6 +127,6 @@ export default function AddProperty_3() {
       </View>
 
       <Menu />
-    </NewPostProvider>
+    </>
   );
 }

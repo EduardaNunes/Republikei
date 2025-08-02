@@ -6,7 +6,7 @@ import Input from "@/components/input";
 import AppText from "@/components/appText";
 import Menu from "@/components/menu";
 import { useRouter } from "expo-router";
-import { NewPostContext, NewPostProvider } from "@/contexts/NewPostContext";
+import { NewPostContext } from "@/contexts/NewPostContext";
 import { useContext, useState } from "react";
 import { EspacoFisico } from "@/utils/typesAux";
 
@@ -40,7 +40,7 @@ export default function AddProperty_2() {
   };
 
   return (
-    <NewPostProvider>
+    <>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -144,6 +144,6 @@ export default function AddProperty_2() {
         />
       </View>
       <Menu />
-    </NewPostProvider>
+    </>
   );
 }

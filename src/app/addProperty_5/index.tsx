@@ -8,7 +8,7 @@ import Menu from "@/components/menu";
 import { Category } from "@/components/category";
 import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
-import { NewPostContext, NewPostProvider } from "@/contexts/NewPostContext";
+import { NewPostContext } from "@/contexts/NewPostContext";
 import PhotoUpload from "@/components/photoUpload";
 
 export default function AddProperty_5() {
@@ -24,7 +24,7 @@ export default function AddProperty_5() {
   };
 
   return (
-    <NewPostProvider>
+    <>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -83,6 +83,6 @@ export default function AddProperty_5() {
         />
       </View>
       <Menu />
-    </NewPostProvider>
+    </>
   );
 }
