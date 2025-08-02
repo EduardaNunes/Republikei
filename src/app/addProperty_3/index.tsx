@@ -36,11 +36,11 @@ export default function AddProperty_3() {
   };
 
   const handleContinue = () => {
-    if (!housingTypeSelected) {
+    if (!housingTypeSelected.id) {
       alert("Selecione o tipo de moradia");
       return;
     }
-    if (furnished === null) {
+    if (!furnished.id) {
       alert("Informe se a moradia é mobiliada ou não");
       return;
     }
@@ -61,7 +61,7 @@ export default function AddProperty_3() {
   };
 
   return (
-    <>
+    <NewPostProvider>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -120,13 +120,13 @@ export default function AddProperty_3() {
           name="Continuar"
           variant="mediumP"
           onPress={() => {
-            handleContinue;
-            handleEnvio;
+            handleContinue();
+            handleEnvio();
           }}
         />
       </View>
 
       <Menu />
-    </>
+    </NewPostProvider>
   );
 }

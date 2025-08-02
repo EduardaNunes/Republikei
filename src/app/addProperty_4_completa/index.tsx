@@ -9,7 +9,7 @@ import SelectableBlock from "@/components/selectableBlock";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useContext, useState } from "react";
 import { tipoPadrao } from "@/utils/typesAux";
-import { NewPostContext } from "@/contexts/NewPostContext";
+import { NewPostContext, NewPostProvider } from "@/contexts/NewPostContext";
 
 export default function addProperty_4_completa() {
   const router = useRouter();
@@ -36,7 +36,7 @@ export default function addProperty_4_completa() {
   };
 
   return (
-    <>
+    <NewPostProvider>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -104,6 +104,6 @@ export default function addProperty_4_completa() {
         />
       </View>
       <Menu />
-    </>
+    </NewPostProvider>
   );
 }

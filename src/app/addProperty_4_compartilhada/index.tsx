@@ -8,7 +8,7 @@ import Menu from "@/components/menu";
 import SelectableBlock from "@/components/selectableBlock";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useContext, useState } from "react";
-import { NewPostContext } from "@/contexts/NewPostContext";
+import { NewPostContext, NewPostProvider } from "@/contexts/NewPostContext";
 import { tipoPadrao } from "@/utils/typesAux";
 
 export default function AddProperty_4_compartilhada() {
@@ -36,7 +36,7 @@ export default function AddProperty_4_compartilhada() {
   };
 
   return (
-    <>
+    <NewPostProvider>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -111,6 +111,6 @@ export default function AddProperty_4_compartilhada() {
         />
       </View>
       <Menu />
-    </>
+    </NewPostProvider>
   );
 }
