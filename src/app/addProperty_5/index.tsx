@@ -9,6 +9,7 @@ import { Category } from "@/components/category";
 import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
 import { NewPostContext } from "@/contexts/NewPostContext";
+import PhotoUpload from "@/components/photoUpload";
 
 export default function AddProperty_5() {
   const router = useRouter();
@@ -34,6 +35,7 @@ export default function AddProperty_5() {
             flexGrow: 1,
             paddingTop: 20,
             paddingHorizontal: 20,
+            paddingBottom: 90,
           }}
           keyboardShouldPersistTaps="handled"
         >
@@ -59,7 +61,7 @@ export default function AddProperty_5() {
 
               <AppText style={styles.subtitle}>FOTOS (MAX 15)</AppText>
               <View style={styles.subCategoryContainer}>
-                <Category name="Upload Fotos"></Category> {/* mudar para algo que de fato receba as imagens */}
+                <PhotoUpload onImagesChange={(uris) => console.log(uris)} />
               </View>
             </View>
           </View>
