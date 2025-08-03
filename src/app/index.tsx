@@ -1,5 +1,8 @@
 import { Image, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
+import * as NavigationBar from 'expo-navigation-bar';
 
 import { styles } from "../components/styles/indexStyles";
 import { colors } from "@/styles/colors";
@@ -12,8 +15,24 @@ export default function Index() {
 
   const router = useRouter();
 
+  useEffect(() => {
+    // Esconde a barra de navegação assim que o componente for carregado
+    NavigationBar.setVisibilityAsync('hidden');
+
+    // Define o que acontece quando o usuário desliza o dedo da borda da tela
+    // 'inset-swipe' faz a barra aparecer temporariamente por cima do seu app
+    NavigationBar.setBehaviorAsync('inset-swipe');
+
+    // Quando o usuário sair desta tela, a barra de navegação volta a aparecer.
+    // Isso é uma boa prática para não afetar o resto do app ou outros apps.
+    return () => {
+      NavigationBar.setVisibilityAsync('visible');
+    };
+  }, []);
+
   return (
     <View style={styles.container}>
+      <StatusBar hidden={true} />
       <Image
         source={require("@/assets/background.png")}
         style={styles.background}
