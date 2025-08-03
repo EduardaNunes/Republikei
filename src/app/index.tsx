@@ -1,5 +1,6 @@
 import { Image, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import * as NavigationBar from 'expo-navigation-bar';
