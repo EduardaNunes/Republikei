@@ -12,6 +12,13 @@ import { colors } from "@/styles/colors";
 
 export default function MapPage() {
 
+  const [region, setRegion] = useState({
+    latitude: -21.7730967,
+    longitude: -43.3731014,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  });
+
   return (
     <>
     <View style={styles.container}>
@@ -20,13 +27,10 @@ export default function MapPage() {
         <View  style={localStyles.mapContainer}>
           <MapView
             style={StyleSheet.absoluteFillObject}
-            provider={PROVIDER_GOOGLE}
-            initialRegion={{
-              latitude: -21.7730967,
-              longitude: -43.3731014,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            }}
+            userInterfaceStyle='dark'
+            provider="google"
+            region={region}
+            onRegionChange={setRegion}
           >
           </MapView>
         </View> 
