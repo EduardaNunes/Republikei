@@ -23,12 +23,6 @@ export default function Index() {
     // Define o que acontece quando o usuário desliza o dedo da borda da tela
     // 'inset-swipe' faz a barra aparecer temporariamente por cima do seu app
     NavigationBar.setBehaviorAsync('inset-swipe');
-
-    // Quando o usuário sair desta tela, a barra de navegação volta a aparecer.
-    // Isso é uma boa prática para não afetar o resto do app ou outros apps.
-    return () => {
-      NavigationBar.setVisibilityAsync('visible');
-    };
   }, []);
 
   return (
