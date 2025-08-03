@@ -7,7 +7,7 @@ import Menu from "@/components/menu";
 import SelectableBlock from "@/components/selectableBlock";
 import { useRouter } from "expo-router";
 import { useState, useContext } from "react";
-import { NewPostContext, NewPostProvider } from "@/contexts/NewPostContext";
+import { NewPostContext } from "@/contexts/NewPostContext";
 import { tipoPadrao } from "@/utils/typesAux";
 
 export default function AddProperty_3() {
@@ -36,11 +36,11 @@ export default function AddProperty_3() {
   };
 
   const handleContinue = () => {
-    if (!housingTypeSelected) {
+    if (!housingTypeSelected.id) {
       alert("Selecione o tipo de moradia");
       return;
     }
-    if (furnished === null) {
+    if (!furnished.id) {
       alert("Informe se a moradia é mobiliada ou não");
       return;
     }
@@ -120,8 +120,8 @@ export default function AddProperty_3() {
           name="Continuar"
           variant="mediumP"
           onPress={() => {
-            handleContinue;
-            handleEnvio;
+            handleContinue();
+            handleEnvio();
           }}
         />
       </View>

@@ -5,7 +5,6 @@ import SquareButton from "@/components/button";
 import Input from "@/components/input";
 import AppText from "@/components/appText";
 import Menu from "@/components/menu";
-import { Category } from "@/components/category";
 import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
 import { NewPostContext } from "@/contexts/NewPostContext";
@@ -16,11 +15,12 @@ export default function AddProperty_5() {
 
   const [descricao, setDescricao] = useState<string>("");
   const [preco, setPreco] = useState<string>("");
+  const [imagens, setImagens] = useState<string[]>([]);
 
   const { addProperty5 } = useContext(NewPostContext);
 
   const handleEnvio = () => {
-    addProperty5(descricao, parseFloat(preco));
+    addProperty5(descricao, parseFloat(preco), imagens);
   };
 
   return (
@@ -61,7 +61,7 @@ export default function AddProperty_5() {
 
               <AppText style={styles.subtitle}>FOTOS (MAX 15)</AppText>
               <View style={styles.subCategoryContainer}>
-                <PhotoUpload onImagesChange={(uris) => console.log(uris)} />
+                <PhotoUpload onImagesChange={(uris) => setImagens(uris)} />
               </View>
             </View>
           </View>
