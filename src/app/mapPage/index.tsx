@@ -32,6 +32,18 @@ export default function MapPage() {
             region={region}
             onRegionChange={setRegion}
           >
+
+            <Marker
+              key={0}
+              coordinate={{
+                latitude: -21.7730967,
+                longitude: -43.3731014
+              }}
+              title={'Título de Teste'}
+              image={require('../../assets/property-icon-128.png')}
+              description={'Teste de Descrição de uma marcador'}
+            />
+
           </MapView>
         </View> 
         
