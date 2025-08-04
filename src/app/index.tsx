@@ -2,7 +2,7 @@ import { Image, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import * as NavigationBar from 'expo-navigation-bar';
 
 import { styles } from "../components/styles/indexStyles";
@@ -11,10 +11,29 @@ import SquareButton from "@/components/button";
 import AppText from "@/components/appText";
 
 import { useRouter } from "expo-router";
+import { supabase } from "@/lib/supabase";
+import { Session } from "@supabase/supabase-js";
 
 export default function Index() {
 
   const router = useRouter();
+
+  const [session, setSession] = useState<Session | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (session) {
+      router.push("/homePage");
+    }
+  }, [session]);
 
   useEffect(() => {
     // Esconde a barra de navegação assim que o componente for carregado
