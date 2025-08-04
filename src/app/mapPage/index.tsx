@@ -13,8 +13,8 @@ import { colors } from "@/styles/colors";
 export default function MapPage() {
 
   const [region, setRegion] = useState({
-    latitude: -21.7730967,
-    longitude: -43.3731014,
+    latitude: -21.7731029,
+    longitude: -43.3705765,
     latitudeDelta: 0.01,
     longitudeDelta: 0.01,
   });
@@ -30,7 +30,13 @@ export default function MapPage() {
             userInterfaceStyle='dark'
             provider="google"
             region={region}
-            onRegionChange={setRegion}
+            onRegionChangeComplete={setRegion} 
+            onPoiClick={(event) => {
+              const poi = event.nativeEvent;
+              Alert.alert(
+                poi.name,
+              );
+            }}
           >
 
             <Marker
@@ -40,7 +46,7 @@ export default function MapPage() {
                 longitude: -43.3731014
               }}
               title={'Título de Teste'}
-              image={require('../../assets/property-icon-128.png')}
+              image={require('../../assets/map-property-icon-128.png')}
               description={'Teste de Descrição de uma marcador'}
             />
 
