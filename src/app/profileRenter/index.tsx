@@ -1,18 +1,49 @@
-import React, { useState } from "react";
-import { View, ScrollView, Alert } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, ScrollView, Alert, ActivityIndicator } from "react-native";
 import { styles } from "../../components/styles/profileRenter";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
 import AppText from "@/components/appText";
 import Menu from "@/components/menu";
 
+import { useRouter } from "expo-router";
+import { supabase } from "../../lib/supabase";
+
 export default function ProfileRenter() {
+  const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState("NOME PERFIL"); // Adicionado estado para o nome, se aplicável
+
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [confirmarSenha, setConfirmarSenha] = useState(""); // Adicionado para confirmação de senha
+  const [confirmarSenha, setConfirmarSenha] = useState("");
 
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      Alert.alert("Erro no Logout", error.message);
+    } else {
+      router.replace('/');
+    }
+  };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      setLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        setName(user.user_metadata.display_name || 'Nome não definido');
+        setEmail(user.email || 'E-mail não encontrado');
+      }
+      setLoading(false);
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleSave = () => {
     if (senha !== confirmarSenha) {
@@ -27,6 +58,14 @@ export default function ProfileRenter() {
     setIsEditing(false);
     setConfirmarSenha(""); 
   };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <>
@@ -70,7 +109,7 @@ export default function ProfileRenter() {
             </>
           ) : (
             <>
-              <SquareButton name="Logout" variant="shortS" onPress={() => console.log("logout")} />
+              <SquareButton name="Logout" variant="shortS" onPress={handleLogout} />
               <SquareButton name="Editar" variant="shortP" onPress={() => setIsEditing(true)} />
             </>
           )}
