@@ -28,6 +28,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const [session, setSession] = useState<Session | null>(null);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -36,6 +37,12 @@ export default function Login() {
       setSession(session);
     });
   }, []);
+
+  useEffect(() => {
+    if (session) {
+      router.push("/homePage");
+    }
+  }, [session]);
 
   async function signInWithEmail() {
     setLoading(true);
@@ -93,9 +100,7 @@ export default function Login() {
               <View style={styles.signInContainer}>
                 <AppText>Não tem Login?</AppText>
                 <TouchableOpacity
-                  onPress={() => {
-                    /* Adicione sua navegação para cadastro aqui */
-                  }}
+                  onPress={() => router.push("/")}
                 >
                   <AppText style={styles.signInText}>Cadastrar</AppText>
                 </TouchableOpacity>
