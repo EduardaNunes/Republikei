@@ -8,6 +8,7 @@ import Menu from "@/components/menu";
 
 import { useRouter } from "expo-router";
 import { supabase } from "../../lib/supabase";
+import { UserAttributes } from "@supabase/supabase-js";
 
 export default function ProfileRenter() {
   const [loading, setLoading] = useState(true);
@@ -15,19 +16,37 @@ export default function ProfileRenter() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [senhaAntiga, setSenhaAntiga] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
 
   const router = useRouter();
 
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
+   const handleLogout = () => {
+    Alert.alert(
+      "Sair da Conta", 
+      "Você tem certeza que deseja se desconectar?",
+      [
+        {
+          text: "Cancelar",
+          onPress: () => console.log("Logout cancelado pelo usuário."),
+          style: "cancel"
+        },
+        { 
+          text: "Sair", 
+          onPress: async () => {
+            const { error } = await supabase.auth.signOut();
 
-    if (error) {
-      Alert.alert("Erro no Logout", error.message);
-    } else {
-      router.replace('/');
-    }
+            if (error) {
+              Alert.alert("Erro no Logout", error.message);
+            } else {
+              router.replace('/');
+            }
+          },
+          style: "destructive"
+        }
+      ]
+    );
   };
 
   useEffect(() => {
@@ -36,7 +55,7 @@ export default function ProfileRenter() {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (user) {
-        setName(user.user_metadata.display_name || 'Nome não definido');
+        setName(user.user_metadata.displayName || '');
         setEmail(user.email || 'E-mail não encontrado');
       }
       setLoading(false);
@@ -45,18 +64,81 @@ export default function ProfileRenter() {
     fetchUserData();
   }, []);
 
-  const handleSave = () => {
-    if (senha !== confirmarSenha) {
-      Alert.alert("Erro", "As senhas não coincidem.");
+  const handleSave = async () => {
+    if (!senhaAntiga) {
+      Alert.alert("Atenção", "Por favor, informe sua senha antiga para salvar as alterações.");
       return;
     }
-    console.log("Dados salvos:", { name, email, senha });
-    setIsEditing(false); 
+    if (senha && senha !== confirmarSenha) {
+      Alert.alert("Erro", "A nova senha e a confirmação não coincidem.");
+      return;
+    }
+
+    setLoading(true);
+
+      try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || !user.email) throw new Error("Não foi possível identificar o usuário.");
+
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: senhaAntiga,
+      });
+
+      if (signInError) {
+        throw new Error("A senha antiga está incorreta.");
+      }
+
+      const authUpdateData: UserAttributes = {};
+
+      if (senha) {
+        authUpdateData.password = senha;
+      }
+
+      if (email !== user.email) {
+        authUpdateData.email = email;
+      }
+
+      if (name !== user.user_metadata.displayName) {
+        authUpdateData.data = { displayName: name }
+      }
+
+      if (Object.keys(authUpdateData).length > 0) {
+        const { error: authError } = await supabase.auth.updateUser(authUpdateData);
+        if (authError) throw authError;
+      }
+
+      Alert.alert("Sucesso", "Perfil atualizado!");
+      setIsEditing(false);
+
+    } catch (error) {
+      
+      if (error instanceof Error) {
+        Alert.alert("Erro ao atualizar", error.message);
+      }
+
+    } finally {
+      setSenhaAntiga("");
+      setSenha("");
+      setConfirmarSenha("");
+      setLoading(false);
+    }
+
   };
 
-  const handleCancel = () => {
-    setIsEditing(false);
+  const handleCancel = async () => {
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      setName(user.user_metadata.displayName || 'Sem Nome');
+      setEmail(user.email || 'E-mail não encontrado');
+    }
+    
+    setSenhaAntiga("");
+    setSenha("");
     setConfirmarSenha(""); 
+    
+    setIsEditing(false);
   };
 
   if (loading) {
@@ -71,29 +153,36 @@ export default function ProfileRenter() {
     <>
       <ScrollView style={styles.container}>
         <View style={styles.titleContainer}>
-          <AppText style={styles.title}>{isEditing ? "EDITAR PERFIL" : name}</AppText>
+          <AppText style={styles.title}>{isEditing ? "EDITAR PERFIL" : 'PERFIL'}</AppText>
         </View>
 
         <View style={styles.inputContainer}>
-          {isEditing && (
-            <Input title="Nome" value={name} onChangeText={setName} />
-          )}
+          
+          <Input title="Nome" value={name} onChangeText={setName} editable={isEditing} />
+          
           <Input
             title="Email"
             value={email}
             onChangeText={setEmail}
             editable={isEditing} 
           />
-          <Input
-            title="Senha"
+          {isEditing && (<Input
+            title="Senha Antiga"
+            value={senhaAntiga}
+            onChangeText={setSenhaAntiga}
+            secureTextEntry
+            editable={isEditing} 
+          />)}
+          {isEditing && (<Input
+            title="Nova Senha"
             value={senha}
             onChangeText={setSenha}
             secureTextEntry
             editable={isEditing} 
-          />
+          />)}
           {isEditing && (
             <Input
-              title="Confirmar Senha"
+              title="Confirmar Nova Senha"
               value={confirmarSenha}
               onChangeText={setConfirmarSenha}
               secureTextEntry
