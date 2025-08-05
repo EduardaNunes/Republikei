@@ -6,7 +6,7 @@ import Menu from "@/components/menu";
 import PostBlock from "@/components/postBlock";
 
 export default function Favorites() {
-  // Simulação de dados vindos de uma API ou estado
+
   const favoritePosts = [
     {
       id: "1",
@@ -30,23 +30,23 @@ export default function Favorites() {
 
   return (
     <>
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container}
+        contentContainerStyle={{ alignItems: "center", gap: 20 }}>
         <View style={styles.titleContainer}>
           <AppText style={styles.title}>FAVORITOS</AppText>
         </View>
 
-        <View style={styles.postContainer}>
+       
           {favoritePosts.map((post) => (
             <PostBlock
               key={post.id}
-              type="favorite"
-              statusType="favorite"
+              statusType="favorite"    // Passa o ícone coração
               image={post.image}
               title={post.title}
               price={post.price}
             />
           ))}
-        </View>
+   
       </ScrollView>
       <Menu />
     </>
