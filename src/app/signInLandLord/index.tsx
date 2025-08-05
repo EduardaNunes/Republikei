@@ -41,28 +41,38 @@ export default function SignInLandLord() {
   }, []);
 
   async function signUp() {
-    if (!checkIfPasswordIsValid()) return;
+    if (!checkIfPasswordIsValid()) {
+      Alert.alert("Erro", "As senhas precisam ser iguais.");
+      return;
+    }
 
     setLoading(true);
 
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       phone: phoneNumber,
       email: email,
       password: password,
       options: {
         data: {
-          displayName: userName,
+          displayName: userName, 
+          userType: 'owner'
         },
       },
     });
 
-    if (error) Alert.alert(error.message);
-    if (!session)
-      Alert.alert("Please check your inbox for email verification!");
     setLoading(false);
+
+    if (error) {
+      Alert.alert("Erro no Cadastro", error.message);
+
+    } else {
+      Alert.alert(
+        "Cadastro Realizado!",
+        "Verifique sua caixa de entrada para confirmar seu e-mail."
+      );
+
+      router.push('/login');
+    }
   }
 
   function checkIfPasswordIsValid() {
