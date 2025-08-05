@@ -100,8 +100,8 @@ export default function AddProperty_1() {
           name="Continuar"
           variant="mediumP"
           onPress={() => {
-            router.push("/addProperty_2");
             handleEnvio;
+            router.push("/addProperty_2");
           }}
         />
       </View>
