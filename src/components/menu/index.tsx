@@ -32,6 +32,7 @@ export default function Menu() {
 
   return (
     <BottomContainer style={styles.container}>
+      
       <TouchableOpacity onPress={() => router.push("/homePage")}>
         <MaterialIcons name="search" size={28} color="#fff" />
       </TouchableOpacity>
@@ -50,15 +51,10 @@ export default function Menu() {
         <MaterialIcons name="map" size={28} color="#fff" />
       </TouchableOpacity>
 
-      {userType == "standard" ? (
-        <TouchableOpacity onPress={() => router.push("/profileRenter")}>
+        <TouchableOpacity onPress={() => router.push("/userProfile")}>
           <MaterialIcons name="person" size={28} color="#fff" />
         </TouchableOpacity>
-      ) : (
-        <TouchableOpacity onPress={() => router.push("/profileRenter")}>
-          <MaterialIcons name="person" size={28} color="#fff" />
-        </TouchableOpacity>
-      )}
+
     </BottomContainer>
   );
 }

@@ -9,7 +9,6 @@ import Menu from "@/components/menu";
 import { useRouter } from "expo-router";
 import { supabase } from "../../lib/supabase";
 import { UserAttributes } from "@supabase/supabase-js";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileRenter() {
   const [userType, setUserType] = useState<string | null>(null);
@@ -224,7 +223,6 @@ export default function ProfileRenter() {
       </ScrollView>
       </KeyboardAvoidingView>
       <Menu />
-    </SafeAreaView>
     </>
   );
 }
