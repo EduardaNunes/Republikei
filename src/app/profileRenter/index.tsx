@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, Alert, ActivityIndicator } from "react-native";
+import { View, ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform } from "react-native";
 import { styles } from "../../components/styles/profileRenter";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
@@ -11,6 +11,10 @@ import { supabase } from "../../lib/supabase";
 import { UserAttributes } from "@supabase/supabase-js";
 
 export default function ProfileRenter() {
+  const [userType, setUserType] = useState<string | null>(null);
+  const [celular, setCelular] = useState("");
+  const [descricao, setDescricao] = useState("");
+
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -57,6 +61,9 @@ export default function ProfileRenter() {
       if (user) {
         setName(user.user_metadata.displayName || '');
         setEmail(user.email || 'E-mail não encontrado');
+        setUserType(user.user_metadata.userType || null);
+        setCelular(user.phone || "");
+        setDescricao(user.user_metadata.descricao  || "");
       }
       setLoading(false);
     };
@@ -151,7 +158,11 @@ export default function ProfileRenter() {
 
   return (
     <>
-      <ScrollView style={styles.container}>
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === "ios" ? "padding" : undefined}
+  >
+      <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1, paddingBottom: 120 }}>
         <View style={styles.titleContainer}>
           <AppText style={styles.title}>{isEditing ? "EDITAR PERFIL" : 'PERFIL'}</AppText>
         </View>
@@ -188,6 +199,12 @@ export default function ProfileRenter() {
               secureTextEntry
             />
           )}
+          {userType === "owner" && (
+            <>
+              <Input title="Celular" value={celular} onChangeText={setCelular} editable={isEditing} />
+              <Input title="Descrição" value={descricao} onChangeText={setDescricao} editable={isEditing} />
+            </>
+          )}
         </View>
 
         <View style={styles.buttonsContainer}>
@@ -204,6 +221,7 @@ export default function ProfileRenter() {
           )}
         </View>
       </ScrollView>
+      </KeyboardAvoidingView>
       <Menu />
     </>
   );

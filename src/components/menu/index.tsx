@@ -56,7 +56,7 @@ export default function Menu() {
           <MaterialIcons name="person" size={28} color="#fff" />
         </TouchableOpacity>
       ) : (
-        <TouchableOpacity onPress={() => router.push("/profileLandLord")}>
+        <TouchableOpacity onPress={() => router.push("/profileRenter")}>
           <MaterialIcons name="person" size={28} color="#fff" />
         </TouchableOpacity>
       )}
