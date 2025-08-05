@@ -21,7 +21,7 @@ export default function AddProperty_1() {
   const { addProperty1 } = useContext(NewPostContext);
 
   const handleEnvio = () => {
-    // Verifica se algum campo obrigatório está vazio
+    
     if (!cep || !rua || !bairro || !numero ) {
       Alert.alert("Campos obrigatórios", "Por favor, preencha todos os campos.");
       return;
@@ -36,7 +36,7 @@ export default function AddProperty_1() {
     };
 
     addProperty1(aux);
-    router.push("/addProperty_2"); // só navega se passou na validação
+    router.push("/addProperty_2");
   };
 
   return (
@@ -107,7 +107,7 @@ export default function AddProperty_1() {
           name="Continuar"
           variant="mediumP"
           onPress={() => {
-            handleEnvio;
+            handleEnvio();
             router.push("/addProperty_2");
           }}
         />

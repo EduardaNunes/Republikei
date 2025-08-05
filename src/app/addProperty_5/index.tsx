@@ -12,7 +12,7 @@ import Input from "@/components/input";
 import AppText from "@/components/appText";
 import Menu from "@/components/menu";
 import { useRouter } from "expo-router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NewPostContext } from "@/contexts/NewPostContext";
 import PhotoUpload from "@/components/photoUpload";
 
@@ -23,10 +23,12 @@ export default function AddProperty_5() {
   const [preco, setPreco] = useState<string>("");
   const [imagens, setImagens] = useState<string[]>([]);
 
-  const { addProperty5 } = useContext(NewPostContext);
+  const [loading, setLoading] = useState(false);
 
-  const handleContinue = () => {
-    // Validação
+  const { addProperty5, isSubmitting, submissionError, submissionSuccess, clearSubmissionError} = useContext(NewPostContext);
+
+  const handleContinue = async () => {
+
     if (!descricao.trim()) {
       Alert.alert("Campo obrigatório", "Por favor, adicione uma descrição.");
       return;
@@ -43,12 +45,23 @@ export default function AddProperty_5() {
       return;
     }
 
-    // Chamar a função para enviar os dados
-    addProperty5(descricao.trim(), precoNum, imagens);
+    setLoading(true);
 
-    // Navegar para a próxima rota (ajuste conforme sua necessidade)
-    router.push("/"); // <-- ajustar rota correta aqui
+    addProperty5(descricao, parseFloat(preco), imagens);
+
+    setLoading(false);
   };
+
+  useEffect(() => {
+    if (submissionSuccess && !isSubmitting) {
+      Alert.alert("Sucesso!", "Seu imóvel foi cadastrado.");
+      router.replace("/myProperties");
+    }
+    if (submissionError) {
+      Alert.alert("Erro ao cadastrar imóvel", submissionError);
+      clearSubmissionError();
+    }
+  }, [submissionSuccess, submissionError, isSubmitting]);
 
   return (
     <>
