@@ -9,6 +9,7 @@ import Menu from "@/components/menu";
 import { useRouter } from "expo-router";
 import { supabase } from "../../lib/supabase";
 import { UserAttributes } from "@supabase/supabase-js";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileRenter() {
   const [loading, setLoading] = useState(true);
@@ -151,6 +152,7 @@ export default function ProfileRenter() {
 
   return (
     <>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={styles.container}>
         <View style={styles.titleContainer}>
           <AppText style={styles.title}>{isEditing ? "EDITAR PERFIL" : 'PERFIL'}</AppText>
@@ -205,6 +207,7 @@ export default function ProfileRenter() {
         </View>
       </ScrollView>
       <Menu />
+    </SafeAreaView>
     </>
   );
 }

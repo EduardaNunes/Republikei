@@ -19,7 +19,6 @@ export default function Menu() {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setUserType(user.user_metadata.userType); 
-        console.log(typeof user.user_metadata.userType + " // " + user.user_metadata.userType)
       }
       setLoading(false); 
     };
