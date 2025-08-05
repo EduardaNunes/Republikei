@@ -1,4 +1,10 @@
-import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  View,
+  Alert,
+} from "react-native";
 
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
@@ -19,8 +25,29 @@ export default function AddProperty_5() {
 
   const { addProperty5 } = useContext(NewPostContext);
 
-  const handleEnvio = () => {
-    addProperty5(descricao, parseFloat(preco), imagens);
+  const handleContinue = () => {
+    // Validação
+    if (!descricao.trim()) {
+      Alert.alert("Campo obrigatório", "Por favor, adicione uma descrição.");
+      return;
+    }
+
+    const precoNum = parseFloat(preco);
+    if (!preco || isNaN(precoNum) || precoNum <= 0) {
+      Alert.alert("Campo obrigatório", "Informe um preço válido.");
+      return;
+    }
+
+    if (!imagens || imagens.length === 0) {
+      Alert.alert("Campo obrigatório", "Adicione pelo menos uma foto.");
+      return;
+    }
+
+    // Chamar a função para enviar os dados
+    addProperty5(descricao.trim(), precoNum, imagens);
+
+    // Navegar para a próxima rota (ajuste conforme sua necessidade)
+    router.push("/"); // <-- ajustar rota correta aqui
   };
 
   return (
@@ -50,14 +77,15 @@ export default function AddProperty_5() {
                 containerStyle={{ width: "100%" }}
                 onChangeText={(text: string) => setDescricao(text)}
                 value={descricao}
-              ></Input>
+              />
               <Input
                 variant="secondary"
                 title="Mensalidade/Aluguel"
                 containerStyle={{ width: "100%" }}
+                keyboardType="numeric"
                 onChangeText={(text: string) => setPreco(text)}
                 value={preco}
-              ></Input>
+              />
 
               <AppText style={styles.subtitle}>FOTOS (MAX 15)</AppText>
               <View style={styles.subCategoryContainer}>
@@ -73,14 +101,7 @@ export default function AddProperty_5() {
           variant="mediumS"
           onPress={() => router.back()}
         />
-        <SquareButton
-          name="Continuar"
-          variant="mediumP"
-          onPress={() => {
-            router.push("/"); // precisa adicionar a rota certa, não sei pra onde tem que ir
-            handleEnvio;
-          }}
-        />
+        <SquareButton name="Continuar" variant="mediumP" onPress={handleContinue} />
       </View>
       <Menu />
     </>
