@@ -94,7 +94,7 @@ export default function SignInLandLord() {
         >
           <BackButton onPress={() => router.back()} />
           <SafeAreaView style={styles.imgContainer}>
-            <Image source={require("@/assets/cadLocat-icon.png")} />{" "}
+            <Image source={require("@/assets/cadLocat-icon.png")} />{""}
             <AppText style={styles.title}> CADASTRO LOCADOR </AppText>
           </SafeAreaView>
 
