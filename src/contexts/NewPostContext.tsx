@@ -59,6 +59,8 @@ function NewPostProvider({ children }: NewPostProviderProps) {
     bairro: "",
     numero: 0,
     complemento: "",
+    latitude: 0,
+    longitude: 0,
   });
 
   const [espacoFisico, setEspacoFisico] = useState<EspacoFisico>({
@@ -166,6 +168,8 @@ function NewPostProvider({ children }: NewPostProviderProps) {
         bairro: localizacao.bairro,
         numero: localizacao.numero,
         complemento: localizacao.complemento,
+        latitude: localizacao.latitude,
+        longitude: localizacao.longitude,
         
         // Dados da Etapa 2
         num_salaEstar: espacoFisico.salaEstar,

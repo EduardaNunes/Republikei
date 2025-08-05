@@ -4,6 +4,8 @@ interface Localizacao {
   bairro: string;
   numero: number;
   complemento?: string;
+  latitude: number,
+  longitude: number,
 }
 
 interface EspacoFisico {
