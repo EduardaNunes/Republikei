@@ -12,7 +12,7 @@ export default function HomePage() {
 
   // Simulação de usuário logado
   const loggedUserId = "user123";
-  const loggedUserType = "landlord"; // pode ser "renter" ou "landlord"
+  const loggedUserType = "renter"; // pode ser "renter" ou "landlord"
 
   // Simulação de posts
   const posts = [

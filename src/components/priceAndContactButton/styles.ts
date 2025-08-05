@@ -15,4 +15,11 @@ export const styles = StyleSheet.create({
     fontSize: fontSize.title.medium,
     color: colors.orange[300],
   },
+  iconButton: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: colors.orange[300],
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });

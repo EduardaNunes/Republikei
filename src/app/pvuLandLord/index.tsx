@@ -18,6 +18,8 @@ export default function PvuLandLord() {
     const loggedUserId = "user123";
     const postOwnerId = "user123";
 
+    const isOwner = loggedUserId === postOwnerId;
+
     const userType = loggedUserId === postOwnerId ? "owner" : "standard";
 
     //se for landlord vendo o proprio post: olhinho, se for renter aparece coração
@@ -110,7 +112,7 @@ const endereco = {
 
         </View>
     </ScrollView>
-            <PriceAndContactButton price={800} />
+            <PriceAndContactButton price={800} isOwner={isOwner}/>
     </>
   );
 }
