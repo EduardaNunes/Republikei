@@ -35,15 +35,6 @@ export default function Index() {
     }
   }, [session]);
 
-  useEffect(() => {
-    // Esconde a barra de navegação assim que o componente for carregado
-    NavigationBar.setVisibilityAsync('hidden');
-
-    // Define o que acontece quando o usuário desliza o dedo da borda da tela
-    // 'inset-swipe' faz a barra aparecer temporariamente por cima do seu app
-    NavigationBar.setBehaviorAsync('inset-swipe');
-  }, []);
-
   return (
     <View style={styles.container}>
       <StatusBar hidden={true} />

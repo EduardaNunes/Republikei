@@ -1,27 +1,43 @@
 import { Stack } from "expo-router";
 import { colors } from "@/styles/colors";
 import { useFonts, Montserrat_400Regular } from "@expo-google-fonts/montserrat";
-import AppLoading from "expo-app-loading";
 import { NewPostProvider } from "@/contexts/NewPostContext";
+import { useEffect, useCallback } from "react";
+import * as NavigationBar from 'expo-navigation-bar';
+import * as SplashScreen from 'expo-splash-screen';
+import { View } from "react-native";
+
+SplashScreen.preventAutoHideAsync();
+
 export default function Layout() {
   const [fontsLoaded] = useFonts({
     Montserrat_400Regular,
   });
 
-  const backgroundColor = colors.gray[800];
+  useEffect(() => {
+    NavigationBar.setVisibilityAsync('hidden');
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
 
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return null;
   }
 
   return (
-    <NewPostProvider>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor },
-        }}
-      />
-    </NewPostProvider>
+    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+      <NewPostProvider>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: colors.gray[800] },
+          }}
+        />
+      </NewPostProvider>
+    </View>
   );
 }
