@@ -55,7 +55,7 @@ export default function signInRenter() {
       options: {
         data: {
           displayName: userName,
-          userType: 'standart'
+          userType: 'standard'
         },
       },
     });
