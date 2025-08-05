@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, View, Alert } from "react-native";
 
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
@@ -25,6 +25,15 @@ export default function AddProperty_2() {
   const { addProperty2 } = useContext(NewPostContext);
 
   const handleEnvio = () => {
+    // Verifica se algum campo obrigatório está vazio
+    if (
+      !banheiro || !estar || !servico || !garagem ||
+      !cozinha || !jantar || !varanda || !pessoasCasa
+    ) {
+      Alert.alert("Campos obrigatórios", "Por favor, preencha todos os campos.");
+      return;
+    }
+
     const auxPessoas = parseInt(pessoasCasa);
     const auxEspaco: EspacoFisico = {
       salaEstar: parseInt(estar),
@@ -37,6 +46,7 @@ export default function AddProperty_2() {
     };
 
     addProperty2(auxEspaco, auxPessoas);
+    router.push("/addProperty_3"); // Só avança se a validação passar
   };
 
   return (
@@ -64,65 +74,73 @@ export default function AddProperty_2() {
                 <Input
                   variant="secondary"
                   title="Pessoas/Imóvel"
+                  keyboardType="numeric"
                   containerStyle={{ width: "48%" }}
-                  onChangeText={(text: string) => setPessoasCasa(text)}
+                  onChangeText={setPessoasCasa}
                   value={pessoasCasa}
-                ></Input>
+                />
                 <Input
                   variant="secondary"
                   title="Banheiros"
+                  keyboardType="numeric"
                   containerStyle={{ width: "48%" }}
-                  onChangeText={(text: string) => setBanheiro(text)}
+                  onChangeText={setBanheiro}
                   value={banheiro}
-                ></Input>
+                />
               </View>
               <View style={styles.subinputContainer}>
                 <Input
                   variant="secondary"
                   title="Salas de Estar"
+                  keyboardType="numeric"
                   containerStyle={{ width: "48%" }}
-                  onChangeText={(text: string) => setEstar(text)}
+                  onChangeText={setEstar}
                   value={estar}
-                ></Input>
+                />
                 <Input
                   variant="secondary"
                   title="Áreas de Serviço"
+                  keyboardType="numeric"
                   containerStyle={{ width: "48%" }}
-                  onChangeText={(text: string) => setServico(text)}
+                  onChangeText={setServico}
                   value={servico}
-                ></Input>
+                />
               </View>
               <View style={styles.subinputContainer}>
                 <Input
                   variant="secondary"
                   title="Vagas Garagem"
+                  keyboardType="numeric"
                   containerStyle={{ width: "48%" }}
-                  onChangeText={(text: string) => setGaragem(text)}
+                  onChangeText={setGaragem}
                   value={garagem}
-                ></Input>
+                />
                 <Input
                   variant="secondary"
                   title="Cozinhas"
+                  keyboardType="numeric"
                   containerStyle={{ width: "48%" }}
-                  onChangeText={(text: string) => setCozinha(text)}
+                  onChangeText={setCozinha}
                   value={cozinha}
-                ></Input>
+                />
               </View>
               <View style={styles.subinputContainer}>
                 <Input
                   variant="secondary"
                   title="Salas Jantar"
+                  keyboardType="numeric"
                   containerStyle={{ width: "48%" }}
-                  onChangeText={(text: string) => setJantar(text)}
+                  onChangeText={setJantar}
                   value={jantar}
-                ></Input>
+                />
                 <Input
                   variant="secondary"
                   title="Varandas"
+                  keyboardType="numeric"
                   containerStyle={{ width: "48%" }}
-                  onChangeText={(text: string) => setVaranda(text)}
+                  onChangeText={setVaranda}
                   value={varanda}
-                ></Input>
+                />
               </View>
             </View>
           </View>
@@ -137,10 +155,7 @@ export default function AddProperty_2() {
         <SquareButton
           name="Continuar"
           variant="mediumP"
-          onPress={() => {
-            router.push("/addProperty_3");
-            handleEnvio;
-          }}
+          onPress={handleEnvio} // chamada corrigida
         />
       </View>
       <Menu />

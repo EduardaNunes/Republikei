@@ -1,5 +1,4 @@
-import { View, KeyboardAvoidingView, ScrollView, Platform } from "react-native";
-
+import { View, KeyboardAvoidingView, ScrollView, Platform, Alert } from "react-native";
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
@@ -22,6 +21,12 @@ export default function AddProperty_1() {
   const { addProperty1 } = useContext(NewPostContext);
 
   const handleEnvio = () => {
+    // Verifica se algum campo obrigatório está vazio
+    if (!cep || !rua || !bairro || !numero ) {
+      Alert.alert("Campos obrigatórios", "Por favor, preencha todos os campos.");
+      return;
+    }
+
     const aux: Localizacao = {
       cep: cep,
       rua: rua,
@@ -31,6 +36,7 @@ export default function AddProperty_1() {
     };
 
     addProperty1(aux);
+    router.push("/addProperty_2"); // só navega se passou na validação
   };
 
   return (
@@ -57,17 +63,18 @@ export default function AddProperty_1() {
             <View style={styles.inputContainer}>
               <Input
                 title="CEP"
-                onChangeText={(text: string) => setCep(text)}
+                keyboardType="numeric"
+                onChangeText={setCep}
                 value={cep}
               />
               <Input
                 title="Rua"
-                onChangeText={(text: string) => setRua(text)}
+                onChangeText={setRua}
                 value={rua}
               />
               <Input
                 title="Bairro"
-                onChangeText={(text: string) => setBairro(text)}
+                onChangeText={setBairro}
                 value={bairro}
               />
               <View style={styles.subinputContainer}>
@@ -75,14 +82,14 @@ export default function AddProperty_1() {
                   variant="secondary"
                   title="Número"
                   containerStyle={{ width: "48%" }}
-                  onChangeText={(text: string) => setNumero(text)}
+                  onChangeText={setNumero}
                   value={numero}
                 />
                 <Input
                   variant="secondary"
                   title="Complemento"
                   containerStyle={{ width: "48%" }}
-                  onChangeText={(text: string) => setComplemento(text)}
+                  onChangeText={setComplemento}
                   value={complemento}
                 />
               </View>

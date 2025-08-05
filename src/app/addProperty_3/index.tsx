@@ -1,4 +1,10 @@
-import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  View,
+  Alert,
+} from "react-native";
 
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
@@ -21,7 +27,6 @@ export default function AddProperty_3() {
     id: "",
     name: "",
   });
-
   const [caracteristicas, setCaracteristicas] = useState<tipoPadrao[]>([]);
   const [tipoVaga, setTipoVaga] = useState<tipoPadrao>({
     id: "",
@@ -31,19 +36,22 @@ export default function AddProperty_3() {
   const { addProperty3 } = useContext(NewPostContext);
 
   const handleEnvio = () => {
-    const auxMobiliado = furnished.id === "question-sim" ? true : false;
+    const auxMobiliado = furnished.id === "question-sim";
     addProperty3(caracteristicas, tipoVaga, housingTypeSelected, auxMobiliado);
   };
 
   const handleContinue = () => {
-    if (!housingTypeSelected.id) {
-      alert("Selecione o tipo de moradia");
+    if (!housingTypeSelected?.id) {
+      Alert.alert("Campo obrigatório", "Selecione o tipo de moradia.");
       return;
     }
-    if (!furnished.id) {
-      alert("Informe se a moradia é mobiliada ou não");
+
+    if (!furnished?.id) {
+      Alert.alert("Campo obrigatório", "Informe se a moradia é mobiliada ou não.");
       return;
     }
+
+    handleEnvio();
 
     const isFurnished = (furnished.id === "question-sim").toString();
 
@@ -85,25 +93,33 @@ export default function AddProperty_3() {
               <AppText style={styles.subtitle}>CARACTERÍSTICAS</AppText>
               <SelectableBlock
                 type="characteristics"
-                returnSelected={(resposta) => setCaracteristicas(resposta)}
+                returnSelected={(resposta) =>
+                  setCaracteristicas(resposta ?? [])
+                }
               />
 
               <AppText style={styles.subtitle}>TIPO DE VAGA</AppText>
               <SelectableBlock
                 type="vacancyType"
-                returnSelected={(resposta) => setTipoVaga(resposta)}
+                returnSelected={(resposta) =>
+                  setTipoVaga(resposta ?? { id: "", name: "" })
+                }
               />
 
               <AppText style={styles.subtitle}>TIPO DE MORADIA</AppText>
               <SelectableBlock
                 type="housingType"
-                returnSelected={(resposta) => setHousingTypeSelected(resposta)}
+                returnSelected={(resposta) =>
+                  setHousingTypeSelected(resposta ?? { id: "", name: "" })
+                }
               />
 
               <AppText style={styles.subtitle}>MOBILIADO?</AppText>
               <SelectableBlock
                 type="question"
-                returnSelected={(resposta) => setFurnished(resposta)}
+                returnSelected={(resposta) =>
+                  setFurnished(resposta ?? { id: "", name: "" })
+                }
               />
             </View>
           </View>
@@ -119,10 +135,7 @@ export default function AddProperty_3() {
         <SquareButton
           name="Continuar"
           variant="mediumP"
-          onPress={() => {
-            handleContinue();
-            handleEnvio();
-          }}
+          onPress={handleContinue}
         />
       </View>
 

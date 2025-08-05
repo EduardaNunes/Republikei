@@ -1,4 +1,10 @@
-import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  View,
+  Alert,
+} from "react-native";
 
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
@@ -18,21 +24,40 @@ export default function addProperty_4_completa() {
 
   const [tipoMoradiaEspecifico, setTipoMoradiaEspecifico] =
     useState<tipoPadrao>({ id: "", name: "" });
-  const [quantPessoasCasa, setQuantPessoasCasa] = useState<string>("");
+  const [quantPessoasCasa] = useState<string>(""); // não usado aqui, mas mantido se necessário no contexto
   const [quantQuartos, setQuantQuartos] = useState<string>("");
-  const [individual, setIndividual] = useState<string>("");
+  const [individual] = useState<string>(""); // não usado aqui, mas mantido se necessário no contexto
   const [moveisDisponiveis, setMoveisDisponiveis] = useState<tipoPadrao[]>();
 
   const { addProperty4 } = useContext(NewPostContext);
 
-  const handleEnvio = () => {
+  const handleContinue = () => {
+    if (!tipoMoradiaEspecifico?.id) {
+      Alert.alert("Campo obrigatório", "Selecione o tipo de moradia.");
+      return;
+    }
+
+    if (!quantQuartos || isNaN(parseInt(quantQuartos))) {
+      Alert.alert("Campo obrigatório", "Informe a quantidade de quartos.");
+      return;
+    }
+
+    if (showFurniture && (!moveisDisponiveis || moveisDisponiveis.length === 0)) {
+      Alert.alert("Campo obrigatório", "Selecione pelo menos um móvel.");
+      return;
+    }
+
+    // Enviar dados
     addProperty4(
       tipoMoradiaEspecifico,
-      parseInt(quantPessoasCasa),
+      0, // quantPessoasCasa (não usado)
       parseInt(quantQuartos),
-      parseInt(individual),
+      0, // individual (não usado)
       moveisDisponiveis
     );
+
+    // Ir para próxima etapa
+    router.push("/addProperty_5");
   };
 
   return (
@@ -60,18 +85,19 @@ export default function addProperty_4_completa() {
               <SelectableBlock
                 type="completeHouseType"
                 returnSelected={(resposta) =>
-                  setTipoMoradiaEspecifico(resposta)
+                  setTipoMoradiaEspecifico(resposta ?? { id: "", name: "" })
                 }
-              ></SelectableBlock>
+              />
               <AppText style={styles.subtitle}>QUANTIDADE</AppText>
               <View style={styles.subinputContainer}>
                 <Input
                   variant="secondary"
                   title="Quartos"
                   containerStyle={{ width: "48%" }}
+                  keyboardType="numeric"
                   onChangeText={(text: string) => setQuantQuartos(text)}
                   value={quantQuartos}
-                ></Input>
+                />
               </View>
               {showFurniture && (
                 <>
@@ -79,7 +105,7 @@ export default function addProperty_4_completa() {
                   <SelectableBlock
                     type="furniture"
                     returnSelected={(resposta) =>
-                      setMoveisDisponiveis(resposta)
+                      setMoveisDisponiveis(resposta ?? [])
                     }
                   />
                 </>
@@ -97,10 +123,7 @@ export default function addProperty_4_completa() {
         <SquareButton
           name="Continuar"
           variant="mediumP"
-          onPress={() => {
-            router.push("/addProperty_5");
-            handleEnvio;
-          }}
+          onPress={handleContinue}
         />
       </View>
       <Menu />
