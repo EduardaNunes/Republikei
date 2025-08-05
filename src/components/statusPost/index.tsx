@@ -10,42 +10,36 @@ type StatusPostProps = {
 };
 
 export default function StatusPost({ type, style }: StatusPostProps) {
-  const [favoriteIcon, setfavoriteIcon] = useState<
-    "favorite" | "favorite-border"
-  >("favorite-border");
-  const [visibilityIcon, setVisibilityIcon] = useState<
-    "visibility" | "visibility-off"
-  >("visibility-off");
+  const [favoriteIcon, setFavoriteIcon] = useState<"favorite" | "favorite-border">("favorite-border");
+  const [visibilityIcon, setVisibilityIcon] = useState<"visibility" | "visibility-off">("visibility-off");
+
+  // Proteção contra tipo inválido (opcional, mas recomendada)
+  if (type !== "favorite" && type !== "visibility") return null;
+
+  const isVisibility = type === "visibility";
+  const isOff = visibilityIcon === "visibility-off";
+
+  const handlePress = () => {
+    if (type === "favorite") {
+      setFavoriteIcon(favoriteIcon === "favorite" ? "favorite-border" : "favorite");
+    } else {
+      setVisibilityIcon(visibilityIcon === "visibility" ? "visibility-off" : "visibility");
+    }
+  };
 
   return (
     <View
       style={[
         styles.container,
         style,
-        type === "visibility" && visibilityIcon === "visibility-off"
-          ? { backgroundColor: colors.orange[300] }
-          : null,
+        isVisibility && isOff ? { backgroundColor: colors.orange[300] } : null,
       ]}
     >
       <MaterialIcons
-        name={type === "favorite" ? favoriteIcon : visibilityIcon}
+        name={isVisibility ? visibilityIcon : favoriteIcon}
         size={24}
-        color={
-          type === "visibility" && visibilityIcon === "visibility-off"
-            ? "#fff"
-            : colors.orange[300]
-        }
-        onPress={() => {
-          type === "favorite"
-            ? setfavoriteIcon(
-                favoriteIcon === "favorite" ? "favorite-border" : "favorite"
-              )
-            : setVisibilityIcon(
-                visibilityIcon === "visibility"
-                  ? "visibility-off"
-                  : "visibility"
-              );
-        }}
+        color={isVisibility && isOff ? "#fff" : colors.orange[300]}
+        onPress={handlePress}
       />
     </View>
   );

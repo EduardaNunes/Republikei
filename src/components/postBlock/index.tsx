@@ -15,8 +15,8 @@ export default function PostBlock({
   image,
   title,
   price,
-  type = "preview",
-  statusType = "visibility",
+  type,
+  statusType,
 }: PostBlockProps) {
   return (
     <View
@@ -24,11 +24,11 @@ export default function PostBlock({
         type === "favorite" ? styles.containerFavorite : styles.containerPreview
       }
     >
-      {type === "favorite" ? (
-        <></>
-      ) : (
+      {/* Só mostra o status se for preview e statusType estiver definido */}
+      {type !== "favorite" && statusType && (
         <StatusPost style={styles.status} type={statusType} />
       )}
+
       <Image
         source={image}
         style={type === "favorite" ? styles.imageFavorite : styles.imagePreview}
