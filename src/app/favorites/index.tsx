@@ -1,32 +1,58 @@
-import { View, ScrollView } from "react-native";
-import React from "react";
+import { View, ScrollView, Alert, ActivityIndicator } from "react-native";
+import React, { useEffect, useState } from "react";
 import { styles } from "../../components/styles/favorites";
 import AppText from "@/components/appText";
 import Menu from "@/components/menu";
 import PostBlock from "@/components/postBlock";
+import { Imovel } from "@/utils/Imovel";
+import { supabase } from "@/lib/supabase";
+import { router } from "expo-router";
 
 export default function Favorites() {
 
-  const favoritePosts = [
-    {
-      id: "1",
-      image: require("@/assets/Imagem.png"),
-      title: "Quarto - Centro",
-      price: 800,
-    },
-    {
-      id: "2",
-      image: require("@/assets/Imagem.png"),
-      title: "Quarto - Bairro Primavera",
-      price: 750,
-    },
-    {
-      id: "3",
-      image: require("@/assets/Imagem.png"),
-      title: "Studio - UFJF",
-      price: 900,
-    },
-  ];
+  const [myFavorites, setMyFavorites] = useState<Imovel[]>([]);
+  const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+      const fetchImoveis = async () => {
+
+        setLoading(true);
+        
+        try {
+
+          const { data: { user } } = await supabase.auth.getUser();
+
+          if (!user) {
+            setMyFavorites([]); 
+            return;
+          }
+
+          const { data, error } = await supabase
+            .from('Imoveis')
+            .select('*')
+            .eq('proprietario', user.id); 
+
+          if (error) throw error;
+
+          if (data) {
+            setMyFavorites(data);
+          }
+
+        } catch (error: any) {
+          console.error("Erro ao buscar imóveis:", error);
+          Alert.alert("Erro", "Não foi possível carregar seus imóveis.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+    fetchImoveis();
+  },[]);
+
+    if (loading) {
+      return <ActivityIndicator />;
+    }
+
 
   return (
     <>
@@ -35,18 +61,20 @@ export default function Favorites() {
         <View style={styles.titleContainer}>
           <AppText style={styles.title}>FAVORITOS</AppText>
         </View>
-
-       
-          {favoritePosts.map((post) => (
+          {myFavorites.map((favorite) => (
             <PostBlock
-              key={post.id}
-              statusType="favorite"    // Passa o ícone coração
-              image={post.image}
-              title={post.title}
-              price={post.price}
+              key={favorite.id}
+              onPress={() => router.push(`/pvuLandLord/${favorite.id}`)}
+              image={
+                favorite.imagens && favorite.imagens.length > 0
+                  ? { uri: favorite.imagens[0] }
+                  : require("../../assets/Imagem.png") 
+              }
+              title={favorite.tipoMoradiaEspecifico + " - " + (favorite.bairro || 'Sem Bairro')}
+              price={favorite.preco}
+              statusType="favorite" 
             />
           ))}
-   
       </ScrollView>
       <Menu />
     </>

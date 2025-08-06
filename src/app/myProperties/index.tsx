@@ -11,27 +11,6 @@ import { supabase } from "@/lib/supabase";
 import { Imovel } from "@/utils/Imovel";
 
 export default function SearchResult() {
-  // Lista simulada dos imóveis do landlord logado
-  // const myProperties = [
-  //   {
-  //     id: "1",
-  //     title: "Quarto no Centro",
-  //     price: 800,
-  //     image: require("@/assets/Imagem.png"),
-  //   },
-  //   {
-  //     id: "2",
-  //     title: "Apartamento mobiliado",
-  //     price: 1200,
-  //     image: require("@/assets/Imagem.png"),
-  //   },
-  //   {
-  //     id: "3",
-  //     title: "Suíte com varanda",
-  //     price: 950,
-  //     image: require("@/assets/Imagem.png"),
-  //   },
-  // ];
 
   const [myProperties, setMyProperties] = useState<Imovel[]>([]);
   const [loading, setLoading] = useState(true);
