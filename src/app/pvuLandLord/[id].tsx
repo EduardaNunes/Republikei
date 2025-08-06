@@ -26,6 +26,15 @@ export default function PvuLandLord() {
   const [userPhone, setUserPhone] = useState('');
   const [userEmail, setUserEmail] = useState('');
 
+  const handleEdit = () => {
+    if (id) {
+      // Navega para a primeira página do formulário passando o ID do imóvel
+      router.push({ pathname: '/addProperty_2', params: { id } });
+    } else {
+      Alert.alert("Erro", "ID do imóvel não encontrado para edição.");
+    }
+  };
+
   const handleDelete = async () => {
     Alert.alert(
       "Confirmar Exclusão",
@@ -112,51 +121,40 @@ export default function PvuLandLord() {
   const statusType = userType === "owner" ? "visibility" : "favorite";
   const shouldShowStatusPost = !(userType === "owner" && statusType === "favorite");
 
-
-
   // const characteristics = [
-  //   { id: "characteristics-1", name: "Aceita Animais" },
-  //   { id: "characteristics-3", name: "Com Piscina" },
-  //   { id: "characteristics-4", name: "Com Quintal" },
-  //   { id: "characteristics-8", name: "Água Inclusa" },
-  //   { id: "characteristics-9", name: "Gás Incluso" },
-  //   { id: "characteristics-10", name: "Intenet Inclusa" },
+  //  { id: "characteristics-1", name: "Aceita Animais" },
+  //  { id: "characteristics-3", name: "Com Piscina" },
+  //  { id: "characteristics-4", name: "Com Quintal" },
+  //  { id: "characteristics-8", name: "Água Inclusa" },
+  //  { id: "characteristics-9", name: "Gás Incluso" },
+  //  { id: "characteristics-10", name: "Intenet Inclusa" },
   // ];
 
   // const furniture = [
-  //   { id: "furniture-geladeira", name: "Geladeira" },
-  //   { id: "furniture-armario", name: "Armário" },
-  //   { id: "furniture-microondas", name: "Microondas" },
-  //   { id: "furniture-lavar_louca", name: "Máquina de Lavar Louça" },
-  //   { id: "furniture-varal", name: "Varal" },
-  //   { id: "furniture-mesa_jantar", name: "Mesa de Jantar" },
-  //   { id: "furniture-tv", name: "Televisão" },
+  //  { id: "furniture-geladeira", name: "Geladeira" },
+  //  { id: "furniture-armario", name: "Armário" },
+  //  { id: "furniture-microondas", name: "Microondas" },
+  //  { id: "furniture-lavar_louca", name: "Máquina de Lavar Louça" },
+  //  { id: "furniture-varal", name: "Varal" },
+  //  { id: "furniture-mesa_jantar", name: "Mesa de Jantar" },
+  //  { id: "furniture-tv", name: "Televisão" },
   // ];
 
-  const images = [
-    require('@/assets/Imagem.png'),
-    require('@/assets/Imagem.png'),
-    require('@/assets/Imagem.png'),
-    require('@/assets/Imagem.png'),
-    require('@/assets/Imagem.png'),
-    require('@/assets/Imagem.png'),
-  ]
-
   // const houseData = {
-  //   banheiros: 2,
-  //   salasEstar: 1,
-  //   cozinhas: 1,
-  //   pessoasPorMoradia: 5,
-  //   pessoasPorQuarto: 2,
+  //  banheiros: 2,
+  //  salasEstar: 1,
+  //  cozinhas: 1,
+  //  pessoasPorMoradia: 5,
+  //  pessoasPorQuarto: 2,
   // };
 
   // const desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
 
   // const endereco = {
-  //   rua: "Rua das Flores",
-  //   numero: "123",
-  //   bairro: "Jardim Primavera",
-  //   complemento: "Apto 301", 
+  //  rua: "Rua das Flores",
+  //  numero: "123",
+  //  bairro: "Jardim Primavera",
+  //  complemento: "Apto 301", 
   // };
 
   return (
@@ -197,8 +195,7 @@ export default function PvuLandLord() {
 
                 <AppText style={styles.subtitle}>ENDEREÇO</AppText>
                 <AppText>
-                  {`${property.rua}, nº ${property.numero}, Bairro ${property.bairro} - ${property.cep} - `}
-                  {property.complemento ? `, ${property.complemento}` : ""}
+                  {`${property.rua}, nº ${property.numero}, Bairro ${property.bairro} - ${property.cep}${property.complemento ? `, ${property.complemento}` : ""}`}
                 </AppText>
 
                 <AppText style={styles.subtitle}>MAIS INFORMAÇÕES</AppText>
@@ -225,7 +222,12 @@ export default function PvuLandLord() {
         </View>
 
     </ScrollView>
-    <PriceAndContactButton price={property.preco} isOwner={userType === "owner"} onDelete={handleDelete}/>
+    <PriceAndContactButton
+      price={property.preco}
+      isOwner={userType === "owner"}
+      onDelete={handleDelete}
+      onEdit={handleEdit}
+    />
     </>
   );
 }

@@ -4,8 +4,8 @@ import {
   ScrollView,
   View,
   Alert,
+  ActivityIndicator,
 } from "react-native";
-
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
@@ -13,59 +13,174 @@ import AppText from "@/components/appText";
 import Menu from "@/components/menu";
 import SelectableBlock from "@/components/selectableBlock";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { tipoPadrao } from "@/utils/typesAux";
 import { NewPostContext } from "@/contexts/NewPostContext";
+import { supabase } from "@/lib/supabase";
+import { completeHouseType, furniture } from "@/utils/enums"; // Importando opções
 
-export default function addProperty_4_completa() {
+// Interface para o estado unificado do formulário
+interface FormData {
+  tipoMoradiaEspecifico: tipoPadrao | null;
+  quantQuartos: string;
+  moveisDisponiveis: tipoPadrao[];
+}
+
+export default function AddProperty_4_completa() {
   const router = useRouter();
-  const { isFurnished } = useLocalSearchParams();
-  const showFurniture = isFurnished === "true";
+  const { id, isFurnished } = useLocalSearchParams<{
+    id?: string;
+    isFurnished?: string;
+  }>();
 
-  const [tipoMoradiaEspecifico, setTipoMoradiaEspecifico] =
-    useState<tipoPadrao>({ id: "", name: "" });
-  const [quantPessoasCasa] = useState<string>(""); // não usado aqui, mas mantido se necessário no contexto
-  const [quantQuartos, setQuantQuartos] = useState<string>("");
-  const [individual] = useState<string>(""); // não usado aqui, mas mantido se necessário no contexto
-  const [moveisDisponiveis, setMoveisDisponiveis] = useState<tipoPadrao[]>();
+  const isEditMode = !!id;
+  const showFurniture = isFurnished === "true";
 
   const { addProperty4 } = useContext(NewPostContext);
 
-  const handleContinue = () => {
-    if (!tipoMoradiaEspecifico?.id) {
+  const [formData, setFormData] = useState<FormData>({
+    tipoMoradiaEspecifico: null,
+    quantQuartos: "",
+    moveisDisponiveis: [],
+  });
+
+  const [loading, setLoading] = useState(isEditMode);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (isEditMode) {
+      const fetchPropertyDetails = async () => {
+        setLoading(true);
+        try {
+          const { data, error } = await supabase
+            .from("Imoveis")
+            .select("tipoMoradiaEspecifico, num_quartos, moveisDisponiveis")
+            .eq("id", id)
+            .single();
+
+          if (error) throw error;
+
+          if (data) {
+            // Converte dados do DB para o formato do formulário
+            const selectedTipoMoradia =
+              completeHouseType.find(
+                (t) => t.name === data.tipoMoradiaEspecifico
+              ) || null;
+
+            const moveisFromDB = data.moveisDisponiveis || [];
+            const selectedMoveis = furniture.filter((f) =>
+              moveisFromDB.includes(f.name)
+            );
+
+            setFormData({
+              tipoMoradiaEspecifico: selectedTipoMoradia,
+              quantQuartos: data.num_quartos?.toString() || "",
+              moveisDisponiveis: selectedMoveis,
+            });
+          } else {
+            throw new Error("Imóvel não encontrado.");
+          }
+        } catch (error: any) {
+          Alert.alert(
+            "Erro ao Carregar",
+            `Não foi possível buscar os dados: ${error.message}`
+          );
+          router.back();
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchPropertyDetails();
+    }
+  }, [id, isEditMode]);
+
+  const handleInputChange = (field: keyof FormData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSelectionChange = (field: keyof FormData, value: any) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSaveAndContinue = async () => {
+    // Validação
+    if (!formData.tipoMoradiaEspecifico?.id) {
       Alert.alert("Campo obrigatório", "Selecione o tipo de moradia.");
       return;
     }
-
-    if (!quantQuartos || isNaN(parseInt(quantQuartos))) {
+    if (!formData.quantQuartos) {
       Alert.alert("Campo obrigatório", "Informe a quantidade de quartos.");
       return;
     }
-
-    if (showFurniture && (!moveisDisponiveis || moveisDisponiveis.length === 0)) {
-      Alert.alert("Campo obrigatório", "Selecione pelo menos um móvel.");
+    if (showFurniture && formData.moveisDisponiveis.length === 0) {
+      Alert.alert(
+        "Campo obrigatório",
+        "Selecione pelo menos um móvel disponível."
+      );
       return;
     }
 
-    // Enviar dados
-    addProperty4(
-      tipoMoradiaEspecifico,
-      0, // quantPessoasCasa (não usado)
-      parseInt(quantQuartos),
-      0, // individual (não usado)
-      moveisDisponiveis
-    );
+    setSaving(true);
 
-    // Ir para próxima etapa
-    router.push("/addProperty_5");
+    try {
+      if (isEditMode) {
+        // Monta o payload para update
+        const updatePayload: any = {
+          tipoMoradiaEspecifico: formData.tipoMoradiaEspecifico?.name,
+          num_quartos: parseInt(formData.quantQuartos) || 0,
+        };
+        // Só atualiza os móveis se a seção estiver visível
+        if (showFurniture) {
+          updatePayload.moveisDisponiveis = formData.moveisDisponiveis.map(
+            (m) => m.name
+          );
+        }
+
+        const { error } = await supabase
+          .from("Imoveis")
+          .update(updatePayload)
+          .eq("id", id);
+        if (error) throw error;
+      } else {
+        // Lógica de criação com o contexto
+        addProperty4(
+          formData.tipoMoradiaEspecifico,
+          0, // quantPessoasCasa (não se aplica aqui)
+          parseInt(formData.quantQuartos),
+          0, // individual (não se aplica aqui)
+          formData.moveisDisponiveis
+        );
+      }
+
+      // Navega para a próxima tela, passando o ID se estiver editando
+      router.push({
+        pathname: "/addProperty_5",
+        params: isEditMode ? { id } : {},
+      });
+    } catch (error: any) {
+      Alert.alert(
+        "Erro ao Salvar",
+        `Não foi possível salvar as informações: ${error.message}`
+      );
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <AppText>Carregando detalhes...</AppText>
+      </View>
+    );
+  }
 
   return (
     <>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
       >
         <ScrollView
           contentContainerStyle={{
@@ -77,7 +192,9 @@ export default function addProperty_4_completa() {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.titleContainer}>
-            <AppText style={styles.title}>COMPLETA</AppText>
+            <AppText style={styles.title}>
+              {isEditMode ? "EDITAR MORADIA COMPLETA" : "COMPLETA"}
+            </AppText>
           </View>
           <View style={styles.geralContainer}>
             <View style={styles.inputContainer}>
@@ -85,8 +202,9 @@ export default function addProperty_4_completa() {
               <SelectableBlock
                 type="completeHouseType"
                 returnSelected={(resposta) =>
-                  setTipoMoradiaEspecifico(resposta ?? { id: "", name: "" })
+                  handleSelectionChange("tipoMoradiaEspecifico", resposta)
                 }
+                initialSelection={formData.tipoMoradiaEspecifico}
               />
               <AppText style={styles.subtitle}>QUANTIDADE</AppText>
               <View style={styles.subinputContainer}>
@@ -95,8 +213,10 @@ export default function addProperty_4_completa() {
                   title="Quartos"
                   containerStyle={{ width: "48%" }}
                   keyboardType="numeric"
-                  onChangeText={(text: string) => setQuantQuartos(text)}
-                  value={quantQuartos}
+                  onChangeText={(text) =>
+                    handleInputChange("quantQuartos", text)
+                  }
+                  value={formData.quantQuartos}
                 />
               </View>
               {showFurniture && (
@@ -105,8 +225,9 @@ export default function addProperty_4_completa() {
                   <SelectableBlock
                     type="furniture"
                     returnSelected={(resposta) =>
-                      setMoveisDisponiveis(resposta ?? [])
+                      handleSelectionChange("moveisDisponiveis", resposta ?? [])
                     }
+                    initialSelection={formData.moveisDisponiveis}
                   />
                 </>
               )}
@@ -119,11 +240,14 @@ export default function addProperty_4_completa() {
           name="Voltar"
           variant="mediumS"
           onPress={() => router.back()}
+          disabled={saving}
         />
         <SquareButton
-          name="Continuar"
+          name={isEditMode ? "Salvar e Continuar" : "Continuar"}
           variant="mediumP"
-          onPress={handleContinue}
+          onPress={handleSaveAndContinue}
+          disabled={saving}
+          loading={saving}
         />
       </View>
       <Menu />

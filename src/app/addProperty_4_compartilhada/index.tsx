@@ -4,8 +4,8 @@ import {
   ScrollView,
   View,
   Alert,
+  ActivityIndicator,
 } from "react-native";
-
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
@@ -13,70 +13,198 @@ import AppText from "@/components/appText";
 import Menu from "@/components/menu";
 import SelectableBlock from "@/components/selectableBlock";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { NewPostContext } from "@/contexts/NewPostContext";
 import { tipoPadrao } from "@/utils/typesAux";
+import { supabase } from "@/lib/supabase";
+import { sharedHouseType, furniture } from "@/utils/enums"; // Importando opções
+
+// Interface para o estado unificado do formulário
+interface FormData {
+  tipoMoradiaEspecifico: tipoPadrao | null;
+  quantPessoasCasa: string;
+  quantQuartos: string;
+  pessoasPorQuarto: string;
+  moveisDisponiveis: tipoPadrao[];
+}
 
 export default function AddProperty_4_compartilhada() {
   const router = useRouter();
-  const { isFurnished } = useLocalSearchParams();
-  const showFurniture = isFurnished === "true";
+  const { id, isFurnished } = useLocalSearchParams<{
+    id?: string;
+    isFurnished?: string;
+  }>();
 
-  const [tipoMoradiaEspecifico, setTipoMoradiaEspecifico] =
-    useState<tipoPadrao>({ id: "", name: "" });
-  const [quantPessoasCasa, setQuantPessoasCasa] = useState<string>("");
-  const [quantQuartos, setQuantQuartos] = useState<string>("");
-  const [individual, setIndividual] = useState<string>("");
-  const [moveisDisponiveis, setMoveisDisponiveis] = useState<tipoPadrao[]>();
+  const isEditMode = !!id;
+  const showFurniture = isFurnished === "true";
 
   const { addProperty4 } = useContext(NewPostContext);
 
-  const handleContinue = () => {
-    // Validação de campos obrigatórios
-    if (!tipoMoradiaEspecifico?.id) {
+  const [formData, setFormData] = useState<FormData>({
+    tipoMoradiaEspecifico: null,
+    quantPessoasCasa: "",
+    quantQuartos: "",
+    pessoasPorQuarto: "",
+    moveisDisponiveis: [],
+  });
+
+  const [loading, setLoading] = useState(isEditMode);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (isEditMode) {
+      const fetchPropertyDetails = async () => {
+        setLoading(true);
+        try {
+          const { data, error } = await supabase
+            .from("Imoveis")
+            .select(
+              "tipoMoradiaEspecifico, num_pessoasCasa, num_quartos, num_pessoasQuarto, moveisDisponiveis"
+            )
+            .eq("id", id)
+            .single();
+
+          if (error) throw error;
+
+          if (data) {
+            // Converte dados do DB para o formato do formulário
+            const selectedTipoMoradia =
+              sharedHouseType.find(
+                (t) => t.name === data.tipoMoradiaEspecifico
+              ) || null;
+
+            const moveisFromDB = data.moveisDisponiveis || [];
+            const selectedMoveis = furniture.filter((f) =>
+              moveisFromDB.includes(f.name)
+            );
+
+            setFormData({
+              tipoMoradiaEspecifico: selectedTipoMoradia,
+              quantPessoasCasa: data.num_pessoasCasa?.toString() || "",
+              quantQuartos: data.num_quartos?.toString() || "",
+              pessoasPorQuarto: data.num_pessoasQuarto?.toString() || "",
+              moveisDisponiveis: selectedMoveis,
+            });
+          } else {
+            throw new Error("Imóvel não encontrado.");
+          }
+        } catch (error: any) {
+          Alert.alert(
+            "Erro ao Carregar",
+            `Não foi possível buscar os dados: ${error.message}`
+          );
+          router.back();
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchPropertyDetails();
+    }
+  }, [id, isEditMode]);
+
+  const handleInputChange = (field: keyof FormData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSelectionChange = (field: keyof FormData, value: any) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSaveAndContinue = async () => {
+    // Validação
+    if (!formData.tipoMoradiaEspecifico?.id) {
       Alert.alert("Campo obrigatório", "Selecione o tipo de moradia.");
       return;
     }
-
-    if (!quantPessoasCasa || isNaN(parseInt(quantPessoasCasa))) {
-      Alert.alert("Campo obrigatório", "Informe a quantidade de pessoas na moradia.");
+    if (!formData.quantPessoasCasa) {
+      Alert.alert(
+        "Campo obrigatório",
+        "Informe a quantidade de pessoas na moradia."
+      );
       return;
     }
-
-    if (!quantQuartos || isNaN(parseInt(quantQuartos))) {
+    if (!formData.quantQuartos) {
       Alert.alert("Campo obrigatório", "Informe a quantidade de quartos.");
       return;
     }
-
-    if (!individual || isNaN(parseInt(individual))) {
-      Alert.alert("Campo obrigatório", "Informe a quantidade de pessoas no quarto.");
+    if (!formData.pessoasPorQuarto) {
+      Alert.alert(
+        "Campo obrigatório",
+        "Informe a quantidade de pessoas no quarto."
+      );
+      return;
+    }
+    if (showFurniture && formData.moveisDisponiveis.length === 0) {
+      Alert.alert(
+        "Campo obrigatório",
+        "Selecione pelo menos um móvel disponível."
+      );
       return;
     }
 
-    if (showFurniture && (!moveisDisponiveis || moveisDisponiveis.length === 0)) {
-      Alert.alert("Campo obrigatório", "Selecione pelo menos um móvel disponível.");
-      return;
+    setSaving(true);
+
+    try {
+      if (isEditMode) {
+        // Monta o payload para update
+        const updatePayload: any = {
+          tipoMoradiaEspecifico: formData.tipoMoradiaEspecifico?.name,
+          num_pessoasCasa: parseInt(formData.quantPessoasCasa) || 0,
+          num_quartos: parseInt(formData.quantQuartos) || 0,
+          num_pessoasQuarto: parseInt(formData.pessoasPorQuarto) || 0,
+        };
+        // Só atualiza os móveis se a seção estiver visível
+        if (showFurniture) {
+          updatePayload.moveisDisponiveis = formData.moveisDisponiveis.map(
+            (m) => m.name
+          );
+        }
+
+        const { error } = await supabase
+          .from("Imoveis")
+          .update(updatePayload)
+          .eq("id", id);
+        if (error) throw error;
+      } else {
+        // Lógica de criação com o contexto
+        addProperty4(
+          formData.tipoMoradiaEspecifico,
+          parseInt(formData.quantPessoasCasa),
+          parseInt(formData.quantQuartos),
+          parseInt(formData.pessoasPorQuarto),
+          formData.moveisDisponiveis
+        );
+      }
+
+      // Navega para a próxima tela, passando o ID se estiver editando
+      router.push({
+        pathname: "/addProperty_5",
+        params: isEditMode ? { id } : {},
+      });
+    } catch (error: any) {
+      Alert.alert(
+        "Erro ao Salvar",
+        `Não foi possível salvar as informações: ${error.message}`
+      );
+    } finally {
+      setSaving(false);
     }
-
-    // Enviar os dados
-    addProperty4(
-      tipoMoradiaEspecifico,
-      parseInt(quantPessoasCasa),
-      parseInt(quantQuartos),
-      parseInt(individual),
-      moveisDisponiveis
-    );
-
-    // Avançar para a próxima tela
-    router.push("/addProperty_5");
   };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <AppText>Carregando detalhes...</AppText>
+      </View>
+    );
+  }
 
   return (
     <>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
       >
         <ScrollView
           contentContainerStyle={{
@@ -88,7 +216,9 @@ export default function AddProperty_4_compartilhada() {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.titleContainer}>
-            <AppText style={styles.title}>COMPARTILHADA</AppText>
+            <AppText style={styles.title}>
+              {isEditMode ? "EDITAR MORADIA COMPARTILHADA" : "COMPARTILHADA"}
+            </AppText>
           </View>
           <View style={styles.geralContainer}>
             <View style={styles.inputContainer}>
@@ -96,8 +226,9 @@ export default function AddProperty_4_compartilhada() {
               <SelectableBlock
                 type="sharedHouseType"
                 returnSelected={(resposta) =>
-                  setTipoMoradiaEspecifico(resposta ?? { id: "", name: "" })
+                  handleSelectionChange("tipoMoradiaEspecifico", resposta)
                 }
+                initialSelection={formData.tipoMoradiaEspecifico}
               />
               <AppText style={styles.subtitle}>QUANTIDADE DE PESSOAS</AppText>
               <View style={styles.subinputContainer}>
@@ -106,16 +237,20 @@ export default function AddProperty_4_compartilhada() {
                   title="No Quarto"
                   containerStyle={{ width: "48%" }}
                   keyboardType="numeric"
-                  onChangeText={(text: string) => setIndividual(text)}
-                  value={individual}
+                  onChangeText={(text) =>
+                    handleInputChange("pessoasPorQuarto", text)
+                  }
+                  value={formData.pessoasPorQuarto}
                 />
                 <Input
                   variant="secondary"
                   title="Na Moradia"
                   containerStyle={{ width: "48%" }}
                   keyboardType="numeric"
-                  onChangeText={(text: string) => setQuantPessoasCasa(text)}
-                  value={quantPessoasCasa}
+                  onChangeText={(text) =>
+                    handleInputChange("quantPessoasCasa", text)
+                  }
+                  value={formData.quantPessoasCasa}
                 />
               </View>
               <AppText style={styles.subtitle}>QUANTIDADE DE QUARTOS</AppText>
@@ -123,8 +258,8 @@ export default function AddProperty_4_compartilhada() {
                 variant="secondary"
                 title="Quartos"
                 keyboardType="numeric"
-                onChangeText={(text: string) => setQuantQuartos(text)}
-                value={quantQuartos}
+                onChangeText={(text) => handleInputChange("quantQuartos", text)}
+                value={formData.quantQuartos}
               />
 
               {showFurniture && (
@@ -133,8 +268,9 @@ export default function AddProperty_4_compartilhada() {
                   <SelectableBlock
                     type="furniture"
                     returnSelected={(resposta) =>
-                      setMoveisDisponiveis(resposta ?? [])
+                      handleSelectionChange("moveisDisponiveis", resposta ?? [])
                     }
+                    initialSelection={formData.moveisDisponiveis}
                   />
                 </>
               )}
@@ -147,11 +283,14 @@ export default function AddProperty_4_compartilhada() {
           name="Voltar"
           variant="mediumS"
           onPress={() => router.back()}
+          disabled={saving}
         />
         <SquareButton
-          name="Continuar"
+          name={isEditMode ? "Salvar e Continuar" : "Continuar"}
           variant="mediumP"
-          onPress={handleContinue}
+          onPress={handleSaveAndContinue}
+          disabled={saving}
+          loading={saving}
         />
       </View>
       <Menu />
