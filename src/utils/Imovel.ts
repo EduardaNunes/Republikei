@@ -24,4 +24,5 @@ export interface Imovel {
   num_areaServico: number,
   num_salaJantar: number,
   num_quartos: number,
+  proprietario: string,
 }

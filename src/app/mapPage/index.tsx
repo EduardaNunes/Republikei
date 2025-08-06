@@ -96,7 +96,7 @@ export default function MapPage() {
             style={StyleSheet.absoluteFillObject}
             userInterfaceStyle='dark'
             provider="google"
-            initialRegion={region}
+            region={region}
             onPress={() => setSelectedImovel(null)}
           >
             {filteredImoveis.map((imovel) => (
