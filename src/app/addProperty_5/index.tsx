@@ -4,6 +4,7 @@ import {
   ScrollView,
   View,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 
 import { styles } from "../../components/styles/addProperty";

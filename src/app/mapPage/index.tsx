@@ -47,7 +47,6 @@ export default function MapPage() {
         .not('latitude', 'is', null)
         .not('longitude', 'is', null);
 
-        console.log(data)
       if (error) {
         console.error("Erro ao buscar imóveis:", error);
         Alert.alert("Erro", "Não foi possível carregar os imóveis.");

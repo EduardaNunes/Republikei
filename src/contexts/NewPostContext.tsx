@@ -1,6 +1,8 @@
 import { Localizacao, EspacoFisico, tipoPadrao } from "@/utils/typesAux";
 import React, { createContext, useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import * as FileSystem from 'expo-file-system';
+import { decode } from 'base64-arraybuffer';     
 
 interface NewPostContextData {
   isSubmitting: boolean;
@@ -148,92 +150,107 @@ function NewPostProvider({ children }: NewPostProviderProps) {
     setSubmissionError(null);
   }, []);
 
-  const submitPost = useCallback(async () => {
-    
-    setIsSubmitting(true);
-    setSubmissionError(null);
-    setSubmissionSuccess(false);
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        throw new Error("Usuário não autenticado.");
-      }
-
-      const novoImovel = {
-
-        // Dados da Etapa 1
-        cep: localizacao.cep,
-        rua: localizacao.rua,
-        bairro: localizacao.bairro,
-        numero: localizacao.numero,
-        complemento: localizacao.complemento,
-        latitude: localizacao.latitude,
-        longitude: localizacao.longitude,
-        
-        // Dados da Etapa 2
-        num_salaEstar: espacoFisico.salaEstar,
-        num_banheiro: espacoFisico.banheiro,
-        num_garagem: espacoFisico.vagaGaragem,
-        num_cozinha: espacoFisico.cozinha,
-        num_salaJantar: espacoFisico.salaJantar,
-        num_areaServico: espacoFisico.areaServico,
-        num_varanda: espacoFisico.varanda,
-
-        // Dados da Etapa 3
-        caracteristicas: caracteristicas.map(c => c.name),
-        tipoVaga: tipoVaga.name,
-        tipoMoradia: tipoMoradia.name,
-        mobiliado: mobiliado,
-
-        // Dados da Etapa 4
-        tipoMoradiaEspecifico: tipoMoradiaEspecifico.name,
-        num_pessoasCasa: quantPessoasCasa,
-        num_quartos: quantQuartos,
-        num_pessoasQuarto: individual,
-        moveisDisponiveis: moveisDisponiveis.map(m => m.name),
-
-
-        // Dados da Etapa 5
-        descricao: descricao,
-        preco: preco,
-        imagens: imagens,
-
-        oculto: oculto,
-
-        // Chave estrangeira
-        proprietario: user.id,
-      };
-
-      const { error } = await supabase.from('Imoveis').insert([novoImovel]);
-
-      if (error) {
-        console.log(error);
-        throw error;
-      }
-
-       setSubmissionSuccess(true);
-
-    } catch(error:any){
-      setSubmissionError(error.message || "Ocorreu um erro desconhecido.")
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [localizacao, espacoFisico, caracteristicas, tipoVaga, tipoMoradia, mobiliado, tipoMoradiaEspecifico, quantPessoasCasa, quantQuartos, individual, moveisDisponiveis, descricao, preco, imagens, oculto]);
-
   useEffect(() => {
     const executeSubmit = async () => {
-      if (isReadyToSubmit) {
-        console.log("Gatilho ativado! Enviando para o Supabase...");
-        
-        await submitPost();
-        
+
+      if (!isReadyToSubmit) return;
+
+      setIsSubmitting(true);
+      setSubmissionError(null);
+      setSubmissionSuccess(false);
+
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error("Usuário não autenticado.");
+
+        console.log("Usuário autenticado para upload:", user.id);
+
+        // Lógica de upload das imagens
+        const uploadedImageUrls = [];
+        for (const localUri of imagens) {
+          
+          const fileName = `imovel-${user.id}-${new Date().getTime()}.jpg`;
+          console.log(`--- Iniciando upload para o arquivo: ${fileName} ---`);
+
+          const base64 = await FileSystem.readAsStringAsync(localUri, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+
+          const { error: uploadError } = await supabase.storage
+            .from('imoveis-imagens')
+            .upload(fileName, decode(base64), { 
+              contentType: 'image/jpeg' 
+          });
+
+          console.log('uploadError: ' + uploadError)
+          if (uploadError) throw uploadError;
+
+          const { data } = supabase.storage.from('imoveis-imagens').getPublicUrl(fileName);
+          console.log('data: ' + data)
+          uploadedImageUrls.push(data.publicUrl);
+          console.log('uploadedImageUrls: ' + uploadedImageUrls)
+        }
+
+        const novoImovel = {
+
+          // Dados da Etapa 1
+          cep: localizacao.cep,
+          rua: localizacao.rua,
+          bairro: localizacao.bairro,
+          numero: localizacao.numero,
+          complemento: localizacao.complemento,
+          latitude: localizacao.latitude,
+          longitude: localizacao.longitude,
+          
+          // Dados da Etapa 2
+          num_salaEstar: espacoFisico.salaEstar,
+          num_banheiro: espacoFisico.banheiro,
+          num_garagem: espacoFisico.vagaGaragem,
+          num_cozinha: espacoFisico.cozinha,
+          num_salaJantar: espacoFisico.salaJantar,
+          num_areaServico: espacoFisico.areaServico,
+          num_varanda: espacoFisico.varanda,
+
+          // Dados da Etapa 3
+          caracteristicas: caracteristicas.map(c => c.name),
+          tipoVaga: tipoVaga.name,
+          tipoMoradia: tipoMoradia.name,
+          mobiliado: mobiliado,
+
+          // Dados da Etapa 4
+          tipoMoradiaEspecifico: tipoMoradiaEspecifico.name,
+          num_pessoasCasa: quantPessoasCasa,
+          num_quartos: quantQuartos,
+          num_pessoasQuarto: individual,
+          moveisDisponiveis: moveisDisponiveis.map(m => m.name),
+
+
+          // Dados da Etapa 5
+          descricao: descricao,
+          preco: preco,
+          imagens: uploadedImageUrls,
+
+          oculto: oculto,
+
+          // Chave estrangeira
+          proprietario: user.id,
+        };
+
+        const { error } = await supabase.from('Imoveis').insert([novoImovel]);
+        if (error) throw error;
+
+        setSubmissionSuccess(true);
+
+      } catch(error: any) {
+        setSubmissionError(error.message || "Ocorreu um erro desconhecido.");
+      } finally {
+        setIsSubmitting(false);
         setIsReadyToSubmit(false);
       }
     };
 
     executeSubmit();
-  }, [isReadyToSubmit, submitPost]);
+  }, [isReadyToSubmit]);
 
   return (
     <NewPostContext.Provider
