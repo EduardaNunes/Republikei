@@ -28,7 +28,7 @@ export default function PostBlock({
       {type !== "favorite" && statusType && (
         <StatusPost style={styles.status} type={statusType} />
       )}
-
+      
       <Image
         source={image}
         style={type === "favorite" ? styles.imageFavorite : styles.imagePreview}
