@@ -159,7 +159,6 @@ export default function PvuLandLord() {
   //   complemento: "Apto 301", 
   // };
 
-  console.log(property.caracteristicas)
   return (
     <>
     <ScrollView >
