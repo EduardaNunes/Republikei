@@ -116,11 +116,15 @@ export default function MapPage() {
         {selectedImovel && (
           <TouchableOpacity 
             style={localStyles.calloutContainer}
-            onPress={() => router.push(`/property/${selectedImovel.id}`)}
+            onPress={() => router.push(`/pvuLandLord/${selectedImovel.id}`)}
           >
             <Image 
-              source={{ uri: selectedImovel.imagens ? selectedImovel.imagens[0] : undefined }} 
               style={localStyles.calloutImage} 
+              source={
+                selectedImovel.imagens && selectedImovel.imagens.length > 0
+                  ? { uri: selectedImovel.imagens[0] }
+                  : require("../../assets/Imagem.png") 
+              }
             />
             <View style={localStyles.calloutTextContainer}>
               <AppText style={localStyles.calloutTitle}>{selectedImovel.rua}, {selectedImovel.numero}</AppText>
