@@ -28,9 +28,9 @@ export default function Favorites() {
           }
 
           const { data, error } = await supabase
-            .from('Imoveis')
+            .from('Favoritos')
             .select('*')
-            .eq('proprietario', user.id); 
+            .eq('User', user.id); 
 
           if (error) throw error;
 
