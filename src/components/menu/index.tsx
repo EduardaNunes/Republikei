@@ -19,6 +19,7 @@ export default function Menu() {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setUserType(user.user_metadata.userType); 
+        console.log(typeof user.user_metadata.userType + " // " + user.user_metadata.userType)
       }
       setLoading(false); 
     };
@@ -32,12 +33,11 @@ export default function Menu() {
 
   return (
     <BottomContainer style={styles.container}>
-      
       <TouchableOpacity onPress={() => router.push("/homePage")}>
         <MaterialIcons name="search" size={28} color="#fff" />
       </TouchableOpacity>
 
-      {userType == "standard" ? (
+      {userType == "standart" ? (
         <TouchableOpacity onPress={() => router.push("/favorites")}>
           <MaterialIcons name="favorite" size={28} color="#fff" />
         </TouchableOpacity>
@@ -51,10 +51,15 @@ export default function Menu() {
         <MaterialIcons name="map" size={28} color="#fff" />
       </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => router.push("/userProfile")}>
+      {userType == "standard" ? (
+        <TouchableOpacity onPress={() => router.push("/profileRenter")}>
           <MaterialIcons name="person" size={28} color="#fff" />
         </TouchableOpacity>
-
+      ) : (
+        <TouchableOpacity onPress={() => router.push("/profileRenter")}>
+          <MaterialIcons name="person" size={28} color="#fff" />
+        </TouchableOpacity>
+      )}
     </BottomContainer>
   );
 }

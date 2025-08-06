@@ -7,7 +7,9 @@ export const styles = StyleSheet.create({
     flex: 1,
     width: Dimensions.get("window").width,
     flexDirection: "column",
-    padding: 20,
+    paddingHorizontal: 20,
+    marginBottom: 80,
+    gap:10,
   },
   postContainer: {
     gap: 16,

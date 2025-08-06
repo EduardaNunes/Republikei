@@ -15,6 +15,21 @@ import HouseInfoList from "@/components/houseInfoList/houseInfoList";
 
 export default function PvuLandLord() {
 
+    const loggedUserId = "user123";
+    const postOwnerId = "user123";
+
+    const isOwner = loggedUserId === postOwnerId;
+
+    const userType = loggedUserId === postOwnerId ? "owner" : "standard";
+
+    //se for landlord vendo o proprio post: olhinho, se for renter aparece coração
+    const statusType = userType === "owner" ? "visibility" : "favorite";
+
+    //se for um landlord vendo post de outra pessoa nao é p aparecer icoen
+    const shouldShowStatusPost = !(userType === "owner" && statusType === "favorite");
+
+
+
 const characteristics = [
   { id: "characteristics-1", name: "Aceita Animais" },
   { id: "characteristics-3", name: "Com Piscina" },
@@ -69,7 +84,7 @@ const endereco = {
         <View style={styles.container}>
             <View  style={styles.titleContainer}>
                 <AppText style={styles.title}>QUARTO CENTRO</AppText>
-                <StatusPost type={"visibility"} />
+                {shouldShowStatusPost && <StatusPost type={statusType} />}
             </View>
             <AppText>{desc}</AppText>
             <View style={styles.geralContainer}>
@@ -91,13 +106,13 @@ const endereco = {
                     <HouseInfoList data={houseData}/>
 
                 <AppText style={styles.subtitle}>LOCADOR</AppText>
-                <LandlordName name={"Nome"} phone={"(83) 93784-3947"} />
+                <LandlordName name={"Nome"} phone={"(83) 93784-3947"} mail="abc@gmail.com" />
                 </View>
             </View>
 
         </View>
     </ScrollView>
-            <PriceAndContactButton price={800} />
+            <PriceAndContactButton price={800} isOwner={isOwner}/>
     </>
   );
 }

@@ -1,84 +1,54 @@
-import { Image, View, ScrollView, Alert } from "react-native";
-
-import React, { useState, useEffect } from "react";
+import { View, ScrollView } from "react-native";
+import React from "react";
 import { styles } from "../../components/styles/favorites";
-import SquareButton from "@/components/button";
-import Input from "@/components/input";
-import { SafeAreaView } from "react-native-safe-area-context";
-import BackButton from "@/components/backButton";
 import AppText from "@/components/appText";
 import Menu from "@/components/menu";
 import PostBlock from "@/components/postBlock";
 
-
-
 export default function Favorites() {
+
+  const favoritePosts = [
+    {
+      id: "1",
+      image: require("@/assets/Imagem.png"),
+      title: "Quarto - Centro",
+      price: 800,
+    },
+    {
+      id: "2",
+      image: require("@/assets/Imagem.png"),
+      title: "Quarto - Bairro Primavera",
+      price: 750,
+    },
+    {
+      id: "3",
+      image: require("@/assets/Imagem.png"),
+      title: "Studio - UFJF",
+      price: 900,
+    },
+  ];
 
   return (
     <>
-    <ScrollView style={styles.container}>
-        <View  style={styles.titleContainer}>
-            <AppText style={styles.title}>FAVORITOS</AppText>
+      <ScrollView style={styles.container}
+        contentContainerStyle={{ alignItems: "center", gap: 20 }}>
+        <View style={styles.titleContainer}>
+          <AppText style={styles.title}>FAVORITOS</AppText>
         </View>
-        <View  style={styles.postContainer}>
+
+       
+          {favoritePosts.map((post) => (
             <PostBlock
-                type="favorite"
-                image={""}
-                title={"Quarto - centro"}
-                price={800}
+              key={post.id}
+              statusType="favorite"    // Passa o ícone coração
+              image={post.image}
+              title={post.title}
+              price={post.price}
             />
-            <PostBlock
-                type="favorite"
-                image={""}
-                title={"Quarto - centro"}
-                price={800}
-            />
-        
-            <PostBlock
-                type="favorite"
-                image={""}
-                title={"Quarto - centro"}
-                price={800}
-            />
-            <PostBlock
-                type="favorite"
-                image={""}
-                title={"Quarto - centro"}
-                price={800}
-            />
-            <PostBlock
-                type="favorite"
-                image={""}
-                title={"Quarto - centro"}
-                price={800}
-            />
-            <PostBlock
-                type="favorite"
-                image={""}
-                title={"Quarto - centro"}
-                price={800}
-            />
-            <PostBlock
-                type="favorite"
-                image={""}
-                title={"Quarto - centro"}
-                price={800}
-            />
-            <PostBlock
-                type="favorite"
-                image={""}
-                title={"Quarto - centro"}
-                price={800}
-            />
-            <PostBlock
-                type="favorite"
-                image={""}
-                title={"Quarto - centro"}
-                price={800}
-            />
-        </View>
-    </ScrollView>
-    <Menu></Menu>
+          ))}
+   
+      </ScrollView>
+      <Menu />
     </>
   );
 }

@@ -6,23 +6,16 @@ export const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-  },
-  iconContainer: {
-    borderColor: colors.orange[300],
-    borderStyle: "solid",
-    borderWidth: 2,
-    width: 70,
-    height: 70,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: "50%",
+    borderWidth:2,
+    padding:8,
+    borderColor:colors.orange[300],
+    borderRadius:12
   },
   textContainer: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    marginLeft: 20,
+
   },
   textName: {
     color: colors.orange[300],
@@ -32,9 +25,5 @@ export const styles = StyleSheet.create({
   textNumber: {
     color: "#fff",
     fontSize: 16,
-  },
-  button: {
-    marginLeft: "auto",
-    paddingRight: 20,
   },
 });

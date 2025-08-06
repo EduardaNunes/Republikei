@@ -71,14 +71,7 @@ export default function AddProperty_2() {
           <View style={styles.geralContainer}>
             <View style={styles.inputContainer}>
               <View style={styles.subinputContainer}>
-                <Input
-                  variant="secondary"
-                  title="Pessoas/Imóvel"
-                  keyboardType="numeric"
-                  containerStyle={{ width: "48%" }}
-                  onChangeText={setPessoasCasa}
-                  value={pessoasCasa}
-                />
+        
                 <Input
                   variant="secondary"
                   title="Banheiros"
@@ -86,6 +79,15 @@ export default function AddProperty_2() {
                   containerStyle={{ width: "48%" }}
                   onChangeText={setBanheiro}
                   value={banheiro}
+                />
+
+                <Input
+                  variant="secondary"
+                  title="Salas Jantar"
+                  keyboardType="numeric"
+                  containerStyle={{ width: "48%" }}
+                  onChangeText={setJantar}
+                  value={jantar}
                 />
               </View>
               <View style={styles.subinputContainer}>
@@ -125,14 +127,7 @@ export default function AddProperty_2() {
                 />
               </View>
               <View style={styles.subinputContainer}>
-                <Input
-                  variant="secondary"
-                  title="Salas Jantar"
-                  keyboardType="numeric"
-                  containerStyle={{ width: "48%" }}
-                  onChangeText={setJantar}
-                  value={jantar}
-                />
+                
                 <Input
                   variant="secondary"
                   title="Varandas"
