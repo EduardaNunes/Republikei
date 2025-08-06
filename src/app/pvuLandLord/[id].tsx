@@ -175,7 +175,7 @@ export default function PvuLandLord() {
 
             <View  style={styles.titleContainer}>
                 <AppText style={styles.title}>{property.tipoMoradiaEspecifico + " - " + (property.bairro || "Sem Bairro")}</AppText>
-                {shouldShowStatusPost && <StatusPost type={statusType} />}
+                {/*shouldShowStatusPost && <StatusPost type={statusType} isActive={!property.oculto}/>*/}
             </View>
 
             <AppText>{property.descricao}</AppText>
