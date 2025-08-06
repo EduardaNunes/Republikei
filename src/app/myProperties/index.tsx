@@ -8,14 +8,7 @@ import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-interface Property {
-  id: string,
-  tipoMoradiaEspecifico: string,
-  bairro: string,
-  preco: number,
-  imagens: string[],
-  oculto: boolean
-}
+import { Imovel } from "@/utils/Imovel";
 
 export default function SearchResult() {
   // Lista simulada dos imóveis do landlord logado
@@ -40,7 +33,7 @@ export default function SearchResult() {
   //   },
   // ];
 
-  const [myProperties, setMyProperties] = useState<Property[]>([]);
+  const [myProperties, setMyProperties] = useState<Imovel[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
