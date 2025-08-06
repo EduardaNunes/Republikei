@@ -26,9 +26,7 @@ export default function PvuLandLord() {
   const [userPhone, setUserPhone] = useState('');
   const [userEmail, setUserEmail] = useState('');
 
-  console.log('dentro')
   const handleDelete = async () => {
-    console.log('deleta')
     Alert.alert(
       "Confirmar Exclusão",
       "Você tem certeza que deseja excluir este imóvel? Esta ação não pode ser desfeita.",
