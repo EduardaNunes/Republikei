@@ -163,14 +163,11 @@ function NewPostProvider({ children }: NewPostProviderProps) {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) throw new Error("Usuário não autenticado.");
 
-        console.log("Usuário autenticado para upload:", user.id);
-
         // Lógica de upload das imagens
         const uploadedImageUrls = [];
         for (const localUri of imagens) {
           
           const fileName = `imovel-${user.id}-${new Date().getTime()}.jpg`;
-          console.log(`--- Iniciando upload para o arquivo: ${fileName} ---`);
 
           const base64 = await FileSystem.readAsStringAsync(localUri, {
             encoding: FileSystem.EncodingType.Base64,
@@ -182,13 +179,10 @@ function NewPostProvider({ children }: NewPostProviderProps) {
               contentType: 'image/jpeg' 
           });
 
-          console.log('uploadError: ' + uploadError)
           if (uploadError) throw uploadError;
 
           const { data } = supabase.storage.from('imoveis-imagens').getPublicUrl(fileName);
-          console.log('data: ' + data)
           uploadedImageUrls.push(data.publicUrl);
-          console.log('uploadedImageUrls: ' + uploadedImageUrls)
         }
 
         const novoImovel = {
