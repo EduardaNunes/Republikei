@@ -1,118 +1,191 @@
-import { Image, View, ScrollView, Alert } from "react-native";
+import { Image, View, ScrollView, Alert, ActivityIndicator } from "react-native";
 
 import { styles } from "../../components/styles/pvuLandLord";
 import AppText from "@/components/appText";
 import SelectableBlock from "@/components/selectableBlock";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import StatusPost from "@/components/statusPost";
 import LandlordName from "@/components/landlordName";
 import PriceAndContactButton from "@/components/priceAndContactButton";
 import BackButton from "@/components/backButton";
 import { ImageCarousel } from "@/components/imagesCarrossel";
 import HouseInfoList from "@/components/houseInfoList/houseInfoList";
-
-
+import { useEffect, useState } from "react";
+import { Imovel } from "@/utils/Imovel";
+import { supabase } from "@/lib/supabase";
+import { characteristics } from "@/utils/enums";
 
 export default function PvuLandLord() {
 
-    const loggedUserId = "user123";
-    const postOwnerId = "user123";
+  const { id } = useLocalSearchParams<{ id: string }>(); 
+  
+  const [property, setProperty] = useState<Imovel | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [userType, setUserType] = useState('');
+  const [userName, setUserName] = useState('');
+  const [userPhone, setUserPhone] = useState('');
+  const [userEmail, setUserEmail] = useState('');
 
-    const isOwner = loggedUserId === postOwnerId;
+  useEffect(() => {
 
-    const userType = loggedUserId === postOwnerId ? "owner" : "standard";
+    if (!id) return;
 
-    //se for landlord vendo o proprio post: olhinho, se for renter aparece coração
-    const statusType = userType === "owner" ? "visibility" : "favorite";
+    const fetchPropertyDetails = async () => {
 
-    //se for um landlord vendo post de outra pessoa nao é p aparecer icoen
-    const shouldShowStatusPost = !(userType === "owner" && statusType === "favorite");
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        setUserType(user.user_metadata.userType || null);
+        setUserName(user.user_metadata.displayName || '');
+        setUserEmail(user.email || 'E-mail não encontrado');
+        setUserPhone(user.phone || "");
+      }
 
+      setLoading(true);
 
+      try {
 
-const characteristics = [
-  { id: "characteristics-1", name: "Aceita Animais" },
-  { id: "characteristics-3", name: "Com Piscina" },
-  { id: "characteristics-4", name: "Com Quintal" },
-  { id: "characteristics-8", name: "Água Inclusa" },
-  { id: "characteristics-9", name: "Gás Incluso" },
-  { id: "characteristics-10", name: "Intenet Inclusa" },
-];
+        const { data, error } = await supabase
+          .from('Imoveis')
+          .select('*')
+          .eq('id', id)
+          .single();
 
-const furniture = [
-  { id: "furniture-geladeira", name: "Geladeira" },
-  { id: "furniture-armario", name: "Armário" },
-  { id: "furniture-microondas", name: "Microondas" },
-  { id: "furniture-lavar_louca", name: "Máquina de Lavar Louça" },
-  { id: "furniture-varal", name: "Varal" },
-  { id: "furniture-mesa_jantar", name: "Mesa de Jantar" },
-  { id: "furniture-tv", name: "Televisão" },
-];
+        if (error) throw error;
+        
+        if (data) setProperty(data); 
+        else throw new Error("Imóvel não encontrado.");
 
-const images = [
-  require('@/assets/Imagem.png'),
-  require('@/assets/Imagem.png'),
-  require('@/assets/Imagem.png'),
-  require('@/assets/Imagem.png'),
-  require('@/assets/Imagem.png'),
-  require('@/assets/Imagem.png'),
-]
+      } catch (error: any) {
+        Alert.alert("Erro", "Não foi possível carregar os detalhes do imóvel.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-const houseData = {
-  banheiros: 2,
-  salasEstar: 1,
-  cozinhas: 1,
-  pessoasPorMoradia: 5,
-  pessoasPorQuarto: 2,
-};
+    fetchPropertyDetails();
+  }, [id]);
 
-const desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+  if (loading) {
+    return <ActivityIndicator style={{ flex: 1 }} size="large" />;
+  }
 
-const endereco = {
-  rua: "Rua das Flores",
-  numero: "123",
-  bairro: "Jardim Primavera",
-  complemento: "Apto 301", 
-};
+  if (!property) {
+    return <AppText>Imóvel não encontrado.</AppText>;
+  }
+
+  const statusType = userType === "owner" ? "visibility" : "favorite";
+  const shouldShowStatusPost = !(userType === "owner" && statusType === "favorite");
 
 
+
+  // const characteristics = [
+  //   { id: "characteristics-1", name: "Aceita Animais" },
+  //   { id: "characteristics-3", name: "Com Piscina" },
+  //   { id: "characteristics-4", name: "Com Quintal" },
+  //   { id: "characteristics-8", name: "Água Inclusa" },
+  //   { id: "characteristics-9", name: "Gás Incluso" },
+  //   { id: "characteristics-10", name: "Intenet Inclusa" },
+  // ];
+
+  // const furniture = [
+  //   { id: "furniture-geladeira", name: "Geladeira" },
+  //   { id: "furniture-armario", name: "Armário" },
+  //   { id: "furniture-microondas", name: "Microondas" },
+  //   { id: "furniture-lavar_louca", name: "Máquina de Lavar Louça" },
+  //   { id: "furniture-varal", name: "Varal" },
+  //   { id: "furniture-mesa_jantar", name: "Mesa de Jantar" },
+  //   { id: "furniture-tv", name: "Televisão" },
+  // ];
+
+  const images = [
+    require('@/assets/Imagem.png'),
+    require('@/assets/Imagem.png'),
+    require('@/assets/Imagem.png'),
+    require('@/assets/Imagem.png'),
+    require('@/assets/Imagem.png'),
+    require('@/assets/Imagem.png'),
+  ]
+
+  // const houseData = {
+  //   banheiros: 2,
+  //   salasEstar: 1,
+  //   cozinhas: 1,
+  //   pessoasPorMoradia: 5,
+  //   pessoasPorQuarto: 2,
+  // };
+
+  // const desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+
+  // const endereco = {
+  //   rua: "Rua das Flores",
+  //   numero: "123",
+  //   bairro: "Jardim Primavera",
+  //   complemento: "Apto 301", 
+  // };
+
+  console.log(property.caracteristicas)
   return (
     <>
     <ScrollView >
         <BackButton onPress={() => router.back()}/>
-        <ImageCarousel images={images} style={styles.image}/>
+        <ImageCarousel images={(property.imagens || []).map(url => ({ uri: url }))} style={styles.image}/>
+
         <View style={styles.container}>
+
             <View  style={styles.titleContainer}>
-                <AppText style={styles.title}>QUARTO CENTRO</AppText>
+                <AppText style={styles.title}>{property.tipoMoradiaEspecifico + " - " + (property.bairro || "Sem Bairro")}</AppText>
                 {shouldShowStatusPost && <StatusPost type={statusType} />}
             </View>
-            <AppText>{desc}</AppText>
+
+            <AppText>{property.descricao}</AppText>
+
             <View style={styles.geralContainer}>
-                <View  style={styles.inputContainer}>
-                    <AppText style={styles.subtitle}>TIPO DE MORADOR</AppText>
-                    <SelectableBlock objects={[{id: "1" , name: "Feminina"}]} readOnly/>
-                    <AppText style={styles.subtitle}>TIPO DE MORADIA</AppText>
-                    <SelectableBlock objects={[{id: "1" , name: "Compartilhada"}]} readOnly/>
-                    <AppText style={styles.subtitle}>CARACTERÍSTICAS</AppText>
-                    <SelectableBlock readOnly objects={characteristics}/>
-                    <AppText style={styles.subtitle}>MOBÍLIA</AppText>
-                    <SelectableBlock readOnly objects={furniture}/>
-                    <AppText style={styles.subtitle}>ENDEREÇO</AppText>
-                    <AppText>
-                      {`${endereco.rua}, nº ${endereco.numero}, Bairro ${endereco.bairro}`}
-                      {endereco.complemento ? `, ${endereco.complemento}` : ""}
-                    </AppText>
-                    <AppText style={styles.subtitle}>MAIS INFORMAÇÕES</AppText>
-                    <HouseInfoList data={houseData}/>
+              <View  style={styles.inputContainer}>
+
+                <AppText style={styles.subtitle}>TIPO DE MORADOR</AppText>
+                <SelectableBlock objects={[{id: "1" , name: property.tipoVaga}]} readOnly/>
+
+                <AppText style={styles.subtitle}>TIPO DE MORADIA</AppText>
+                <SelectableBlock objects={[{id: "1" , name: property.tipoMoradia}]} readOnly/>
+
+                <AppText style={styles.subtitle}>CARACTERÍSTICAS</AppText>
+                <SelectableBlock readOnly objects={(property.caracteristicas || [] ).map((caracteristica, index) => ({id: index.toString(), name: caracteristica}) )}/>
+
+                <AppText style={styles.subtitle}>MOBÍLIA</AppText>
+                <SelectableBlock readOnly objects={(property.moveisDisponiveis || [] ).map((movel, index) => ({id: index.toString(), name: movel}) )}/>
+
+                <AppText style={styles.subtitle}>ENDEREÇO</AppText>
+                <AppText>
+                  {`${property.rua}, nº ${property.numero}, Bairro ${property.bairro} - ${property.cep} - `}
+                  {property.complemento ? `, ${property.complemento}` : ""}
+                </AppText>
+
+                <AppText style={styles.subtitle}>MAIS INFORMAÇÕES</AppText>
+                <HouseInfoList data={
+                  {
+                    banheiros: property.num_banheiro,
+                    salasEstar: property.num_salaEstar,
+                    cozinhas: property.num_cozinha,
+                    pessoasPorMoradia: property.num_pessoasCasa,
+                    pessoasPorQuarto: property.num_pessoasQuarto,
+                    areasServico: property.num_areaServico,
+                    vagasGaragem: property.num_garagem,
+                    salasJantar: property.num_salaJantar,
+                    varandas: property.num_varanda,
+                    quartos: property.num_quartos,  
+                  }
+                }/>
 
                 <AppText style={styles.subtitle}>LOCADOR</AppText>
-                <LandlordName name={"Nome"} phone={"(83) 93784-3947"} mail="abc@gmail.com" />
-                </View>
-            </View>
+                <LandlordName name={userName || 'Sem Nome'} phone={userPhone || '(00) 00000-0000'} mail={userEmail || "???@gmail.com"} />
 
+              </View>
+            </View>
         </View>
+
     </ScrollView>
-            <PriceAndContactButton price={800} isOwner={isOwner}/>
+    <PriceAndContactButton price={property.preco} isOwner={userType === "owner"}/>
     </>
   );
 }
