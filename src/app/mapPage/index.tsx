@@ -11,6 +11,7 @@ import Menu from "@/components/menu";
 import Categories from "@/components/categories";
 import { colors } from "@/styles/colors"; 
 import { useRouter } from "expo-router";
+import { categories } from "@/utils/categories";
 
 interface Imovel {
   id: string;
@@ -20,6 +21,7 @@ interface Imovel {
   numero?: number;
   preco?: number;
   imagens?: string[];
+  tipoMoradiaEspecifico?: string;
 }
 
 export default function MapPage() {
@@ -33,9 +35,13 @@ export default function MapPage() {
     longitudeDelta: 0.01,
   });
 
-  const [imoveis, setImoveis] = useState<Imovel[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("0"); 
+
+  const [allImoveis, setAllImoveis] = useState<Imovel[]>([]);
+  const [filteredImoveis, setFilteredImoveis] = useState<Imovel[]>([]);
+
   const [loading, setLoading] = useState(true);
-  const [selectedImovel, setSelectedImovel] = useState<any>(null); // Para o painel de info
+  const [selectedImovel, setSelectedImovel] = useState<any>(null); 
 
   useEffect(() => {
     const fetchImoveis = async () => {
@@ -51,7 +57,8 @@ export default function MapPage() {
         console.error("Erro ao buscar imóveis:", error);
         Alert.alert("Erro", "Não foi possível carregar os imóveis.");
       } else if (data) {
-        setImoveis(data);
+        setAllImoveis(data);
+        setFilteredImoveis(data);
       }
       
       setLoading(false);
@@ -60,11 +67,30 @@ export default function MapPage() {
     fetchImoveis();
   }, []);
 
+  useEffect(() => {
+  
+    if (selectedCategoryId === "0") { // Todos
+      setFilteredImoveis(allImoveis);
+      return;
+    }
+
+    const categoryName = categories.find(category => category.id === selectedCategoryId)?.name;
+
+    const filtered = allImoveis.filter(
+      (imovel) => imovel.tipoMoradiaEspecifico === categoryName
+    );
+    setFilteredImoveis(filtered);
+
+  }, [selectedCategoryId, allImoveis]);
+
   return (
     <>
     <View style={styles.container}>
-        <Input placeholder="Pesquisar" placeholderTextColor={colors.gray[100]}></Input>
-        <Categories></Categories>
+        {/* <Input placeholder="Pesquisar" placeholderTextColor={colors.gray[100]}></Input>*/}
+        <Categories 
+          selectedCategoryId={selectedCategoryId} 
+          onCategorySelect={setSelectedCategoryId} 
+        />
         <View  style={localStyles.mapContainer}>
           <MapView
             style={StyleSheet.absoluteFillObject}
@@ -73,7 +99,7 @@ export default function MapPage() {
             initialRegion={region}
             onPress={() => setSelectedImovel(null)}
           >
-            {imoveis.map((imovel) => (
+            {filteredImoveis.map((imovel) => (
               <Marker
                 key={imovel.id}
                 coordinate={{

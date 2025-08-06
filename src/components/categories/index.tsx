@@ -2,13 +2,19 @@ import { FlatList } from "react-native";
 import { styles } from "./styles";
 import { categories } from "@/utils/categories";
 import { Category } from "@/components/category";
-import { useState } from "react";
+//import { useState } from "react";
 
-export default function Categories() {
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("0"); 
+type CategoriesProps = {
+  selectedCategoryId: string;
+  onCategorySelect: (id: string) => void;
+}
+
+export default function Categories({ selectedCategoryId, onCategorySelect }: CategoriesProps) {
+  //const [selectedCategoryId, setSelectedCategoryId] = useState<string>("0"); 
 
   const handleSelect = (id: string) => {
-    setSelectedCategoryId(id); 
+    //setSelectedCategoryId(id); 
+    onCategorySelect(id);
   };
 
   return (
