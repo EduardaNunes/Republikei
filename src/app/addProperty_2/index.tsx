@@ -28,7 +28,7 @@ export default function AddProperty_2() {
     // Verifica se algum campo obrigatório está vazio
     if (
       !banheiro || !estar || !servico || !garagem ||
-      !cozinha || !jantar || !varanda || !pessoasCasa
+      !cozinha || !jantar || !varanda
     ) {
       Alert.alert("Campos obrigatórios", "Por favor, preencha todos os campos.");
       return;
