@@ -23,7 +23,7 @@ export default function SearchResult() {
                 <SquareButton variant="mediumS" name="Ver Mapa"/>
             </View>
         </View>
-        <PostBlock type="favorite" statusType="favorite" image="@/assets/Imagem.png" title="Quarto" price={800}/>
+        <PostBlock statusType="favorite" image="@/assets/Imagem.png" title="Quarto" price={800} isActive={false}/>
 
         
         

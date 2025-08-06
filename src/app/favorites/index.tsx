@@ -61,6 +61,7 @@ export default function Favorites() {
         <View style={styles.titleContainer}>
           <AppText style={styles.title}>FAVORITOS</AppText>
         </View>
+          <AppText>Em Desenvolvimento</AppText>
           {myFavorites.map((favorite) => (
             <PostBlock
               key={favorite.id}
@@ -73,6 +74,7 @@ export default function Favorites() {
               title={favorite.tipoMoradiaEspecifico + " - " + (favorite.bairro || 'Sem Bairro')}
               price={favorite.preco}
               statusType="favorite" 
+              isActive={true}
             />
           ))}
       </ScrollView>

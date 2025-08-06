@@ -23,18 +23,31 @@ export default function HomePage() {
   const [userType, setUserType] = useState('');
   const [userId, setUserId] = useState('');
 
+  //const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
+
   useEffect(() => {
 
     const fetchImoveis = async () => {
 
+      setLoading(true);
+      
       const { data: { user } } = await supabase.auth.getUser();
             
       if (user) {
         setUserType(user.user_metadata.userType || null);
         setUserId(user.id);
-      }
 
-      setLoading(true);
+        // const { data: favoritesData, error: favoritesError } = await supabase
+        //   .from('favoritos')
+        //   .select('imovel_id')
+        //   .eq('user_id', user.id);
+        
+        // if (favoritesData) {
+        //   const ids = new Set(favoritesData.map(fav => fav.imovel_id));
+        //   setFavoriteIds(ids);
+        // }
+
+      }
       
       const { data, error } = await supabase
         .from('Imoveis')
@@ -58,19 +71,24 @@ export default function HomePage() {
 
   useEffect(() => {
     
-      if (selectedCategoryId === "0") { // Todos
-        setFilteredImoveis(allImoveis);
-        return;
+    const filtered = allImoveis.filter(imovel => {
+
+      if (imovel.oculto) {
+        return false; 
       }
-  
-      const categoryName = categories.find(category => category.id === selectedCategoryId)?.name;
-  
-      const filtered = allImoveis.filter(
-        (imovel) => imovel.tipoMoradiaEspecifico === categoryName
-      );
-      setFilteredImoveis(filtered);
-  
-    }, [selectedCategoryId, allImoveis]);
+
+      if (selectedCategoryId === "0") {
+        return true;
+      }
+
+      const categoryName = categories.find(cat => cat.id === selectedCategoryId)?.name;
+      return imovel.tipoMoradiaEspecifico === categoryName;
+
+    });
+
+    setFilteredImoveis(filtered);
+
+  }, [selectedCategoryId, allImoveis]);
   
 
   if (loading) {
@@ -80,6 +98,24 @@ export default function HomePage() {
       </View>
     );
   }
+
+  // const handleToggleFavorite = async (imovelId: string) => {
+  //   const isFavorited = favoriteIds.has(imovelId);
+    
+  //   const newFavoriteIds = new Set(favoriteIds);
+  //   if (isFavorited) {
+  //     newFavoriteIds.delete(imovelId);
+  //   } else {
+  //     newFavoriteIds.add(imovelId);
+  //   }
+  //   setFavoriteIds(newFavoriteIds);
+
+  //   if (isFavorited) {
+  //     await supabase.from('favoritos').delete().match({ user_id: userId, imovel_id: imovelId });
+  //   } else {
+  //     await supabase.from('favoritos').insert({ user_id: userId, imovel_id: imovelId });
+  //   }
+  // };
 
   return (
     <>
@@ -104,29 +140,24 @@ export default function HomePage() {
         <View style={styles.postContainer}>
           {filteredImoveis.map((post) => {
             let statusType: "visibility" | "favorite" | undefined = undefined;
-
             if (userType === "standard") {
               statusType = "favorite";
-            } else if (userType === "owner") {
-              if (userId === post.proprietario) {
-                statusType = "visibility";
-              } else {
-                statusType = undefined;
-              }
-            }
-
+            } else if (userType === "owner" && userId === post.proprietario) {
+              statusType = undefined;
+          }
             return (
               <PostBlock
                 key={post.id}
                 image={
                   post.imagens && post.imagens.length > 0
-                  ? { uri: post.imagens[0] }
-                  : require("../../assets/Imagem.png")
+                    ? { uri: post.imagens[0] }
+                    : require("../../assets/Imagem.png")
                 }
                 title={post.tipoMoradiaEspecifico + " - " + post.bairro}
                 price={post.preco}
                 statusType={statusType}
                 onPress={() => router.push(`/pvuLandLord/${post.id}`)}
+                isActive={!post.oculto}
               />
             );
           })}

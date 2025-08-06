@@ -7,36 +7,39 @@ type PostBlockProps = {
   image: any;
   title: string;
   price: number;
-  type?: "favorite" | "preview";
+  //type?: "favorite" | "preview";
   statusType?: "visibility" | "favorite";
   onPress?: () => void;
+  isActive: boolean; 
+  onStatusPress?: () => void; 
 };
 
 export default function PostBlock({
   image,
   title,
   price,
-  type,
   statusType,
-  onPress
+  onPress,
+  isActive,
+  onStatusPress,
 }: PostBlockProps) {
   return (
     <TouchableOpacity
-      style={
-        type === "favorite" ? styles.containerFavorite : styles.containerPreview
-      }
+      style={styles.containerPreview}
       onPress={onPress}
+      disabled={!onPress}
     >
-      {/* Só mostra o status se for preview e statusType estiver definido */}
-      {type !== "favorite" && statusType && (
-        <StatusPost style={styles.status} type={statusType} />
+      {statusType && (
+        <StatusPost
+          style={styles.status}
+          type={statusType}
+          isActive={isActive}
+          onPress={onStatusPress}
+        />
       )}
       
-      <Image
-        source={image}
-        style={type === "favorite" ? styles.imageFavorite : styles.imagePreview}
-      />
-      <AppText style={styles.title} >{title}</AppText>
+      <Image source={image} style={styles.imagePreview} />
+      <AppText style={styles.title}>{title}</AppText>
       <AppText style={styles.price}>R$ {price}/mês</AppText>
     </TouchableOpacity>
   );
