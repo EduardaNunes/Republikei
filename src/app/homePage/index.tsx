@@ -126,6 +126,7 @@ export default function HomePage() {
                 title={post.tipoMoradiaEspecifico + " - " + post.bairro}
                 price={post.preco}
                 statusType={statusType}
+                onPress={() => router.push(`/pvuLandLord/${post.id}`)}
               />
             );
           })}
