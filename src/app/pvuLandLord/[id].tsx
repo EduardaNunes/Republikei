@@ -166,7 +166,13 @@ export default function PvuLandLord() {
     <>
     <ScrollView >
         <BackButton onPress={() => router.back()}/>
-        <ImageCarousel images={(property.imagens || []).map(url => ({ uri: url }))} style={styles.image}/>
+        <ImageCarousel 
+          images={
+            property.imagens && property.imagens.length > 0
+            ? property.imagens.map(url => ({ uri: url }))
+            : [require("../../assets/Imagem.png")]
+          }
+          style={styles.image}/>
 
         <View style={styles.container}>
 
