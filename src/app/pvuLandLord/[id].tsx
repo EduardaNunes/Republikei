@@ -26,6 +26,43 @@ export default function PvuLandLord() {
   const [userPhone, setUserPhone] = useState('');
   const [userEmail, setUserEmail] = useState('');
 
+  console.log('dentro')
+  const handleDelete = async () => {
+    console.log('deleta')
+    Alert.alert(
+      "Confirmar Exclusão",
+      "Você tem certeza que deseja excluir este imóvel? Esta ação não pode ser desfeita.",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Excluir",
+          style: "destructive",
+          onPress: async () => {
+            setLoading(true);
+
+            try {
+
+              const { error } = await supabase
+                .from('Imoveis')
+                .delete()
+                .eq('id', id);
+
+              if (error) throw error;
+
+              Alert.alert("Sucesso", "Imóvel excluído.");
+              router.replace('/myProperties'); 
+
+            } catch (error: any) {
+              Alert.alert("Erro", "Não foi possível excluir o imóvel.");
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   useEffect(() => {
 
     if (!id) return;
@@ -185,7 +222,7 @@ export default function PvuLandLord() {
         </View>
 
     </ScrollView>
-    <PriceAndContactButton price={property.preco} isOwner={userType === "owner"}/>
+    <PriceAndContactButton price={property.preco} isOwner={userType === "owner"} onDelete={handleDelete}/>
     </>
   );
 }
