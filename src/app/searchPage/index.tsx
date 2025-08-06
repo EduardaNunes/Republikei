@@ -34,7 +34,7 @@ export default function SearchPage() {
                 <SelectableBlock type="ranking"/>
             </View>
             <View style={styles.buttonsContainer} >
-                <SquareButton name="Pesquisar"></SquareButton>
+                <SquareButton name="Pesquisar" onPress={() => Alert.alert('Em Desenvolvimento')}></SquareButton>
                 <SquareButton name="Voltar" variant="secondary" onPress={()=> router.back()}></SquareButton>
             </View>
         </View>
