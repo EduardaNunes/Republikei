@@ -39,8 +39,8 @@ export default function Favorites() {
           }
 
         } catch (error: any) {
-          console.error("Erro ao buscar imóveis:", error);
-          Alert.alert("Erro", "Não foi possível carregar seus imóveis.");
+          console.error("Erro ao buscar favoritos:", error);
+          Alert.alert("Erro", "Não foi possível carregar seus favoritos.");
         } finally {
           setLoading(false);
         }
