@@ -13,7 +13,7 @@ import AppText from "@/components/appText";
 import Menu from "@/components/menu";
 import SelectableBlock from "@/components/selectableBlock";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { tipoPadrao } from "@/utils/typesAux";
 import { NewPostContext } from "@/contexts/NewPostContext";
 
@@ -22,14 +22,23 @@ export default function addProperty_4_completa() {
   const { isFurnished } = useLocalSearchParams();
   const showFurniture = isFurnished === "true";
 
-  const [tipoMoradiaEspecifico, setTipoMoradiaEspecifico] =
-    useState<tipoPadrao>({ id: "", name: "" });
-  const [quantPessoasCasa] = useState<string>(""); // não usado aqui, mas mantido se necessário no contexto
-  const [quantQuartos, setQuantQuartos] = useState<string>("");
-  const [individual] = useState<string>(""); // não usado aqui, mas mantido se necessário no contexto
-  const [moveisDisponiveis, setMoveisDisponiveis] = useState<tipoPadrao[]>();
+  const {
+    addProperty4,
+    tipoMoradiaEspecifico: contextTipoMoradiaEspecifico,
+    quantQuartos: contextQuantQuartos,
+    moveisDisponiveis: contextMoveisDisponiveis,
+  } = useContext(NewPostContext);
 
-  const { addProperty4 } = useContext(NewPostContext);
+  const [tipoMoradiaEspecifico, setTipoMoradiaEspecifico] = useState<tipoPadrao>(contextTipoMoradiaEspecifico);
+  const [quantQuartos, setQuantQuartos] = useState<string>(contextQuantQuartos?.toString() || "");
+  const [moveisDisponiveis, setMoveisDisponiveis] = useState<tipoPadrao[] | undefined>(contextMoveisDisponiveis);
+  
+  useEffect(() => {
+    setTipoMoradiaEspecifico(contextTipoMoradiaEspecifico);
+    setQuantQuartos(contextQuantQuartos?.toString() || "");
+    setMoveisDisponiveis(contextMoveisDisponiveis);
+  }, [contextTipoMoradiaEspecifico, contextQuantQuartos, contextMoveisDisponiveis]);
+
 
   const handleContinue = () => {
     if (!tipoMoradiaEspecifico?.id) {
@@ -50,9 +59,9 @@ export default function addProperty_4_completa() {
     // Enviar dados
     addProperty4(
       tipoMoradiaEspecifico,
-      0, // quantPessoasCasa (não usado)
-      parseInt(quantQuartos),
-      0, // individual (não usado)
+      0, // quantPessoasCasa (não usado nesta tela)
+      parseInt(quantQuartos) || 0,
+      0, // individual (não usado nesta tela)
       moveisDisponiveis
     );
 
@@ -84,6 +93,7 @@ export default function addProperty_4_completa() {
               <AppText style={styles.subtitle}>SELECIONAR MORADIA</AppText>
               <SelectableBlock
                 type="completeHouseType"
+                initialState={tipoMoradiaEspecifico}
                 returnSelected={(resposta) =>
                   setTipoMoradiaEspecifico(resposta ?? { id: "", name: "" })
                 }
@@ -104,6 +114,7 @@ export default function addProperty_4_completa() {
                   <AppText style={styles.subtitle}>SELECIONAR MÓVEIS</AppText>
                   <SelectableBlock
                     type="furniture"
+                    initialState={moveisDisponiveis}
                     returnSelected={(resposta) =>
                       setMoveisDisponiveis(resposta ?? [])
                     }

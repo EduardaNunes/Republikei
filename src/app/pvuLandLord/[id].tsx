@@ -15,11 +15,16 @@ import { Imovel } from "@/utils/Imovel";
 import { supabase } from "@/lib/supabase";
 import { characteristics } from "@/utils/enums";
 
+import { NewPostContext } from "@/contexts/NewPostContext";
+import { useContext } from "react";
+
 export default function PvuLandLord() {
 
   const { id } = useLocalSearchParams<{ id: string }>(); 
   
   const [property, setProperty] = useState<Imovel | null>(null);
+  const { loadPropertyForEdit } = useContext(NewPostContext);
+
   const [loading, setLoading] = useState(true);
   const [userType, setUserType] = useState('');
   const [userName, setUserName] = useState('');
@@ -110,54 +115,15 @@ export default function PvuLandLord() {
   }
 
   const statusType = userType === "owner" ? "visibility" : "favorite";
-  const shouldShowStatusPost = !(userType === "owner" && statusType === "favorite");
+  //const shouldShowStatusPost = !(userType === "owner" && statusType === "favorite");
 
-
-
-  // const characteristics = [
-  //   { id: "characteristics-1", name: "Aceita Animais" },
-  //   { id: "characteristics-3", name: "Com Piscina" },
-  //   { id: "characteristics-4", name: "Com Quintal" },
-  //   { id: "characteristics-8", name: "Água Inclusa" },
-  //   { id: "characteristics-9", name: "Gás Incluso" },
-  //   { id: "characteristics-10", name: "Intenet Inclusa" },
-  // ];
-
-  // const furniture = [
-  //   { id: "furniture-geladeira", name: "Geladeira" },
-  //   { id: "furniture-armario", name: "Armário" },
-  //   { id: "furniture-microondas", name: "Microondas" },
-  //   { id: "furniture-lavar_louca", name: "Máquina de Lavar Louça" },
-  //   { id: "furniture-varal", name: "Varal" },
-  //   { id: "furniture-mesa_jantar", name: "Mesa de Jantar" },
-  //   { id: "furniture-tv", name: "Televisão" },
-  // ];
-
-  const images = [
-    require('@/assets/Imagem.png'),
-    require('@/assets/Imagem.png'),
-    require('@/assets/Imagem.png'),
-    require('@/assets/Imagem.png'),
-    require('@/assets/Imagem.png'),
-    require('@/assets/Imagem.png'),
-  ]
-
-  // const houseData = {
-  //   banheiros: 2,
-  //   salasEstar: 1,
-  //   cozinhas: 1,
-  //   pessoasPorMoradia: 5,
-  //   pessoasPorQuarto: 2,
-  // };
-
-  // const desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-
-  // const endereco = {
-  //   rua: "Rua das Flores",
-  //   numero: "123",
-  //   bairro: "Jardim Primavera",
-  //   complemento: "Apto 301", 
-  // };
+  const handleEdit = () => {
+    if (!property) return;
+    // 1. Carrega os dados do imóvel para o contexto
+    loadPropertyForEdit(property);
+    // 2. Navega para o início do formulário, passando o ID
+    router.push({ pathname: '/addProperty_1', params: { propertyId: id } });
+  };
 
   return (
     <>
@@ -225,7 +191,7 @@ export default function PvuLandLord() {
         </View>
 
     </ScrollView>
-    <PriceAndContactButton price={property.preco} isOwner={userType === "owner"} onDelete={handleDelete}/>
+    <PriceAndContactButton price={property.preco} isOwner={userType === "owner"} onDelete={handleDelete} onEdit={handleEdit}/>
     </>
   );
 }

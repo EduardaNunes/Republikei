@@ -13,16 +13,18 @@ import { EspacoFisico } from "@/utils/typesAux";
 export default function AddProperty_2() {
   const router = useRouter();
 
-  const [banheiro, setBanheiro] = useState("");
-  const [estar, setEstar] = useState("");
-  const [servico, setServico] = useState("");
-  const [garagem, setGaragem] = useState("");
-  const [cozinha, setCozinha] = useState("");
-  const [jantar, setJantar] = useState("");
-  const [varanda, setVaranda] = useState("");
-  const [pessoasCasa, setPessoasCasa] = useState("");
+  const { addProperty2, espacoFisico, quantPessoasCasa} = useContext(NewPostContext);
 
-  const { addProperty2 } = useContext(NewPostContext);
+  const [banheiro, setBanheiro] = useState(espacoFisico.banheiro?.toString() || "");
+  const [estar, setEstar] = useState(espacoFisico.salaEstar?.toString() || "");
+  const [servico, setServico] = useState(espacoFisico.areaServico?.toString() || "");
+  const [garagem, setGaragem] = useState(espacoFisico.vagaGaragem?.toString() || "");
+  const [cozinha, setCozinha] = useState(espacoFisico.cozinha?.toString() || "");
+  const [jantar, setJantar] = useState(espacoFisico.salaJantar?.toString() || "");
+  const [varanda, setVaranda] = useState(espacoFisico.varanda?.toString() || "");
+  const [pessoasCasa, setPessoasCasa] = useState(quantPessoasCasa?.toString() || "");
+  
+
 
   const handleEnvio = () => {
     // Verifica se algum campo obrigatório está vazio
@@ -36,13 +38,13 @@ export default function AddProperty_2() {
 
     const auxPessoas = parseInt(pessoasCasa);
     const auxEspaco: EspacoFisico = {
-      salaEstar: parseInt(estar),
-      banheiro: parseInt(banheiro),
-      vagaGaragem: parseInt(garagem),
-      cozinha: parseInt(cozinha),
-      salaJantar: parseInt(jantar),
-      areaServico: parseInt(servico),
-      varanda: parseInt(varanda),
+      salaEstar: parseInt(estar) || 0,
+      banheiro: parseInt(banheiro) || 0,
+      vagaGaragem: parseInt(garagem) || 0,
+      cozinha: parseInt(cozinha) || 0,
+      salaJantar: parseInt(jantar) || 0,
+      areaServico: parseInt(servico) || 0,
+      varanda: parseInt(varanda) || 0,
     };
 
     addProperty2(auxEspaco, auxPessoas);

@@ -25,4 +25,7 @@ export interface Imovel {
   num_salaJantar: number,
   num_quartos: number,
   proprietario: string,
+  latitude: number,
+  longitude: number,
+  mobiliado: boolean,
 }

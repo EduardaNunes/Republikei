@@ -3,6 +3,8 @@ import React, { createContext, useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import * as FileSystem from 'expo-file-system';
 import { decode } from 'base64-arraybuffer';     
+import { Imovel } from "@/utils/Imovel";
+import { housingType, vacancyType, characteristics, furniture, completeHouseType,sharedHouseType } from '@/utils/enums';
 
 interface NewPostContextData {
   isSubmitting: boolean;
@@ -44,6 +46,8 @@ interface NewPostContextData {
     preco: number,
     images: string[]
   ): void;
+  propertyIdForEdit: string | null;
+  loadPropertyForEdit(property: Imovel): void;
 }
 
 interface NewPostProviderProps {
@@ -101,6 +105,70 @@ function NewPostProvider({ children }: NewPostProviderProps) {
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
 
+  const [propertyIdForEdit, setPropertyIdForEdit] = useState<string | null>(null);    
+
+  const loadPropertyForEdit = useCallback((property: Imovel) => {
+    // Preenche os estados com os dados do imóvel a ser editado
+    setPropertyIdForEdit(property.id)
+
+    setLocalizacao({
+      cep: property.cep,
+      rua: property.rua,
+      bairro: property.bairro,
+      numero: property.numero,
+      complemento: property.complemento,
+      latitude: property.latitude,
+      longitude: property.longitude,
+    });
+
+    setEspacoFisico({
+      salaEstar: property.num_salaEstar,
+      banheiro: property.num_banheiro,
+      vagaGaragem: property.num_garagem,
+      cozinha: property.num_cozinha,
+      salaJantar: property.num_salaJantar,
+      areaServico: property.num_areaServico,
+      varanda: property.num_varanda,
+    });
+    
+    setMobiliado(property.mobiliado);
+
+    // Procura no array 'housingType' o objeto cujo 'name' corresponde ao que foi salvo no DB
+    const tipoMoradiaObj = housingType.find(h => h.name === property.tipoMoradia) || { id: "", name: "" };
+    setTipoMoradia(tipoMoradiaObj);
+
+    const tipoVagaObj = vacancyType.find(v => v.name === property.tipoVaga) || { id: "", name: "" };
+    setTipoVaga(tipoVagaObj);
+
+    // O tipoMoradiaEspecifico pode vir de duas listas diferentes, então precisamos de uma lógica extra
+    const tipoEspecificoObj = 
+    [...completeHouseType, ...sharedHouseType].find(t => t.name === property.tipoMoradiaEspecifico) || { id: "", name: "" };
+  setTipoMoradiaEspecifico(tipoEspecificoObj);
+
+    const caracteristicasObj = property.caracteristicas
+      ?.map(name => characteristics.find(c => c.name === name))
+      .filter(Boolean) as tipoPadrao[] || [];
+    setCaracteristicas(caracteristicasObj);
+
+    const moveisDisponiveisObj = property.moveisDisponiveis
+      ?.map(name => furniture.find(f => f.name === name))
+      .filter(Boolean) as tipoPadrao[] || [];
+    setMoveisDisponiveis(moveisDisponiveisObj);
+  
+    
+    //setTipoVaga({ id: property.tipoVaga, name: property.tipoVaga });
+
+    setQuantPessoasCasa(property.num_pessoasCasa);
+    setQuantQuartos(property.num_quartos); 
+    setIndividual(property.num_pessoasQuarto); 
+
+    setDescricao(property.descricao || '');
+    setPreco(property.preco);
+    setImagens(property.imagens || []); 
+    setOculto(property.oculto);
+
+  }, []);
+
   const addProperty1 = useCallback((localizacao: Localizacao) => {
     setLocalizacao(localizacao);
   }, []);
@@ -151,7 +219,7 @@ function NewPostProvider({ children }: NewPostProviderProps) {
   }, []);
 
   useEffect(() => {
-    const executeSubmit = async () => {
+    const executeSubmit = async (propertyId?: string) => {
 
       if (!isReadyToSubmit) return;
 
@@ -165,24 +233,24 @@ function NewPostProvider({ children }: NewPostProviderProps) {
 
         // Lógica de upload das imagens
         const uploadedImageUrls = [];
-        for (const localUri of imagens) {
-          
-          const fileName = `imovel-${user.id}-${new Date().getTime()}.jpg`;
-
-          const base64 = await FileSystem.readAsStringAsync(localUri, {
-            encoding: FileSystem.EncodingType.Base64,
-          });
-
-          const { error: uploadError } = await supabase.storage
-            .from('imoveis-imagens')
-            .upload(fileName, decode(base64), { 
-              contentType: 'image/jpeg' 
-          });
-
-          if (uploadError) throw uploadError;
-
-          const { data } = supabase.storage.from('imoveis-imagens').getPublicUrl(fileName);
-          uploadedImageUrls.push(data.publicUrl);
+        for (const uri of imagens) {
+          // Se a URI já é uma URL pública, apenas a mantenha
+          if (uri.startsWith('http')) {
+            uploadedImageUrls.push(uri);
+          } else {
+            // Se for uma URI local (file://), faça o upload
+            const fileName = `imovel-${user.id}-${new Date().getTime()}.jpg`;
+            const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+            
+            const { error: uploadError } = await supabase.storage
+              .from('imoveis-imagens')
+              .upload(fileName, decode(base64), { contentType: 'image/jpeg' });
+            
+            if (uploadError) throw uploadError;
+            
+            const { data } = supabase.storage.from('imoveis-imagens').getPublicUrl(fileName);
+            uploadedImageUrls.push(data.publicUrl);
+          }
         }
 
         const novoImovel = {
@@ -230,20 +298,37 @@ function NewPostProvider({ children }: NewPostProviderProps) {
           proprietario: user.id,
         };
 
-        const { error } = await supabase.from('Imoveis').insert([novoImovel]);
-        if (error) throw error;
+        let error;
 
+        if (propertyIdForEdit) {
+
+          console.log("ATUALIZANDO IMÓVEL EXISTENTE:", propertyIdForEdit);
+          const { error: updateError } = await supabase
+            .from('Imoveis')
+            .update(novoImovel)
+            .eq('id', propertyIdForEdit);
+          error = updateError;
+        } else {
+          // MODO CRIAÇÃO: faz um INSERT
+          console.log("CRIANDO NOVO IMÓVEL");
+          const { error: insertError } = await supabase
+            .from('Imoveis')
+            .insert([novoImovel]);
+          error = insertError;
+        }
+
+        if (error) throw error;
         setSubmissionSuccess(true);
 
-      } catch(error: any) {
-        setSubmissionError(error.message || "Ocorreu um erro desconhecido.");
+      } catch (error: any) {
+        setSubmissionError(error.message || "Ocorreu um erro.");
       } finally {
         setIsSubmitting(false);
         setIsReadyToSubmit(false);
       }
     };
 
-    executeSubmit();
+      executeSubmit()
   }, [isReadyToSubmit]);
 
   return (
@@ -273,6 +358,8 @@ function NewPostProvider({ children }: NewPostProviderProps) {
         addProperty4,
         addProperty5,
         clearSubmissionError,
+        propertyIdForEdit,
+        loadPropertyForEdit,
       }}
     >
       {children}

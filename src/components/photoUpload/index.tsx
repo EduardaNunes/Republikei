@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   TouchableOpacity,
@@ -14,13 +14,19 @@ import { styles } from "./styles";
 type Props = {
   maxImages?: number;
   onImagesChange?: (uris: string[]) => void;
+  initialState?: string[];
 };
 
 export default function ImagePickerComponent({
   maxImages = 15,
   onImagesChange,
+  initialState,
 }: Props) {
-  const [imagens, setImagens] = useState<string[]>([]);
+  const [imagens, setImagens] = useState<string[]>(initialState || []);
+
+  useEffect(() => {
+    setImagens(initialState || []);
+  }, [initialState]);
 
   const pickImage = async () => {
     const permissionResult =

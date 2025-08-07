@@ -13,18 +13,19 @@ import axios from 'axios';
 export default function AddProperty_1() {
   const router = useRouter();
 
+  const { addProperty1, localizacao } = useContext(NewPostContext);
+
   const [loading, setLoading] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
 
-  const [cep, setCep] = useState("");
-  const [rua, setRua] = useState("");
-  const [bairro, setBairro] = useState("");
+  const [cep, setCep] = useState(localizacao.cep);
+  const [rua, setRua] = useState(localizacao.rua);
+  const [bairro, setBairro] = useState(localizacao.bairro);
   const [cidade, setCidade] = useState("");
   const [estado, setEstado] = useState(""); 
-  const [numero, setNumero] = useState("");
-  const [complemento, setComplemento] = useState("");
+  const [numero, setNumero] = useState(localizacao.numero ? localizacao.numero.toString() : "");
+  const [complemento, setComplemento] = useState(localizacao.complemento);
 
-  const { addProperty1 } = useContext(NewPostContext);
 
     const fetchAddressFromCep = async (cepValue: string) => {
     setCepLoading(true);

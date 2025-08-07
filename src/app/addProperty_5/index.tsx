@@ -12,7 +12,7 @@ import SquareButton from "@/components/button";
 import Input from "@/components/input";
 import AppText from "@/components/appText";
 import Menu from "@/components/menu";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { NewPostContext } from "@/contexts/NewPostContext";
 import PhotoUpload from "@/components/photoUpload";
@@ -20,47 +20,54 @@ import PhotoUpload from "@/components/photoUpload";
 export default function AddProperty_5() {
   const router = useRouter();
 
-  const [descricao, setDescricao] = useState<string>("");
-  const [preco, setPreco] = useState<string>("");
-  const [imagens, setImagens] = useState<string[]>([]);
+  const {
+    addProperty5,
+    isSubmitting,
+    submissionError,
+    submissionSuccess,
+    clearSubmissionError,
+    descricao: contextDescricao,
+    preco: contextPreco,
+    imagens: contextImagens,
+    propertyIdForEdit,
+  } = useContext(NewPostContext);
+
+  const { propertyId } = useLocalSearchParams<{ propertyId: string }>();
+
+  const [descricao, setDescricao] = useState<string>(contextDescricao);
+  const [preco, setPreco] = useState<string>(contextPreco?.toString() || "");
+  const [imagens, setImagens] = useState<string[]>(contextImagens);
 
   const [loading, setLoading] = useState(false);
 
-  const { addProperty5, isSubmitting, submissionError, submissionSuccess, clearSubmissionError} = useContext(NewPostContext);
+  useEffect(() => {
+    console.log("IMAGENS INICIAIS PASSADAS PARA O PhotoUpload:", contextImagens);
+    setDescricao(contextDescricao);
+    setPreco(contextPreco?.toString() || "");
+    setImagens(contextImagens);
+  }, [contextDescricao, contextPreco, contextImagens]);
 
-  const handleContinue = async () => {
-
-    if (!descricao.trim()) {
-      Alert.alert("Campo obrigatório", "Por favor, adicione uma descrição.");
+  const handleContinue = () => {
+    if (!descricao.trim() || !preco || !imagens || imagens.length === 0) {
+      Alert.alert("Campos obrigatórios", "Por favor, preencha todos os campos.");
       return;
     }
-
-    const precoNum = parseFloat(preco);
-    if (!preco || isNaN(precoNum) || precoNum <= 0) {
-      Alert.alert("Campo obrigatório", "Informe um preço válido.");
-      return;
-    }
-
-    if (!imagens || imagens.length === 0) {
-      Alert.alert("Campo obrigatório", "Adicione pelo menos uma foto.");
-      return;
-    }
-
-    setLoading(true);
 
     addProperty5(descricao, parseFloat(preco), imagens);
-
-    setLoading(false);
   };
 
   useEffect(() => {
+    // Se a submissão terminou E foi um sucesso...
     if (submissionSuccess && !isSubmitting) {
-      Alert.alert("Sucesso!", "Seu imóvel foi cadastrado.");
+      const message = propertyId ? "Imóvel atualizado com sucesso!" : "Seu imóvel foi cadastrado!";
+      Alert.alert("Sucesso!", message);
       router.replace("/myProperties");
     }
+
+    // Se um erro de submissão apareceu...
     if (submissionError) {
       Alert.alert("Erro ao cadastrar imóvel", submissionError);
-      clearSubmissionError();
+      clearSubmissionError(); // Limpa o erro para não mostrar o alerta de novo
     }
   }, [submissionSuccess, submissionError, isSubmitting]);
 
@@ -103,7 +110,7 @@ export default function AddProperty_5() {
 
               <AppText style={styles.subtitle}>FOTOS (MAX 15)</AppText>
               <View style={styles.subCategoryContainer}>
-                <PhotoUpload onImagesChange={(uris) => setImagens(uris)} />
+                <PhotoUpload onImagesChange={(uris) => setImagens(uris)} initialState={imagens}/>
               </View>
             </View>
           </View>
@@ -115,7 +122,12 @@ export default function AddProperty_5() {
           variant="mediumS"
           onPress={() => router.back()}
         />
-        <SquareButton name="Continuar" variant="mediumP" onPress={handleContinue} />
+        <SquareButton 
+          name={propertyIdForEdit ? "Salvar Alterações" : "Cadastrar Imóvel"} 
+          variant="mediumP" 
+          onPress={handleContinue} 
+          disabled={isSubmitting} 
+        />
       </View>
       <Menu />
     </>
