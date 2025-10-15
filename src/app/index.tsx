@@ -1,5 +1,6 @@
-import { Image, View } from "react-native";
+import { View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Image } from "expo-image";
 
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
