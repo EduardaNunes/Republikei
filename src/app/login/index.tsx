@@ -2,59 +2,50 @@ import {
   Image,
   View,
   TouchableOpacity,
-  Alert,
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
+  ScrollView,
+  KeyboardAvoidingView,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { styles } from "../../components/styles/loginStyles";
 import SquareButton from "@/components/button";
 import AppText from "@/components/appText";
 import Input from "@/components/input";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import BackButton from "@/components/backButton";
-
-import { Session } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "expo-router";
-import { KeyboardAvoidingView, ScrollView } from "react-native";
+import { useLoginPresenter } from "../../presenter/useLoginPresenter"; // 1. Importe o Presenter
 
 export default function Login() {
   const router = useRouter();
+  // 2. Use o Presenter para obter estado e manipuladores de eventos
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    loading,
+    handleSignIn,
+    navigateToSignUp,
+  } = useLoginPresenter();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const [session, setSession] = useState<Session | null>(null);
-
+  // A lógica de sessão pode permanecer aqui ou ser movida para um componente de layout superior
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session) {
+          router.replace("/homePage");
+        }
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, []);
-
-  useEffect(() => {
-    if (session) {
-      router.replace("/homePage");
-    }
-  }, [session]);
-
-  async function signInWithEmail() {
-    setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-
-    if (error) Alert.alert(error.message);
-
-    setLoading(false);
-  }
 
   return (
     <KeyboardAvoidingView
@@ -70,11 +61,10 @@ export default function Login() {
           </SafeAreaView>
 
           <View style={styles.containerTextAndButton}>
-            {session && session.user && <AppText>{session.user.id}</AppText>}
             <View style={styles.inputContainer}>
               <Input
                 title="Email"
-                onChangeText={(text: string) => setEmail(text)}
+                onChangeText={setEmail} // 3. Use os setters do Presenter
                 value={email}
                 placeholder="email@address.com"
                 autoCapitalize="none"
@@ -83,7 +73,7 @@ export default function Login() {
 
               <Input
                 title="Senha"
-                onChangeText={(text: string) => setPassword(text)}
+                onChangeText={setPassword} // 3. Use os setters do Presenter
                 value={password}
                 secureTextEntry
                 placeholder="Password"
@@ -95,13 +85,11 @@ export default function Login() {
               <SquareButton
                 name="Entrar"
                 disabled={loading}
-                onPress={() => signInWithEmail()}
+                onPress={handleSignIn} // 4. Chame os handlers do Presenter
               />
               <View style={styles.signInContainer}>
                 <AppText>Não tem Login?</AppText>
-                <TouchableOpacity
-                  onPress={() => router.push("/")}
-                >
+                <TouchableOpacity onPress={navigateToSignUp}>
                   <AppText style={styles.signInText}>Cadastrar</AppText>
                 </TouchableOpacity>
               </View>
