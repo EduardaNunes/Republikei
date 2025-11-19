@@ -2,12 +2,11 @@ import {
   Image,
   View,
   ScrollView,
-  Alert,
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { styles } from "../../components/styles/signInLandLordStyles";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
@@ -15,70 +14,26 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import BackButton from "@/components/backButton";
 import AppText from "@/components/appText";
 
-import { Session } from "@supabase/supabase-js";
-import { supabase } from "../../lib/supabase";
-import { useRouter } from "expo-router";
 import { KeyboardAvoidingView } from "react-native";
+import { useSignInLandLordPresenter } from "@/presenter/useSignInLandLordPresenter";
 
 export default function SignInLandLord() {
-  const router = useRouter();
-
-  const [userName, setUserName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const [session, setSession] = useState<Session | null>(null);
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-  }, []);
-
-  async function signUp() {
-    if (!checkIfPasswordIsValid()) {
-      Alert.alert("Erro", "As senhas precisam ser iguais.");
-      return;
-    }
-
-    setLoading(true);
-
-    const { data, error } = await supabase.auth.signUp({
-      phone: phoneNumber,
-      email: email,
-      password: password,
-      options: {
-        data: {
-          displayName: userName, 
-          userType: 'owner'
-        },
-      },
-    });
-
-    setLoading(false);
-
-    if (error) {
-      Alert.alert("Erro no Cadastro", error.message);
-
-    } else {
-      Alert.alert(
-        "Cadastro Realizado!",
-        "Verifique sua caixa de entrada para confirmar seu e-mail."
-      );
-
-      router.push('/login');
-    }
-  }
-
-  function checkIfPasswordIsValid() {
-    if (password === passwordConfirmation) return true;
-    else return false;
-  }
+  const {
+    userName,
+    email,
+    phoneNumber,
+    password,
+    passwordConfirmation,
+    loading,
+    setUserName,
+    setEmail,
+    setPhoneNumber,
+    setPassword,
+    setPasswordConfirmation,
+    signUp,
+    routerBack,
+    checkIfPasswordIsValid,
+  } = useSignInLandLordPresenter();
 
   return (
     <KeyboardAvoidingView
@@ -92,9 +47,9 @@ export default function SignInLandLord() {
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         >
-          <BackButton onPress={() => router.back()} />
+          <BackButton onPress={routerBack} />
           <SafeAreaView style={styles.imgContainer}>
-            <Image source={require("@/assets/cadLocat-icon.png")} />{""}
+            <Image source={require("@/assets/cadLocat-icon.png")} />
             <AppText style={styles.title}> CADASTRO LOCADOR </AppText>
           </SafeAreaView>
 
