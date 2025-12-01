@@ -1,0 +1,177 @@
+import {
+  Image,
+  View,
+  ScrollView,
+  Alert,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView
+} from "react-native";
+
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import React, { useState, useEffect } from "react";
+
+import { styles } from "../../components/styles/signInLandLordStyles";
+import SquareButton from "@/components/button";
+import Input from "@/components/input";
+import SelectInput from "@/components/selectInput";
+import BackButton from "@/components/backButton";
+import AppText from "@/components/appText";
+
+import { Session } from "@supabase/supabase-js";
+import { supabase } from "../../lib/supabase";
+import { useRouter } from "expo-router";
+
+const userTypeOptions = [
+  { label: "Proprietário", value: "landLord" },
+  { label: "Estudante", value: "student" },
+];
+
+export default function SignUp() {
+  const router = useRouter();
+
+  const [userName, setUserName] = useState("");
+  const [userType, setUserType] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const [session, setSession] = useState<Session | null>(null);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
+
+  async function signUp() {
+    if (!checkIfPasswordIsValid()) {
+      Alert.alert("Erro", "As senhas precisam ser iguais.");
+      return;
+    }
+
+    setLoading(true);
+
+    const { data, error } = await supabase.auth.signUp({
+      phone: phoneNumber,
+      email: email,
+      password: password,
+      options: {
+        data: {
+          displayName: userName, 
+          userType: userType
+        },
+      },
+    });
+
+    setLoading(false);
+
+    if (error) {
+      Alert.alert("Erro no Cadastro", error.message);
+
+    } else {
+      Alert.alert(
+        "Cadastro Realizado!",
+        "Verifique sua caixa de entrada para confirmar seu e-mail."
+      );
+
+      router.push('/login');
+    }
+  }
+
+  function checkIfPasswordIsValid() {
+    if (password === passwordConfirmation) return true;
+    else return false;
+  }
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={styles.scrollViewContent}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+        >
+          <BackButton onPress={() => router.back()} />
+          <SafeAreaView style={styles.imgContainer}>
+            <Image source={require("@/assets/cadLocat-icon.png")} />{""}
+            <AppText style={styles.title}> CADASTRO </AppText>
+          </SafeAreaView>
+
+          <View style={styles.containerTextAndButton}>''
+            <View style={styles.inputContainer}>
+              <Input
+                title="Usuário"
+                onChangeText={(text: string) => setUserName(text)}
+                value={userName}
+                placeholder="Usuário"
+                autoCapitalize="none"
+              />
+
+              <SelectInput
+                title="Tipo de Usuário"
+                placeholder="Selecione o tipo..."
+                options={userTypeOptions}
+                value={userType}
+                onSelect={setUserType}
+              />
+
+              <Input
+                title="Email"
+                onChangeText={(text: string) => setEmail(text)}
+                value={email}
+                placeholder="email@address.com"
+                autoCapitalize="none"
+              />
+
+              <Input
+                title="Telefone"
+                onChangeText={(text: string) => setPhoneNumber(text)}
+                value={phoneNumber}
+                placeholder="(00) 0 0000-0000"
+                autoCapitalize="none"
+                keyboardType="phone-pad"
+              />
+
+              <Input
+                title="Senha"
+                secureTextEntry={true}
+                onChangeText={(text: string) => setPassword(text)}
+                value={password}
+                placeholder="Senha"
+                autoCapitalize="none"
+              />
+
+              <Input
+                title="Confirmar Senha"
+                secureTextEntry={true}
+                onChangeText={(text: string) => setPasswordConfirmation(text)}
+                value={passwordConfirmation}
+                placeholder="Confirmar Senha"
+                autoCapitalize="none"
+              />
+              {!checkIfPasswordIsValid() && (
+                <AppText>As senhas precisam ser iguais</AppText>
+              )}
+            </View>
+            <SquareButton
+              name="Cadastrar"
+              disabled={loading}
+              onPress={() => signUp()}
+            />
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
+  );
+}
