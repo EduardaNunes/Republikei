@@ -59,8 +59,9 @@ export default function Index() {
           </AppText>
         </View>
         <View style={styles.buttonContainer}>
-          <SquareButton name="Cadastro Locador" variant="secondary" onPress={() => router.push("/signInLandLord")}/>
-          <SquareButton name="Cadastro Locatário" variant="secondary" onPress={() => router.push("/signInRenter")}/>
+          {/*<SquareButton name="Cadastro Locador" variant="secondary" onPress={() => router.push("/signInLandLord")}/>*/}
+          {/*<SquareButton name="Cadastro Locatário" variant="secondary" onPress={() => router.push("/signInRenter")}/>*/}
+          <SquareButton name="Cadastro" variant="secondary" onPress={() => router.push("/signUp")}/>
           <SquareButton name="Login" onPress={() => router.push("/login")}/>
           {/*<SquareButton name="Teste componentes" onPress={() => router.push("/pvuLandLord")} />*/}
         </View>
