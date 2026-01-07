@@ -37,17 +37,31 @@ export default function App() {
     imagens: formData.imagens,
   });
 
+  const [isReadyToSave, setIsReadyToSave] = useState(false);
+
   // ================================================================================ //
   //                              UPDATE WHEN HAS CHANGE
   // ================================================================================ //
 
   useEffect(() => {
+    const initialPrice = formData.preco 
+      ? formData.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })
+      : ""
+    ;
+
     setLocalData({
       descricao: formData.descricao,
-      preco: formData.preco ? formData.preco.toString() : "",
+      preco: initialPrice,
       imagens: formData.imagens,
     });
   }, [formData.descricao, formData.preco, formData.imagens]);
+
+  useEffect(() => {
+    if (isReadyToSave) {
+      saveProperty();
+      setIsReadyToSave(false);
+    }
+  }, [formData]);
 
   useEffect(() => {
     if (submissionSuccess) {
@@ -124,7 +138,7 @@ export default function App() {
       imagens: localData.imagens,
     });
 
-    await saveProperty();
+    setIsReadyToSave(true);
   };
 
   // ================================================================================ //
