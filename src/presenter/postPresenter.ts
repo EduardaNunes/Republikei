@@ -3,6 +3,7 @@ import * as FileSystem from 'expo-file-system';
 import { decode } from 'base64-arraybuffer';
 import { PropertyFormData } from "@/utils/types";
 
+
 // ================================================================================ //
 //                                  HANDLE IMAGES
 // ================================================================================ //
