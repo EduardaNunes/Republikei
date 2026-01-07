@@ -57,7 +57,6 @@ export default function App() {
       
       Alert.alert("Sucesso!", message);
       
-      // Limpa o formulário e navega para a lista de imóveis
       resetForm();
       router.replace("/myProperties");
     }
@@ -76,20 +75,52 @@ export default function App() {
     setLocalData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handlePrice = (value: string) => {
+
+    if (value === "") {
+      handleChange("preco", "");
+      return;
+    }
+
+    if (/[^0-9., ]/.test(value)) {
+      Alert.alert("Erro", "O valor inserido é inválido, preencha apenas com números");
+      handleChange("preco", "");
+      return;
+    }
+
+    const formatted = formatCurrency(value);
+    handleChange("preco", formatted); 
+  }
+
+  function formatCurrency(value: string) {
+    const digits = value.replace(/\D/g, "");
+    if (!digits) return "";
+    
+    const numberValue = (parseInt(digits) / 100).toFixed(2);
+    const [intPart, decimalPart] = numberValue.split(".");
+    
+    const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return `${formattedInt},${decimalPart}`;
+  }
+
   const handleContinue = async () => {
-    if (
-      !localData.descricao.trim() ||
-      !localData.preco ||
-      !localData.imagens ||
-      localData.imagens.length === 0
-    ) {
-      Alert.alert("Campos obrigatórios", "Por favor, preencha todos os campos antes de continuar.");
+
+    if (!localData.descricao.trim() || !localData.preco || localData.imagens.length === 0){
+      Alert.alert("Campos obrigatórios", "Por favor, preencha todos os campos.");
+      return;
+    }
+
+    const cleanValue = localData.preco.replace(/\./g, "").replace(",", ".");
+    const parsedPrice = parseFloat(cleanValue);
+
+    if (isNaN(parsedPrice) || parsedPrice <= 0) {
+      Alert.alert("Erro", "Insira um valor de aluguel válido.");
       return;
     }
 
     updateFormData({
       descricao: localData.descricao,
-      preco: parseFloat(localData.preco),
+      preco: parsedPrice,
       imagens: localData.imagens,
     });
 
@@ -136,7 +167,7 @@ export default function App() {
                 title="Mensalidade/Aluguer (R$)"
                 containerStyle={{ width: "100%" }}
                 keyboardType="numeric"
-                onChangeText={(val: string) => handleChange("preco", val)}
+                onChangeText={(val: string) => handlePrice(val)}
                 value={localData.preco}
               />
 
