@@ -12,7 +12,7 @@ import axios from 'axios';
 export default function AddProperty_1() {
   const router = useRouter();
 
-  const { formData, updateFormData } = useContext(NewPostContext);
+  const { formData, updateFormData, resetForm } = useContext(NewPostContext);
 
   const [loading, setLoading] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
@@ -93,6 +93,11 @@ export default function AddProperty_1() {
     if (cleanedCep.length === 8) { // minimum cep valid size to search
       fetchAddressFromCep(cleanedCep);
     }
+  };
+
+  const handleCancel = () => {
+    resetForm();
+    router.back();
   };
 
   const handleContinue = async () => {
@@ -215,7 +220,7 @@ export default function AddProperty_1() {
         <SquareButton
           name="Cancelar"
           variant="mediumS"
-          onPress={() => router.back()}
+          onPress={handleCancel}
         />
         <SquareButton
           name="Continuar"
