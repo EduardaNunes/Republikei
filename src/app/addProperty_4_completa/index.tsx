@@ -5,7 +5,6 @@ import {
   View,
   Alert,
 } from "react-native";
-
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
@@ -17,57 +16,74 @@ import { useContext, useEffect, useState } from "react";
 import { tipoPadrao } from "@/utils/typesAux";
 import { NewPostContext } from "@/contexts/NewPostContext";
 
-export default function addProperty_4_completa() {
+export default function AddProperty_4_completa() {
   const router = useRouter();
   const { isFurnished } = useLocalSearchParams();
   const showFurniture = isFurnished === "true";
 
-  const {
-    addProperty4,
-    tipoMoradiaEspecifico: contextTipoMoradiaEspecifico,
-    quantQuartos: contextQuantQuartos,
-    moveisDisponiveis: contextMoveisDisponiveis,
-  } = useContext(NewPostContext);
+  const { formData, updateFormData } = useContext(NewPostContext);
 
-  const [tipoMoradiaEspecifico, setTipoMoradiaEspecifico] = useState<tipoPadrao>(contextTipoMoradiaEspecifico);
-  const [quantQuartos, setQuantQuartos] = useState<string>(contextQuantQuartos?.toString() || "");
-  const [moveisDisponiveis, setMoveisDisponiveis] = useState<tipoPadrao[] | undefined>(contextMoveisDisponiveis);
-  
+  const [localData, setLocalData] = useState({
+    tipoMoradiaEspecifico: formData.tipoMoradiaEspecifico,
+    quantQuartos: formData.quantQuartos ? formData.quantQuartos.toString() : "",
+    moveisDisponiveis: formData.moveisDisponiveis || ([] as tipoPadrao[]),
+  });
+
+  // ================================================================================ //
+  //                              UPDATE WHEN HAS CHANGE
+  // ================================================================================ //
+
   useEffect(() => {
-    setTipoMoradiaEspecifico(contextTipoMoradiaEspecifico);
-    setQuantQuartos(contextQuantQuartos?.toString() || "");
-    setMoveisDisponiveis(contextMoveisDisponiveis);
-  }, [contextTipoMoradiaEspecifico, contextQuantQuartos, contextMoveisDisponiveis]);
+    setLocalData({
+      tipoMoradiaEspecifico: formData.tipoMoradiaEspecifico,
+      quantQuartos: formData.quantQuartos ? formData.quantQuartos.toString() : "",
+      moveisDisponiveis: formData.moveisDisponiveis || [],
+    });
+  }, [
+    formData.tipoMoradiaEspecifico,
+    formData.quantQuartos,
+    formData.moveisDisponiveis,
+  ]);
 
+  // ================================================================================ //
+  //                                     HANDLERS 
+  // ================================================================================ //
+
+  const handleChange = (field: keyof typeof localData, value: any) => {
+    setLocalData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleContinue = () => {
-    if (!tipoMoradiaEspecifico?.id) {
+    if (!localData.tipoMoradiaEspecifico?.id) {
       Alert.alert("Campo obrigatório", "Selecione o tipo de moradia.");
       return;
     }
 
-    if (!quantQuartos || isNaN(parseInt(quantQuartos))) {
+    if (!localData.quantQuartos || isNaN(parseInt(localData.quantQuartos))) {
       Alert.alert("Campo obrigatório", "Informe a quantidade de quartos.");
       return;
     }
 
-    if (showFurniture && (!moveisDisponiveis || moveisDisponiveis.length === 0)) {
+    if (
+      showFurniture &&
+      (!localData.moveisDisponiveis || localData.moveisDisponiveis.length === 0)
+    ) {
       Alert.alert("Campo obrigatório", "Selecione pelo menos um móvel.");
       return;
     }
 
-    // Enviar dados
-    addProperty4(
-      tipoMoradiaEspecifico,
-      0, // quantPessoasCasa (não usado nesta tela)
-      parseInt(quantQuartos) || 0,
-      0, // individual (não usado nesta tela)
-      moveisDisponiveis
-    );
+    updateFormData({
+      tipoMoradiaEspecifico: localData.tipoMoradiaEspecifico,
+      quantQuartos: parseInt(localData.quantQuartos),
+      moveisDisponiveis: localData.moveisDisponiveis || [],
+    });
 
-    // Ir para próxima etapa
     router.push("/addProperty_5");
   };
+
+  // ================================================================================ //
+  //                                     FRONT-END 
+  // ================================================================================ //
 
   return (
     <>
@@ -93,10 +109,8 @@ export default function addProperty_4_completa() {
               <AppText style={styles.subtitle}>SELECIONAR MORADIA</AppText>
               <SelectableBlock
                 type="completeHouseType"
-                initialState={tipoMoradiaEspecifico}
-                returnSelected={(resposta) =>
-                  setTipoMoradiaEspecifico(resposta ?? { id: "", name: "" })
-                }
+                initialState={localData.tipoMoradiaEspecifico}
+                returnSelected={(val) => handleChange("tipoMoradiaEspecifico", val)}
               />
               <AppText style={styles.subtitle}>QUANTIDADE</AppText>
               <View style={styles.subinputContainer}>
@@ -105,8 +119,8 @@ export default function addProperty_4_completa() {
                   title="Quartos"
                   containerStyle={{ width: "48%" }}
                   keyboardType="numeric"
-                  onChangeText={(text: string) => setQuantQuartos(text)}
-                  value={quantQuartos}
+                  onChangeText={(val: string) => handleChange("quantQuartos", val)}
+                  value={localData.quantQuartos}
                 />
               </View>
               {showFurniture && (
@@ -114,10 +128,8 @@ export default function addProperty_4_completa() {
                   <AppText style={styles.subtitle}>SELECIONAR MÓVEIS</AppText>
                   <SelectableBlock
                     type="furniture"
-                    initialState={moveisDisponiveis}
-                    returnSelected={(resposta) =>
-                      setMoveisDisponiveis(resposta ?? [])
-                    }
+                    initialState={localData.moveisDisponiveis}
+                    returnSelected={(val) => handleChange("moveisDisponiveis", val)}
                   />
                 </>
               )}

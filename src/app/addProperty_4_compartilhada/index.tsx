@@ -5,7 +5,6 @@ import {
   View,
   Alert,
 } from "react-native";
-
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
@@ -22,74 +21,84 @@ export default function AddProperty_4_compartilhada() {
   const { isFurnished } = useLocalSearchParams();
   const showFurniture = isFurnished === "true";
 
-  const {
-    addProperty4,
-    tipoMoradiaEspecifico: contextTipoMoradiaEspecifico,
-    quantPessoasCasa: contextQuantPessoasCasa,
-    quantQuartos: contextQuantQuartos,
-    individual: contextIndividual,
-    moveisDisponiveis: contextMoveisDisponiveis,
-  } = useContext(NewPostContext);
+  const { formData, updateFormData } = useContext(NewPostContext);
 
-  const [tipoMoradiaEspecifico, setTipoMoradiaEspecifico] = useState<tipoPadrao>(contextTipoMoradiaEspecifico);
-  const [quantPessoasCasa, setQuantPessoasCasa] = useState<string>(contextQuantPessoasCasa?.toString() || "");
-  const [quantQuartos, setQuantQuartos] = useState<string>(contextQuantQuartos?.toString() || "");
-  const [individual, setIndividual] = useState<string>(contextIndividual?.toString() || "");
-  const [moveisDisponiveis, setMoveisDisponiveis] = useState<tipoPadrao[] | undefined>(contextMoveisDisponiveis);
+  const [localData, setLocalData] = useState({
+    tipoMoradiaEspecifico: formData.tipoMoradiaEspecifico,
+    quantPessoasCasa: formData.quantPessoasCasa ? formData.quantPessoasCasa.toString() : "",
+    quantQuartos: formData.quantQuartos ? formData.quantQuartos.toString() : "",
+    individual: formData.individual ? formData.individual.toString() : "",
+    moveisDisponiveis: formData.moveisDisponiveis || [] as tipoPadrao[],
+  });
+
+  // ================================================================================ //
+  //                              UPDATE WHEN HAS CHANGE
+  // ================================================================================ //
 
   useEffect(() => {
-    setTipoMoradiaEspecifico(contextTipoMoradiaEspecifico);
-    setQuantPessoasCasa(contextQuantPessoasCasa?.toString() || "");
-    setQuantQuartos(contextQuantQuartos?.toString() || "");
-    setIndividual(contextIndividual?.toString() || "");
-    setMoveisDisponiveis(contextMoveisDisponiveis);
+    setLocalData({
+      tipoMoradiaEspecifico: formData.tipoMoradiaEspecifico,
+      quantPessoasCasa: formData.quantPessoasCasa ? formData.quantPessoasCasa.toString() : "",
+      quantQuartos: formData.quantQuartos ? formData.quantQuartos.toString() : "",
+      individual: formData.individual ? formData.individual.toString() : "",
+      moveisDisponiveis: formData.moveisDisponiveis || [],
+    });
   }, [
-    contextTipoMoradiaEspecifico,
-    contextQuantPessoasCasa,
-    contextQuantQuartos,
-    contextIndividual,
-    contextMoveisDisponiveis,
+    formData.tipoMoradiaEspecifico,
+    formData.quantPessoasCasa,
+    formData.quantQuartos,
+    formData.individual,
+    formData.moveisDisponiveis,
   ]);
 
+  // ================================================================================ //
+  //                                     HANDLERS 
+  // ================================================================================ //
+
+  const handleChange = (field: keyof typeof localData, value: any) => {
+    setLocalData((prev) => ({ ...prev, [field]: value }));
+  };
+
   const handleContinue = () => {
-    // Validação de campos obrigatórios
-    if (!tipoMoradiaEspecifico?.id) {
+    if (!localData.tipoMoradiaEspecifico?.id) {
       Alert.alert("Campo obrigatório", "Selecione o tipo de moradia.");
       return;
     }
 
-    if (!quantPessoasCasa || isNaN(parseInt(quantPessoasCasa))) {
+    if (!localData.quantPessoasCasa || isNaN(parseInt(localData.quantPessoasCasa))) {
       Alert.alert("Campo obrigatório", "Informe a quantidade de pessoas na moradia.");
       return;
     }
 
-    if (!quantQuartos || isNaN(parseInt(quantQuartos))) {
+    if (!localData.quantQuartos || isNaN(parseInt(localData.quantQuartos))) {
       Alert.alert("Campo obrigatório", "Informe a quantidade de quartos.");
       return;
     }
 
-    if (!individual || isNaN(parseInt(individual))) {
+    if (!localData.individual || isNaN(parseInt(localData.individual))) {
       Alert.alert("Campo obrigatório", "Informe a quantidade de pessoas no quarto.");
       return;
     }
 
-    if (showFurniture && (!moveisDisponiveis || moveisDisponiveis.length === 0)) {
+    if (showFurniture && (!localData.moveisDisponiveis || localData.moveisDisponiveis.length === 0)) {
       Alert.alert("Campo obrigatório", "Selecione pelo menos um móvel disponível.");
       return;
     }
 
-    // Enviar os dados
-    addProperty4(
-      tipoMoradiaEspecifico,
-      parseInt(quantPessoasCasa) || 0,
-      parseInt(quantQuartos) || 0,
-      parseInt(individual) || 0,
-      moveisDisponiveis
-    );
+    updateFormData({
+      tipoMoradiaEspecifico: localData.tipoMoradiaEspecifico,
+      quantPessoasCasa: parseInt(localData.quantPessoasCasa),
+      quantQuartos: parseInt(localData.quantQuartos),
+      individual: parseInt(localData.individual),
+      moveisDisponiveis: localData.moveisDisponiveis,
+    });
 
-    // Avançar para a próxima tela
     router.push("/addProperty_5");
   };
+
+  // ================================================================================ //
+  //                                     FRONT-END 
+  // ================================================================================ //
 
   return (
     <>
@@ -115,10 +124,8 @@ export default function AddProperty_4_compartilhada() {
               <AppText style={styles.subtitle}>SELECIONAR MORADIA</AppText>
               <SelectableBlock
                 type="sharedHouseType"
-                initialState={tipoMoradiaEspecifico}
-                returnSelected={(resposta) =>
-                  setTipoMoradiaEspecifico(resposta ?? { id: "", name: "" })
-                }
+                initialState={localData.tipoMoradiaEspecifico}
+                returnSelected={(val) => handleChange("tipoMoradiaEspecifico", val)}
               />
               <AppText style={styles.subtitle}>QUANTIDADE DE PESSOAS</AppText>
               <View style={styles.subinputContainer}>
@@ -127,16 +134,16 @@ export default function AddProperty_4_compartilhada() {
                   title="No Quarto"
                   containerStyle={{ width: "48%" }}
                   keyboardType="numeric"
-                  onChangeText={(text: string) => setIndividual(text)}
-                  value={individual}
+                  onChangeText={(val) => handleChange("individual", val)}
+                  value={localData.individual}
                 />
                 <Input
                   variant="secondary"
                   title="Na Moradia"
                   containerStyle={{ width: "48%" }}
                   keyboardType="numeric"
-                  onChangeText={(text: string) => setQuantPessoasCasa(text)}
-                  value={quantPessoasCasa}
+                  onChangeText={(val) => handleChange("quantPessoasCasa", val)}
+                  value={localData.quantPessoasCasa}
                 />
               </View>
               <AppText style={styles.subtitle}>QUANTIDADE DE QUARTOS</AppText>
@@ -144,8 +151,8 @@ export default function AddProperty_4_compartilhada() {
                 variant="secondary"
                 title="Quartos"
                 keyboardType="numeric"
-                onChangeText={(text: string) => setQuantQuartos(text)}
-                value={quantQuartos}
+                onChangeText={(val) => handleChange("quantQuartos", val)}
+                value={localData.quantQuartos}
               />
 
               {showFurniture && (
@@ -153,10 +160,8 @@ export default function AddProperty_4_compartilhada() {
                   <AppText style={styles.subtitle}>SELECIONAR MÓVEIS</AppText>
                   <SelectableBlock
                     type="furniture"
-                    initialState={moveisDisponiveis}
-                    returnSelected={(resposta) =>
-                      setMoveisDisponiveis(resposta ?? [])
-                    }
+                    initialState={localData.moveisDisponiveis}
+                    returnSelected={(val) => handleChange("moveisDisponiveis", val)}
                   />
                 </>
               )}

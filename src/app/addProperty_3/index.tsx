@@ -5,7 +5,6 @@ import {
   View,
   Alert,
 } from "react-native";
-
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
 import AppText from "@/components/appText";
@@ -19,79 +18,85 @@ import { tipoPadrao } from "@/utils/typesAux";
 export default function AddProperty_3() {
   const router = useRouter();
 
-  const {
-    addProperty3,
-    caracteristicas: contextCaracteristicas,
-    tipoVaga: contextTipoVaga,
-    tipoMoradia: contextTipoMoradia,
-    mobiliado: contextMobiliado,
-  } = useContext(NewPostContext);
+  const { formData, updateFormData } = useContext(NewPostContext);
 
-  console.log(contextMobiliado)
-  const [housingTypeSelected, setHousingTypeSelected] = useState<tipoPadrao>(contextTipoMoradia);
-  const [furnished, setFurnished] = useState<tipoPadrao>(() => 
-    contextMobiliado ? { id: "question-sim", name: "Sim" } : { id: "question-nao", name: "Não" }
-  );
-  const [caracteristicas, setCaracteristicas] = useState<tipoPadrao[]>(contextCaracteristicas);
-  const [tipoVaga, setTipoVaga] = useState<tipoPadrao>(contextTipoVaga);
+  const [postData, setPostData] = useState({
+    tipoMoradia: formData.tipoMoradia,
+    mobiliado: formData.mobiliado
+      ? { id: "question-sim", name: "Sim" }
+      : { id: "question-nao", name: "Não" },
+    caracteristicas: formData.caracteristicas,
+    tipoVaga: formData.tipoVaga
+  })
 
+  // ================================================================================ //
+  //                              UPDATE WHEN HAS CHANGE
+  // ================================================================================ //
 
-  const handleEnvio = () => {
-    const auxMobiliado = furnished.id === "question-sim";
-    addProperty3(caracteristicas, tipoVaga, housingTypeSelected, auxMobiliado);
+  useEffect(() => {
+    setPostData({
+      tipoMoradia: formData.tipoMoradia,
+      mobiliado: formData.mobiliado
+        ? { id: "question-sim", name: "Sim" }
+        : { id: "question-nao", name: "Não" },
+      caracteristicas: formData.caracteristicas,
+      tipoVaga: formData.tipoVaga
+    });
+    
+  }, [
+    formData.tipoMoradia,
+    formData.mobiliado,
+    formData.caracteristicas,
+    formData.tipoVaga,
+  ]);
+
+  // ================================================================================ //
+  //                                     HANDLERS 
+  // ================================================================================ //
+
+  const handleChange = (field: keyof typeof postData, value: any) => {
+    setPostData((prev) => ({ ...prev, [field]: value }));
   };
-  console.log(furnished)
+
   const handleContinue = () => {
-    if (!housingTypeSelected?.id) {
+    if (!postData.tipoMoradia?.id) {
       Alert.alert("Campo obrigatório", "Selecione o tipo de moradia.");
       return;
     }
 
-    if (!furnished?.id) {
+    if (!postData.mobiliado?.id) {
       Alert.alert("Campo obrigatório", "Informe se a moradia é mobiliada ou não.");
       return;
     }
 
-    handleEnvio();
+    const isFurnishedBoolean = postData.mobiliado.id === "question-sim";
 
-    const isFurnished = (furnished.id === "question-sim").toString();
+    updateFormData({
+      tipoMoradia: postData.tipoMoradia,
+      mobiliado: isFurnishedBoolean,
+      caracteristicas: postData.caracteristicas,
+      tipoVaga: postData.tipoVaga,
+    });
 
-    if (housingTypeSelected.id === "housingType-compartilhada") {
+    const isFurnishedParam = isFurnishedBoolean.toString();
+
+    // Navegação baseada no tipo de moradia
+    if (postData.tipoMoradia.id === "housingType-compartilhada") {
       router.push({
         pathname: "/addProperty_4_compartilhada",
-        params: { isFurnished },
+        params: { isFurnished: isFurnishedParam },
       });
-    } else if (housingTypeSelected.id === "housingType-completa") {
+    } else if (postData.tipoMoradia.id === "housingType-completa") {
       router.push({
         pathname: "/addProperty_4_completa",
-        params: { isFurnished },
+        params: { isFurnished: isFurnishedParam },
       });
     }
   };
 
-  useEffect(() => {
-    setHousingTypeSelected(contextTipoMoradia);
-    setFurnished(contextMobiliado ? { id: "question-sim", name: "Sim" } : { id: "question-nao", name: "Não" });
-    setCaracteristicas(contextCaracteristicas);
-    setTipoVaga(contextTipoVaga);
-  }, [contextTipoMoradia, contextMobiliado, contextCaracteristicas, contextTipoVaga]);
-
-
-  const handleCaracteristicasSelect = useCallback((resposta: tipoPadrao | tipoPadrao[] | null) => {
-    setCaracteristicas(resposta as tipoPadrao[] ?? []);
-  }, []);
-
-  const handleTipoVagaSelect = useCallback((resposta: tipoPadrao | tipoPadrao[] | null) => {
-    setTipoVaga(resposta as tipoPadrao ?? { id: "", name: "" });
-  }, []);
-  
-  const handleHousingTypeSelect = useCallback((resposta: tipoPadrao | tipoPadrao[] | null) => {
-    setHousingTypeSelected(resposta as tipoPadrao ?? { id: "", name: "" });
-  }, []);
-
-  const handleFurnishedSelect = useCallback((resposta: tipoPadrao | tipoPadrao[] | null) => {
-    setFurnished(resposta as tipoPadrao ?? { id: "", name: "" });
-  }, []);
+  // ================================================================================ //
+  //                                     FRONT-END 
+  // ================================================================================ //
 
   return (
     <>
@@ -115,35 +120,34 @@ export default function AddProperty_3() {
 
           <View style={styles.geralContainer}>
             <View style={styles.inputContainer}>
-            <AppText style={styles.subtitle}>CARACTERÍSTICAS</AppText>
-            <SelectableBlock
-              type="characteristics"
-              initialState={caracteristicas}
-              // 3. PASSE A FUNÇÃO ESTÁVEL
-              returnSelected={handleCaracteristicasSelect}
-            />
+              <AppText style={styles.subtitle}>CARACTERÍSTICAS</AppText>
+              <SelectableBlock
+                type="characteristics"
+                initialState={postData.caracteristicas}
+                returnSelected={(val) => handleChange("caracteristicas", val)}
+              />
 
-            <AppText style={styles.subtitle}>TIPO DE VAGA</AppText>
-            <SelectableBlock
-              type="vacancyType"
-              initialState={tipoVaga} // Adicione initialState aqui
-              returnSelected={handleTipoVagaSelect}
-            />
+              <AppText style={styles.subtitle}>TIPO DE VAGA</AppText>
+              <SelectableBlock
+                type="vacancyType"
+                initialState={postData.tipoVaga}
+                returnSelected={(val) => handleChange("tipoVaga", val)}
+              />
 
-            <AppText style={styles.subtitle}>TIPO DE MORADIA</AppText>
-            <SelectableBlock
-              type="housingType"
-              initialState={housingTypeSelected} // Adicione initialState aqui
-              returnSelected={handleHousingTypeSelect}
-            />
+              <AppText style={styles.subtitle}>TIPO DE MORADIA</AppText>
+              <SelectableBlock
+                type="housingType"
+                initialState={postData.tipoMoradia}
+                returnSelected={(val) => handleChange("tipoMoradia", val)}
+              />
 
-            <AppText style={styles.subtitle}>MOBILIADO?</AppText>
-            <SelectableBlock
-              type="question"
-              initialState={furnished} // Adicione initialState aqui
-              returnSelected={handleFurnishedSelect}
-            />
-          </View>
+              <AppText style={styles.subtitle}>MOBILIADO?</AppText>
+              <SelectableBlock
+                type="question"
+                initialState={postData.mobiliado}
+                returnSelected={(val) => handleChange("mobiliado", val)}
+              />
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

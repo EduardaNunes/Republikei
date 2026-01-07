@@ -4,72 +4,101 @@ import {
   ScrollView,
   View,
   Alert,
-  ActivityIndicator,
 } from "react-native";
-
+import React, { useContext, useEffect, useState } from "react";
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
 import AppText from "@/components/appText";
 import Menu from "@/components/menu";
-import { useRouter, useLocalSearchParams } from "expo-router";
-import { useContext, useEffect, useState } from "react";
-import { NewPostContext } from "@/contexts/NewPostContext";
 import PhotoUpload from "@/components/photoUpload";
+import { useRouter } from "expo-router";
+import { NewPostContext } from "@/contexts/NewPostContext";
 
-export default function AddProperty_5() {
+
+export default function App() {
   const router = useRouter();
 
   const {
-    addProperty5,
+    formData,
+    updateFormData,
+    saveProperty,
     isSubmitting,
-    submissionError,
     submissionSuccess,
+    submissionError,
     clearSubmissionError,
-    descricao: contextDescricao,
-    preco: contextPreco,
-    imagens: contextImagens,
+    resetForm,
     propertyIdForEdit,
   } = useContext(NewPostContext);
 
-  const { propertyId } = useLocalSearchParams<{ propertyId: string }>();
+  const [localData, setLocalData] = useState({
+    descricao: formData.descricao,
+    preco: formData.preco ? formData.preco.toString() : "",
+    imagens: formData.imagens,
+  });
 
-  const [descricao, setDescricao] = useState<string>(contextDescricao);
-  const [preco, setPreco] = useState<string>(contextPreco?.toString() || "");
-  const [imagens, setImagens] = useState<string[]>(contextImagens);
-
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    console.log("IMAGENS INICIAIS PASSADAS PARA O PhotoUpload:", contextImagens);
-    setDescricao(contextDescricao);
-    setPreco(contextPreco?.toString() || "");
-    setImagens(contextImagens);
-  }, [contextDescricao, contextPreco, contextImagens]);
-
-  const handleContinue = () => {
-    if (!descricao.trim() || !preco || !imagens || imagens.length === 0) {
-      Alert.alert("Campos obrigatórios", "Por favor, preencha todos os campos.");
-      return;
-    }
-
-    addProperty5(descricao, parseFloat(preco), imagens);
-  };
+  // ================================================================================ //
+  //                              UPDATE WHEN HAS CHANGE
+  // ================================================================================ //
 
   useEffect(() => {
-    // Se a submissão terminou E foi um sucesso...
-    if (submissionSuccess && !isSubmitting) {
-      const message = propertyId ? "Imóvel atualizado com sucesso!" : "Seu imóvel foi cadastrado!";
+    setLocalData({
+      descricao: formData.descricao,
+      preco: formData.preco ? formData.preco.toString() : "",
+      imagens: formData.imagens,
+    });
+  }, [formData.descricao, formData.preco, formData.imagens]);
+
+  useEffect(() => {
+    if (submissionSuccess) {
+      const message = propertyIdForEdit
+        ? "Imóvel atualizado com sucesso!"
+        : "O seu imóvel foi registado com sucesso!";
+      
       Alert.alert("Sucesso!", message);
+      
+      // Limpa o formulário e navega para a lista de imóveis
+      resetForm();
       router.replace("/myProperties");
     }
 
-    // Se um erro de submissão apareceu...
     if (submissionError) {
-      Alert.alert("Erro ao cadastrar imóvel", submissionError);
-      clearSubmissionError(); // Limpa o erro para não mostrar o alerta de novo
+      Alert.alert("Erro na Submissão", submissionError);
+      clearSubmissionError();
     }
-  }, [submissionSuccess, submissionError, isSubmitting]);
+  }, [submissionSuccess, submissionError]);
+
+  // ================================================================================ //
+  //                                     HANDLERS 
+  // ================================================================================ //
+
+  const handleChange = (field: keyof typeof localData, value: any) => {
+    setLocalData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleContinue = async () => {
+    if (
+      !localData.descricao.trim() ||
+      !localData.preco ||
+      !localData.imagens ||
+      localData.imagens.length === 0
+    ) {
+      Alert.alert("Campos obrigatórios", "Por favor, preencha todos os campos antes de continuar.");
+      return;
+    }
+
+    updateFormData({
+      descricao: localData.descricao,
+      preco: parseFloat(localData.preco),
+      imagens: localData.imagens,
+    });
+
+    await saveProperty();
+  };
+
+  // ================================================================================ //
+  //                                     FRONT-END 
+  // ================================================================================ //
 
   return (
     <>
@@ -89,46 +118,54 @@ export default function AddProperty_5() {
         >
           <View style={styles.titleContainer}>
             <AppText style={styles.title}>DETALHES</AppText>
-            <AppText style={styles.subtitle}>DESCRIÇÃO</AppText>
+            <AppText style={styles.subtitle}>DESCRIÇÃO E VALORES</AppText>
           </View>
+
           <View style={styles.geralContainer}>
             <View style={styles.inputContainer}>
               <Input
                 title="Adicionar Descrição"
                 containerStyle={{ width: "100%" }}
-                onChangeText={(text: string) => setDescricao(text)}
-                value={descricao}
+                onChangeText={(val: string) => handleChange("descricao", val)}
+                value={localData.descricao}
+                multiline
               />
+              
               <Input
                 variant="secondary"
-                title="Mensalidade/Aluguel"
+                title="Mensalidade/Aluguer (R$)"
                 containerStyle={{ width: "100%" }}
                 keyboardType="numeric"
-                onChangeText={(text: string) => setPreco(text)}
-                value={preco}
+                onChangeText={(val: string) => handleChange("preco", val)}
+                value={localData.preco}
               />
 
-              <AppText style={styles.subtitle}>FOTOS (MAX 15)</AppText>
+              <AppText style={styles.subtitle}>FOTOS (MÁX. 15)</AppText>
               <View style={styles.subCategoryContainer}>
-                <PhotoUpload onImagesChange={(uris) => setImagens(uris)} initialState={imagens}/>
+                <PhotoUpload
+                  onImagesChange={(uris) => handleChange("imagens", uris)}
+                  initialState={localData.imagens}
+                />
               </View>
             </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
       <View style={styles.buttonsContainer}>
         <SquareButton
           name="Voltar"
           variant="mediumS"
           onPress={() => router.back()}
         />
-        <SquareButton 
-          name={propertyIdForEdit ? "Salvar Alterações" : "Cadastrar Imóvel"} 
-          variant="mediumP" 
-          onPress={handleContinue} 
-          disabled={isSubmitting} 
+        <SquareButton
+          name={propertyIdForEdit ? "Guardar Alterações" : "Registar Imóvel"}
+          variant="mediumP"
+          onPress={handleContinue}
+          disabled={isSubmitting}
         />
       </View>
+      
       <Menu />
     </>
   );

@@ -6,104 +6,130 @@ import AppText from "@/components/appText";
 import Menu from "@/components/menu";
 import { useRouter } from "expo-router";
 import { NewPostContext } from "@/contexts/NewPostContext";
-import { useContext, useState } from "react";
-import { Localizacao } from "@/utils/typesAux";
+import { useContext, useState, useEffect } from "react";
 import axios from 'axios';
 
 export default function AddProperty_1() {
   const router = useRouter();
 
-  const { addProperty1, localizacao } = useContext(NewPostContext);
+  const { formData, updateFormData } = useContext(NewPostContext);
 
   const [loading, setLoading] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
 
-  const [cep, setCep] = useState(localizacao.cep);
-  const [rua, setRua] = useState(localizacao.rua);
-  const [bairro, setBairro] = useState(localizacao.bairro);
-  const [cidade, setCidade] = useState("");
-  const [estado, setEstado] = useState(""); 
-  const [numero, setNumero] = useState(localizacao.numero ? localizacao.numero.toString() : "");
-  const [complemento, setComplemento] = useState(localizacao.complemento);
+  const [localData, setLocalData] = useState({
+    cep: formData.localizacao.cep,
+    rua: formData.localizacao.rua,
+    bairro: formData.localizacao.bairro,
+    numero: formData.localizacao.numero ? formData.localizacao.numero.toString() : "",
+    complemento: formData.localizacao.complemento || "",
+    latitude: formData.localizacao.latitude,
+    longitude: formData.localizacao.longitude,
+    cidade: "",
+    estado: ""
+  });
 
+  // ================================================================================ //
+  //                              UPDATE WHEN HAS CHANGE
+  // ================================================================================ //
 
-    const fetchAddressFromCep = async (cepValue: string) => {
+  useEffect(() => {
+    setLocalData(prev => ({
+      ...prev,
+      cep: formData.localizacao.cep,
+      rua: formData.localizacao.rua,
+      bairro: formData.localizacao.bairro,
+      numero: formData.localizacao.numero ? formData.localizacao.numero.toString() : "",
+      complemento: formData.localizacao.complemento || "",
+      latitude: formData.localizacao.latitude,
+      longitude: formData.localizacao.longitude,
+    }));
+  }, [formData.localizacao]);
+
+  // ================================================================================ //
+  //                          GET ADRESS FROM CEP - BRASIL API 
+  // ================================================================================ //
+
+  const fetchAddressFromCep = async (cepValue: string) => {
     setCepLoading(true);
     try {
-
-      // 1. Coleta as informações da api de acordo com o cep
       const response = await axios.get(`https://brasilapi.com.br/api/cep/v1/${cepValue}`);
       
-      // 2. Preenche com a resposta obtida
-      setRua(response.data.street);
-      setBairro(response.data.neighborhood);
-      setCidade(response.data.city);  
-      setEstado(response.data.state);
+      setLocalData(prev => ({
+        ...prev,
+        rua: response.data.street,
+        bairro: response.data.neighborhood,
+        cidade: response.data.city,
+        estado: response.data.state
+      }));
 
     } catch (error) {
-      // Limpa os campos se o CEP for inválido
-      setRua("");
-      setBairro("");
-      setCidade("");
-      setEstado("");
+      setLocalData(prev => ({
+        ...prev,
+        rua: "",
+        bairro: "",
+        cidade: "",
+        estado: ""
+      }));
       Alert.alert("CEP não encontrado", "Por favor, verifique o CEP digitado.");
     } finally {
       setCepLoading(false);
     }
   };
 
-  const handleCepChange = (text: string) => {
+  // ================================================================================ //
+  //                                     HANDLERS 
+  // ================================================================================ //
 
-    // Remove qualquer caractere que não seja número
-    const cleanedCep = text.replace(/[^0-9]/g, "");
-    setCep(cleanedCep);
-
-    // Se o CEP atingir 8 dígitos, dispare a busca
-    if (cleanedCep.length === 8) {
-      fetchAddressFromCep(cleanedCep);
-    }
-
+  const handleChange = (field: keyof typeof localData, value: string | number) => {
+    setLocalData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleEnvio = async () => {
-    
-    if (!cep || !rua || !bairro || !numero ) {
+  const handleCepChange = (text: string) => {
+    const cleanedCep = text.replace(/[^0-9]/g, ""); // remove special characters
+
+    handleChange("cep", cleanedCep);
+
+    if (cleanedCep.length === 8) { // minimum cep valid size to search
+      fetchAddressFromCep(cleanedCep);
+    }
+  };
+
+  const handleContinue = async () => {
+    if (!localData.cep || !localData.rua || !localData.bairro || !localData.numero) {
       Alert.alert("Campos obrigatórios", "Por favor, preencha todos os campos.");
       return;
     }
 
     setLoading(true);
 
-    try{
-      // 1. Monta o endereço em uma única string
-      const addressString = `${rua}, ${numero} - ${bairro}, ${cidade} - ${estado}, ${cep}`;
-      const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+    try {
+      const addressString = `${localData.rua}, ${localData.numero} - ${localData.bairro}, ${localData.cidade} - ${localData.estado}, ${localData.cep}`;
+      const apiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 
-      // 2. Chama a API de Geocoding
       const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(addressString)}&key=${apiKey}`;
       const response = await axios.get(url);
 
-      // 3. Verifica se o Google encontrou o endereço
       if (response.data.status !== 'OK' || response.data.results.length === 0) {
         throw new Error("Não foi possível encontrar as coordenadas para este endereço. Verifique se os dados foram inseridos corretamente.");
       }
 
-      // 4. Extraia a latitude e longitude da resposta
       const location = response.data.results[0].geometry.location;
-      const latitude = location.lat;
-      const longitude = location.lng;
+      const lat = location.lat;
+      const lng = location.lng;
 
-      const aux: Localizacao = {
-        cep: cep,
-        rua: rua,
-        bairro: bairro,
-        numero: parseFloat(numero),
-        complemento: complemento,
-        latitude: latitude,
-        longitude: longitude,
-      };
-
-      addProperty1(aux);
+      updateFormData({
+        localizacao: {
+            cep: localData.cep,
+            rua: localData.rua,
+            bairro: localData.bairro,
+            numero: parseFloat(localData.numero),
+            complemento: localData.complemento,
+            latitude: lat,
+            longitude: lng
+        }
+      });
+      
       router.push("/addProperty_2");
 
     } catch (error: any) {
@@ -111,8 +137,11 @@ export default function AddProperty_1() {
     } finally {
       setLoading(false);
     }
-
   };
+
+  // ================================================================================ //
+  //                                     FRONT-END 
+  // ================================================================================ //
 
   return (
     <>
@@ -141,37 +170,36 @@ export default function AddProperty_1() {
                   title="CEP"
                   keyboardType="numeric"
                   onChangeText={handleCepChange}
-                  value={cep}
+                  value={localData.cep}
                   maxLength={8}
                   containerStyle={{flex: 1}}
                 />
-                {/* Mostra um indicador de loading durante a busca */}
                 {cepLoading && <ActivityIndicator style={{marginLeft: 10}}/>}
               </View>
               <Input
                 title="Rua"
-                onChangeText={setRua}
-                value={rua}
+                onChangeText={(t) => handleChange("rua", t)}
+                value={localData.rua}
               />
               <Input
                 title="Bairro"
-                onChangeText={setBairro}
-                value={bairro}
+                onChangeText={(t) => handleChange("bairro", t)}
+                value={localData.bairro}
               />
               <View style={styles.subinputContainer}>
                 <Input
                   variant="secondary"
                   title="Número"
                   containerStyle={{ width: "48%" }}
-                  onChangeText={setNumero}
-                  value={numero}
+                  onChangeText={(t) => handleChange("numero", t)}
+                  value={localData.numero}
                 />
                 <Input
                   variant="secondary"
                   title="Complemento"
                   containerStyle={{ width: "48%" }}
-                  onChangeText={setComplemento}
-                  value={complemento}
+                  onChangeText={(t) => handleChange("complemento", t)}
+                  value={localData.complemento}
                 />
               </View>
             </View>
@@ -188,7 +216,7 @@ export default function AddProperty_1() {
           name="Continuar"
           variant="mediumP"
           disabled={loading}
-          onPress={handleEnvio}
+          onPress={handleContinue}
         />
       </View>
       <Menu />
