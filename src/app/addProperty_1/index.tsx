@@ -112,13 +112,8 @@ export default function AddProperty_1() {
       const addressString = `${localData.rua}, ${localData.numero} - ${localData.bairro}, ${localData.cidade} - ${localData.estado}, ${localData.cep}`;
       const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
-      console.log(addressString)
-
       const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(addressString)}&key=${apiKey}`;
       const response = await axios.get(url);
-
-      console.log(url)
-      console.log(response)
 
       if (response.data.status !== 'OK' || response.data.results.length === 0) {
         throw new Error("Não foi possível encontrar as coordenadas para este endereço. Verifique se os dados foram inseridos corretamente.");
