@@ -14,7 +14,7 @@ import Menu from "@/components/menu";
 import PhotoUpload from "@/components/photoUpload";
 import { useRouter } from "expo-router";
 import { NewPostContext } from "@/contexts/NewPostContext";
-
+import { supabase } from "@/lib/supabase";
 
 export default function App() {
   const router = useRouter();
@@ -76,7 +76,15 @@ export default function App() {
     }
 
     if (submissionError) {
-      Alert.alert("Erro na Submissão", submissionError);
+      if (submissionError.includes("autenticado")) {
+        Alert.alert(
+          "Sessão Expirada", 
+          "A sua sessão expirou. Por favor, faça login novamente para salvar.",
+          [{ text: "Ir para Login", onPress: () => router.replace("/login") }]
+        );
+      } else {
+        Alert.alert("Erro na Submissão", submissionError);
+      }
       clearSubmissionError();
     }
   }, [submissionSuccess, submissionError]);
@@ -118,6 +126,17 @@ export default function App() {
   }
 
   const handleContinue = async () => {
+
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      Alert.alert(
+        "Acesso Negado",
+        "Precisa de estar autenticado para realizar esta operação.",
+        [{ text: "Fazer Login", onPress: () => router.replace("/login") }]
+      );
+      return;
+    }
 
     if (!localData.descricao.trim() || !localData.preco || localData.imagens.length === 0){
       Alert.alert("Campos obrigatórios", "Por favor, preencha todos os campos.");
