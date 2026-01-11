@@ -20,37 +20,82 @@ import SelectInput from "@/components/selectInput";
 import BackButton from "@/components/backButton";
 import AppText from "@/components/appText";
 
-import { Session } from "@supabase/supabase-js";
+import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "expo-router";
+
+import { AppUser, AppUserRole } from "@/utils/users";
 
 const userTypeOptions = [
   { label: "Proprietário", value: "landLord" },
   { label: "Estudante", value: "student" },
 ];
 
+interface SignUpState {
+  user: AppUser;
+  password: string;
+  passwordConfirmation: string;
+}
+
 export default function SignUp() {
+
   const router = useRouter();
-
-  const [userName, setUserName] = useState("");
-  const [userType, setUserType] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [session, setSession] = useState<Session | null>(null);
+
+  const [signUpData, setSignUpData] = useState<SignUpState>({
+    user:{
+      type: 'student',
+      name: '',
+      profilePicture: '',
+      email: '',
+      phone: '',
+      description: ''
+    },
+    password: '',
+    passwordConfirmation: ''
+  })
+
+  // ================================================================================ //
+  //                              UPDATE WHEN HAS CHANGE
+  // ================================================================================ //
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });
-    supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
+
+    return () => subscription.unsubscribe();
   }, []);
 
+  // ================================================================================ //
+  //                                     HANDLERS 
+  // ================================================================================ //
+
+  const handleBaseChange = (field: keyof Omit<SignUpState, 'user'>, value: string) => {
+    setSignUpData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleUserChange = (field: keyof AppUser, value: string) => {
+    setSignUpData(prev => ({
+      ...prev,
+      user: {
+        ...prev.user,
+        [field]: value
+      }
+    }));
+  };
+
   async function signUp() {
+
+    if (!signUpData.user.name || !signUpData.user.email || !signUpData.user.phone) {
+      Alert.alert("Erro", "Preencha todos os campos obrigatórios.");
+      return;
+    }
+
     if (!checkIfPasswordIsValid()) {
       Alert.alert("Erro", "As senhas precisam ser iguais.");
       return;
@@ -59,13 +104,13 @@ export default function SignUp() {
     setLoading(true);
 
     const { data, error } = await supabase.auth.signUp({
-      phone: phoneNumber,
-      email: email,
-      password: password,
+      phone: signUpData.user.phone,
+      email: signUpData.user.email,
+      password: signUpData.password,
       options: {
         data: {
-          displayName: userName, 
-          userType: userType
+          displayName: signUpData.user.name, 
+          userType: signUpData.user.type
         },
       },
     });
@@ -86,9 +131,13 @@ export default function SignUp() {
   }
 
   function checkIfPasswordIsValid() {
-    if (password === passwordConfirmation) return true;
+    if (signUpData.password === signUpData.passwordConfirmation) return true;
     else return false;
   }
+
+  // ================================================================================ //
+  //                                     FRONT-END 
+  // ================================================================================ //
 
   return (
     <KeyboardAvoidingView
@@ -112,8 +161,8 @@ export default function SignUp() {
             <View style={styles.inputContainer}>
               <Input
                 title="Usuário"
-                onChangeText={(text: string) => setUserName(text)}
-                value={userName}
+                onChangeText={(text: string) => handleUserChange('name', text)}
+                value={signUpData.user.name}
                 placeholder="Usuário"
                 autoCapitalize="none"
               />
@@ -122,22 +171,22 @@ export default function SignUp() {
                 title="Tipo de Usuário"
                 placeholder="Selecione o tipo..."
                 options={userTypeOptions}
-                value={userType}
-                onSelect={setUserType}
+                value={signUpData.user.type}
+                onSelect={(text: string) => handleUserChange('type', text as AppUserRole)}
               />
 
               <Input
                 title="Email"
-                onChangeText={(text: string) => setEmail(text)}
-                value={email}
+                onChangeText={(text: string) => handleUserChange('email', text)}
+                value={signUpData.user.email}
                 placeholder="email@address.com"
                 autoCapitalize="none"
               />
 
               <Input
                 title="Telefone"
-                onChangeText={(text: string) => setPhoneNumber(text)}
-                value={phoneNumber}
+                onChangeText={(text: string) => handleUserChange('phone', text)}
+                value={signUpData.user.phone}
                 placeholder="(00) 0 0000-0000"
                 autoCapitalize="none"
                 keyboardType="phone-pad"
@@ -146,8 +195,8 @@ export default function SignUp() {
               <Input
                 title="Senha"
                 secureTextEntry={true}
-                onChangeText={(text: string) => setPassword(text)}
-                value={password}
+                onChangeText={(text: string) => handleBaseChange('password', text)}
+                value={signUpData.password}
                 placeholder="Senha"
                 autoCapitalize="none"
               />
@@ -155,12 +204,12 @@ export default function SignUp() {
               <Input
                 title="Confirmar Senha"
                 secureTextEntry={true}
-                onChangeText={(text: string) => setPasswordConfirmation(text)}
-                value={passwordConfirmation}
+                onChangeText={(text: string) => handleBaseChange('passwordConfirmation', text)}
+                value={signUpData.passwordConfirmation}
                 placeholder="Confirmar Senha"
                 autoCapitalize="none"
               />
-              {!checkIfPasswordIsValid() && (
+              {signUpData.passwordConfirmation !== "" && !checkIfPasswordIsValid() && (
                 <AppText>As senhas precisam ser iguais</AppText>
               )}
             </View>

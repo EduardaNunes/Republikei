@@ -17,11 +17,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import BackButton from "@/components/backButton";
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "expo-router";
-import { useLoginPresenter } from "../../presenter/useLoginPresenter"; // 1. Importe o Presenter
+import { useLoginPresenter } from "../../presenter/useLoginPresenter"; 
 
 export default function Login() {
   const router = useRouter();
-  // 2. Use o Presenter para obter estado e manipuladores de eventos
+
   const {
     email,
     setEmail,
@@ -32,7 +32,6 @@ export default function Login() {
     navigateToSignUp,
   } = useLoginPresenter();
 
-  // A lógica de sessão pode permanecer aqui ou ser movida para um componente de layout superior
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
@@ -64,7 +63,7 @@ export default function Login() {
             <View style={styles.inputContainer}>
               <Input
                 title="Email"
-                onChangeText={setEmail} // 3. Use os setters do Presenter
+                onChangeText={setEmail} 
                 value={email}
                 placeholder="email@address.com"
                 autoCapitalize="none"
@@ -73,7 +72,7 @@ export default function Login() {
 
               <Input
                 title="Senha"
-                onChangeText={setPassword} // 3. Use os setters do Presenter
+                onChangeText={setPassword} 
                 value={password}
                 secureTextEntry
                 placeholder="Password"
@@ -85,7 +84,7 @@ export default function Login() {
               <SquareButton
                 name="Entrar"
                 disabled={loading}
-                onPress={handleSignIn} // 4. Chame os handlers do Presenter
+                onPress={handleSignIn}
               />
               <View style={styles.signInContainer}>
                 <AppText>Não tem Login?</AppText>
