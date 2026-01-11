@@ -47,9 +47,7 @@ export default function SearchResult() {
 
       if (filters.ranking?.id === 'ranking-min') {
         query = query.order('preco', { ascending: true });
-        console.log('crescente')
       } else if (filters.ranking?.id === 'ranking-max') {
-        console.log('decrescente')
         query = query.order('preco', { ascending: false });
       }
 
