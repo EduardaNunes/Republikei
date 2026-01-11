@@ -32,9 +32,9 @@ export default function App() {
   } = useContext(NewPostContext);
 
   const [localData, setLocalData] = useState({
-    descricao: formData.descricao,
-    preco: formData.preco ? formData.preco.toString() : "",
-    imagens: formData.imagens,
+    descricao: formData.descricao || "",
+    preco: "",
+    imagens: formData.imagens || [],
   });
 
   const [isReadyToSave, setIsReadyToSave] = useState(false);
@@ -44,24 +44,29 @@ export default function App() {
   // ================================================================================ //
 
   useEffect(() => {
-    const initialPrice = formData.preco 
-      ? formData.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })
+
+    const formattedPrice = formData.preco && formData.preco > 0 
+      ? formData.preco.toLocaleString('pt-BR', { 
+          minimumFractionDigits: 2, 
+          maximumFractionDigits: 2 
+        })
       : ""
     ;
 
     setLocalData({
-      descricao: formData.descricao,
-      preco: initialPrice,
-      imagens: formData.imagens,
+      descricao: formData.descricao || "",
+      preco: formattedPrice,
+      imagens: formData.imagens || [],
     });
-  }, [formData.descricao, formData.preco, formData.imagens]);
+
+  }, [formData.descricao, formData.preco, formData.imagens, propertyIdForEdit]);
 
   useEffect(() => {
     if (isReadyToSave) {
       saveProperty();
       setIsReadyToSave(false);
     }
-  }, [formData]);
+  }, [formData, isReadyToSave]);
 
   useEffect(() => {
     if (submissionSuccess) {
