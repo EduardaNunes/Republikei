@@ -9,7 +9,7 @@ import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
 import AppText from "@/components/appText";
-import Menu from "@/components/menu";
+import NavigationBar from "@/components/navigationBar";
 import SelectableBlock from "@/components/selectableBlock";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
@@ -181,7 +181,7 @@ export default function AddProperty_4_compartilhada() {
           onPress={handleContinue}
         />
       </View>
-      <Menu />
+      <NavigationBar />
     </>
   );
 }

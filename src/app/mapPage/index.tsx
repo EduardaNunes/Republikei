@@ -7,7 +7,7 @@ import React, { useState, useEffect } from "react";
 import { styles } from "../../components/styles/homePage";
 import Input from "@/components/input";
 import AppText from "@/components/appText";
-import Menu from "@/components/menu";
+import NavigationBar from "@/components/navigationBar";
 import Categories from "@/components/categories";
 import { colors } from "@/styles/colors"; 
 import { useRouter } from "expo-router";
@@ -135,7 +135,7 @@ export default function MapPage() {
         )}
         
     </View>
-    <Menu></Menu>
+    <NavigationBar/>
     </>
   );
 }

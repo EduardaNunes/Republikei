@@ -2,7 +2,7 @@ import { View, ScrollView, TouchableOpacity, ActivityIndicator } from "react-nat
 import React from "react";
 import { styles } from "../../components/styles/homePage";
 import AppText from "@/components/appText";
-import Menu from "@/components/menu";
+import NavigationBar from "@/components/navigationBar";
 import Categories from "@/components/categories";
 import PostBlock from "@/components/postBlock";
 import { colors } from "@/styles/colors";
@@ -74,7 +74,7 @@ export default function HomePage() {
           })}
         </View>
       </ScrollView>
-      <Menu />
+      <NavigationBar />
     </>
   );
 }

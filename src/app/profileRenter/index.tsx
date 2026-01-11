@@ -4,7 +4,7 @@ import { styles } from "../../components/styles/profileRenter";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
 import AppText from "@/components/appText";
-import Menu from "@/components/menu";
+import NavigationBar from "@/components/navigationBar";
 
 import { useRouter } from "expo-router";
 import { supabase } from "../../lib/supabase";
@@ -222,7 +222,7 @@ export default function ProfileRenter() {
         </View>
       </ScrollView>
       </KeyboardAvoidingView>
-      <Menu />
+      <NavigationBar />
     </>
   );
 }

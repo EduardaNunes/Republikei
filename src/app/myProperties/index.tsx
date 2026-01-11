@@ -1,7 +1,7 @@
 import { FlatList, View, ScrollView, Alert, ActivityIndicator, TouchableOpacity } from "react-native"; 
 import { styles } from "../../components/styles/myProperties";
 import AppText from "@/components/appText";
-import Menu from "@/components/menu";
+import NavigationBar from "@/components/navigationBar";
 import PostBlock from "@/components/postBlock";
 import BackButton from "@/components/backButton";
 import { router } from "expo-router";
@@ -103,7 +103,7 @@ export default function SearchResult() {
           onPress={() => router.push("/addProperty_1")}
         />
       </View>
-      <Menu />
+      <NavigationBar />
     </>
   );
 }

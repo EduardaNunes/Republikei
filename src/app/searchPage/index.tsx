@@ -4,7 +4,7 @@ import { styles } from "../../components/styles/searchPage";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
 import AppText from "@/components/appText";
-import Menu from "@/components/menu";
+import NavigationBar from "@/components/navigationBar";
 import { Category } from "@/components/category";
 import SelectableBlock from "@/components/selectableBlock";
 import { router } from "expo-router";

@@ -2,7 +2,7 @@ import { View, ScrollView, Alert, ActivityIndicator } from "react-native";
 import React, { useEffect, useState } from "react";
 import { styles } from "../../components/styles/favorites";
 import AppText from "@/components/appText";
-import Menu from "@/components/menu";
+import NavigationBar from "@/components/navigationBar";
 import PostBlock from "@/components/postBlock";
 import { Imovel } from "@/utils/Imovel";
 import { supabase } from "@/lib/supabase";
@@ -78,7 +78,7 @@ export default function Favorites() {
             />
           ))}
       </ScrollView>
-      <Menu />
+      <NavigationBar />
     </>
   );
 }

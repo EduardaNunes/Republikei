@@ -6,7 +6,7 @@ import { useRouter } from "expo-router";
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 
-export default function Menu() {
+export default function NavigationBar() {
 
   const router = useRouter();
 

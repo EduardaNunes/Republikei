@@ -8,7 +8,7 @@ import {
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
 import AppText from "@/components/appText";
-import Menu from "@/components/menu";
+import NavigationBar from "@/components/navigationBar";
 import SelectableBlock from "@/components/selectableBlock";
 import { useRouter } from "expo-router";
 import { useState, useContext, useCallback, useEffect } from "react";
@@ -165,7 +165,7 @@ export default function AddProperty_3() {
         />
       </View>
 
-      <Menu />
+      <NavigationBar />
     </>
   );
 }

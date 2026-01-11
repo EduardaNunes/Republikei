@@ -3,7 +3,7 @@ import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
 import AppText from "@/components/appText";
-import Menu from "@/components/menu";
+import NavigationBar from "@/components/navigationBar";
 import { useRouter } from "expo-router";
 import { NewPostContext } from "@/contexts/NewPostContext";
 import { useContext, useState, useEffect } from "react";
@@ -224,7 +224,7 @@ export default function AddProperty_1() {
           onPress={handleContinue}
         />
       </View>
-      <Menu />
+      <NavigationBar />
     </>
   );
 }

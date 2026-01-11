@@ -10,7 +10,7 @@ import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
 import AppText from "@/components/appText";
-import Menu from "@/components/menu";
+import NavigationBar from "@/components/navigationBar";
 import PhotoUpload from "@/components/photoUpload";
 import { useRouter } from "expo-router";
 import { NewPostContext } from "@/contexts/NewPostContext";
@@ -235,7 +235,7 @@ export default function App() {
         />
       </View>
       
-      <Menu />
+      <NavigationBar />
     </>
   );
 }

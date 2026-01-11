@@ -3,7 +3,7 @@ import { Image, View, ScrollView, Alert } from "react-native";
 import React, { useState, useEffect } from "react";
 import { styles } from "../../components/styles/searchResult";
 import AppText from "@/components/appText";
-import Menu from "@/components/menu";
+import NavigationBar from "@/components/navigationBar";
 import PostBlock from "@/components/postBlock";
 import BackButton from "@/components/backButton";
 import { router } from "expo-router";
@@ -28,7 +28,7 @@ export default function SearchResult() {
         
         
     </ScrollView>
-    <Menu></Menu>
+    <NavigationBar/>
     </>
   );
 }
