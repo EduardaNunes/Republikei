@@ -12,14 +12,20 @@ import { postStatusPresenter } from "@/presenter/postStatusPresenter";
 export default function HomePage() {
   const {
     loading,
+    allPosts,
+    setAllPosts,
     filteredPosts,
     selectedCategoryId,
-    userType,
     userId,
     handlePostPress,
     handleSearchPress,
     setSelectedCategoryId,
+    fetchPosts
   } = useHomePagePresenter();
+
+  // ================================================================================ //
+  //                                     FRONT-END 
+  // ================================================================================ //
 
   if (loading) {
     return (
@@ -55,6 +61,8 @@ export default function HomePage() {
             const isOwner = userId === post.proprietario;
             const statusType = isOwner ? "visibility" : "favorite";
 
+            if (post.oculto) return
+
             return (
               <PostBlock
                 key={post.id}
@@ -67,8 +75,15 @@ export default function HomePage() {
                 price={post.preco}
                 statusType={statusType}
                 onPress={() => handlePostPress(post.id)}
-                isActive={!post.oculto}
-                //onStatusPress={postStatusPresenter.handleStatusPress(isOwner)}
+                isActive={isOwner ? !post.oculto : !!post.isFavorited}
+                onStatusPress={() => postStatusPresenter.handleStatusPress({
+                  isOwner,
+                  userId,
+                  post,
+                  currentList: allPosts,
+                  setList: setAllPosts,
+                  refreshCallback: fetchPosts
+                })}
               />
             );
           })}

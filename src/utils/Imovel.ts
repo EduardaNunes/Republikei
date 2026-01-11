@@ -28,4 +28,5 @@ export interface Imovel {
   latitude: number,
   longitude: number,
   mobiliado: boolean,
+  isFavorited: boolean
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "expo-router";
 import { Alert } from "react-native";
@@ -15,46 +15,62 @@ export function useHomePagePresenter() {
   const [userType, setUserType] = useState('');
   const [userId, setUserId] = useState('');
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      setLoading(true);
-      
+  const fetchPosts = useCallback(async () => {
+    setLoading(true);
+    try {
       const { data: { user } } = await supabase.auth.getUser();
             
       if (user) {
         setUserType(user.user_metadata.userType || null);
         setUserId(user.id);
       }
-      
-      const { data, error } = await supabase
+
+      const { data: posts, error: postsError } = await supabase
         .from('Imoveis')
         .select('*')
+        .eq('oculto', false)
         .not('latitude', 'is', null)
         .not('longitude', 'is', null);
 
-      if (error) {
-        console.error("Erro ao buscar imóveis:", error);
-        Alert.alert("Erro", "Não foi possível carregar os imóveis.");
-      } else if (data) {
-        setAllPosts(data);
+      if (postsError) throw postsError;
+
+      let favoritesId: string[] = [];
+      if (user?.id) {
+        const { data: favPosts } = await supabase
+          .from('Favoritos')
+          .select('post_id')
+          .eq('user_id', user?.id);
+        
+        if (favPosts) favoritesId = favPosts.map(favPost => favPost.post_id);
+      }
+
+      if (posts) {
+        const postsWithFavs = posts.map(post => ({
+          ...post,
+          isFavorited: favoritesId.includes(post.id)
+        }));
+        setAllPosts(postsWithFavs);
       }
       
+    } catch (error: any) {
+      console.error("Erro na HomePage:", error.message);
+      Alert.alert("Erro", "Não foi possível carregar os imóveis.");
+    } finally {
       setLoading(false);
-    };
-
-    fetchPosts();
+    }
   }, []);
 
   useEffect(() => {
-    const filtered = allPosts.filter(imovel => {
-      if (imovel.oculto) {
-        return false; 
-      }
-      if (selectedCategoryId === "0") {
-        return true;
-      }
+    fetchPosts();
+  }, [fetchPosts]);
+
+  useEffect(() => {
+    const filtered = allPosts.filter(post => {
+
+      if (selectedCategoryId === "0") return true;
       const categoryName = categories.find(cat => cat.id === selectedCategoryId)?.name;
-      return imovel.tipoMoradiaEspecifico === categoryName;
+      return post.tipoMoradiaEspecifico === categoryName;
+
     });
     setFilteredPosts(filtered);
   }, [selectedCategoryId, allPosts]);
@@ -70,12 +86,16 @@ export function useHomePagePresenter() {
 
   return {
     loading,
+    allPosts,
+    setAllPosts,
     filteredPosts,
+    setFilteredPosts,
     selectedCategoryId,
     userType,
     userId,
     handlePostPress,
     handleSearchPress,
     setSelectedCategoryId,
+    fetchPosts
   };
 }
