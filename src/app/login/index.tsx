@@ -32,6 +32,10 @@ export default function Login() {
     navigateToSignUp,
   } = useLoginPresenter();
 
+  // ================================================================================ //
+  //                              UPDATE WHEN HAS CHANGE
+  // ================================================================================ //
+
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
@@ -45,6 +49,10 @@ export default function Login() {
       authListener.subscription.unsubscribe();
     };
   }, []);
+
+  // ================================================================================ //
+  //                                     FRONT-END 
+  // ================================================================================ //
 
   return (
     <KeyboardAvoidingView

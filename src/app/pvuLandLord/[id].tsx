@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { Imovel } from "@/utils/Imovel";
 import { supabase } from "@/lib/supabase";
 
+import { getPropertyDetails, handleDeleteAction, handleEditAction } from "@/presenter/postPvuPresenter";
 import { NewPostContext } from "@/contexts/NewPostContext";
 import { useContext } from "react";
 
@@ -42,74 +43,37 @@ export default function PvuLandLord() {
 
     if (!id) return;
 
-    const fetchPropertyDetails = async () => {
-
+    const fetchDetails = async () => {
       setLoading(true);
-
       try {
-
-        const { data, error } = await supabase
-          .from('Imoveis')
-          .select('*')
-          .eq('id', id)
-          .single()
-        ;
-
-        if (error) throw error;
+        const result = await getPropertyDetails(id);
         
-        if (data){
-
-          setProperty(data);
-
-          const { data:  owner , error } = await supabase
-            .from('Users')
-            .select('*')
-            .eq('id', data.proprietario)
-            .single()
-          ;
-
-          console.log(owner)
-
-          const { data: { user } } = await supabase.auth.getUser();
-
-          setOwnerInfo({
-            'type': owner?.type|| null,
-            'name': owner?.name || '',
-            'phone': owner?.email || 'E-mail não encontrado',
-            'email': owner?.phone || '(00) 00000-0000',
-            'userIsOwner': user?.id === owner?.id
-          })
-
-          console.log(user?.id + " || " + owner?.id)
-          console.log(ownerInfo.userIsOwner)
-
-        } 
-        else throw new Error("Imóvel não encontrado.");
+        setProperty(result.property);
+        setOwnerInfo(result.ownerInfo);
 
       } catch (error: any) {
         Alert.alert("Erro", "Não foi possível carregar os detalhes do imóvel. | " + error.message);
       } finally {
         setLoading(false);
       }
-    };
+    }
 
-    fetchPropertyDetails();
+    fetchDetails();
+
   }, [id]);
 
   // ================================================================================ //
   //                                     HANDLERS 
   // ================================================================================ //
 
-  const handleEdit = () => {
-    if (!property) return;
-    loadPropertyForEdit(property);
-    router.push({ pathname: '/addProperty_1', params: { propertyId: id } });
+  const onEdit = () => {
+    if (property) handleEditAction(property, loadPropertyForEdit, router);
   };
 
-  const handleDelete = async () => {
+  const onDelete = () => {
     Alert.alert(
       "Confirmar Exclusão",
-      "Você tem certeza que deseja excluir este imóvel? Esta ação não pode ser desfeita.",
+      "Deseja mesmo excluir?",
       [
         { text: "Cancelar", style: "cancel" },
         {
@@ -117,26 +81,17 @@ export default function PvuLandLord() {
           style: "destructive",
           onPress: async () => {
             setLoading(true);
-
             try {
-
-              const { error } = await supabase
-                .from('Imoveis')
-                .delete()
-                .eq('id', id);
-
-              if (error) throw error;
-
+              await handleDeleteAction(id); // Chama a lógica pura do presenter
               Alert.alert("Sucesso", "Imóvel excluído.");
-              router.replace('/myProperties'); 
-
-            } catch (error: any) {
-              Alert.alert("Erro", "Não foi possível excluir o imóvel.");
+              router.replace('/myProperties');
+            } catch (e) {
+              Alert.alert("Erro", "Falha ao excluir.");
             } finally {
               setLoading(false);
             }
-          },
-        },
+          }
+        }
       ]
     );
   };
@@ -219,7 +174,7 @@ export default function PvuLandLord() {
         </View>
 
     </ScrollView>
-    <PriceAndContactButton price={property.preco} isOwner={ownerInfo.userIsOwner} onDelete={handleDelete} onEdit={handleEdit}/>
+    <PriceAndContactButton price={property.preco} isOwner={ownerInfo.userIsOwner} onDelete={onDelete} onEdit={onEdit}/>
     </>
   );
 }
