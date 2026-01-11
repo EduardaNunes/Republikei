@@ -9,8 +9,6 @@ import { Category } from "@/components/category";
 import SelectableBlock from "@/components/selectableBlock";
 import { router } from "expo-router";
 
-
-
 export default function SearchPage() {
 
   return (

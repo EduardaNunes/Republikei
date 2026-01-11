@@ -84,7 +84,7 @@ export default function PvuLandLord() {
             try {
               await handleDeleteAction(id); // Chama a lógica pura do presenter
               Alert.alert("Sucesso", "Imóvel excluído.");
-              router.replace('/myProperties');
+              router.replace('/myPosts');
             } catch (e) {
               Alert.alert("Erro", "Falha ao excluir.");
             } finally {

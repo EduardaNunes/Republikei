@@ -77,7 +77,7 @@ export default function App() {
       Alert.alert("Sucesso!", message);
       
       resetForm();
-      router.replace("/myProperties");
+      router.replace("/myPosts");
     }
 
     if (submissionError) {

@@ -37,7 +37,7 @@ export default function NavigationBar() {
       </TouchableOpacity>
 
       {userType == "landLord" && (
-        <TouchableOpacity onPress={() => router.push("/myProperties")}>
+        <TouchableOpacity onPress={() => router.push("/myPosts")}>
           <MaterialIcons name="home" size={28} color="#fff" />
         </TouchableOpacity>
       )}
