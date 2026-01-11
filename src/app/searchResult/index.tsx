@@ -45,9 +45,11 @@ export default function SearchResult() {
         query = query.contains('caracteristicas', charNames);
       }
 
-      if (filters.ranking?.id === 'ranking-preco-crescente') {
+      if (filters.ranking?.id === 'ranking-min') {
         query = query.order('preco', { ascending: true });
-      } else if (filters.ranking?.id === 'ranking-preco-decrescente') {
+        console.log('crescente')
+      } else if (filters.ranking?.id === 'ranking-max') {
+        console.log('decrescente')
         query = query.order('preco', { ascending: false });
       }
 
@@ -55,6 +57,7 @@ export default function SearchResult() {
 
       if (error) throw error;
       setResults(data || []);
+
     } catch (error: any) {
       Alert.alert("Erro na busca", error.message);
     } finally {
@@ -69,7 +72,10 @@ export default function SearchResult() {
   return (
     <>
     <BackButton onPress={() => router.back()} />
-    <ScrollView style={styles.container}>
+    <ScrollView 
+      style={styles.container}
+      contentContainerStyle={{ alignItems: "center", gap: 20, paddingBottom: 100 }}
+    >
         
         <View  style={styles.titleContainer}>
             <AppText style={styles.title}>RESULTADO</AppText>

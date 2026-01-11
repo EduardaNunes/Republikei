@@ -54,8 +54,8 @@ export default function SearchPage() {
                     type="question" 
                     initialState={filters?.isFurnished === null ? undefined : (filters?.isFurnished ? {id: 'question-sim', name: 'Sim'} : {id: 'question-nao', name: 'Não'})}
                     returnSelected={(val) => {
-                    const res = val as tipoPadrao | null;
-                    updateFilters({ isFurnished: res?.id === 'question-sim' ? true : (res?.id === 'question-nao' ? false : null) } as any);
+                        const res = val as tipoPadrao | null;
+                        updateFilters({ isFurnished: res?.id === 'question-sim' ? true : (res?.id === 'question-nao' ? false : null) } as any);
                     }} 
                 />
 
