@@ -36,7 +36,7 @@ export default function Menu() {
         <MaterialIcons name="search" size={28} color="#fff" />
       </TouchableOpacity>
 
-      {userType == "standard" ? (
+      {userType == "student" ? (
         <TouchableOpacity onPress={() => router.push("/favorites")}>
           <MaterialIcons name="favorite" size={28} color="#fff" />
         </TouchableOpacity>
