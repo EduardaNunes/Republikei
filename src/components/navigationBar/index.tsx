@@ -36,15 +36,15 @@ export default function NavigationBar() {
         <MaterialIcons name="search" size={28} color="#fff" />
       </TouchableOpacity>
 
-      {userType == "student" ? (
-        <TouchableOpacity onPress={() => router.push("/favorites")}>
-          <MaterialIcons name="favorite" size={28} color="#fff" />
-        </TouchableOpacity>
-      ) : (
+      {userType == "landLord" && (
         <TouchableOpacity onPress={() => router.push("/myProperties")}>
           <MaterialIcons name="home" size={28} color="#fff" />
         </TouchableOpacity>
       )}
+      
+      <TouchableOpacity onPress={() => router.push("/favorites")}>
+        <MaterialIcons name="favorite" size={28} color="#fff" />
+      </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.push("/mapPage")}>
         <MaterialIcons name="map" size={28} color="#fff" />
