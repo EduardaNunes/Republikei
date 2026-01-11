@@ -7,16 +7,16 @@ import AppText from "../appText";
 type LandlordNameProps = {
   name: string;
   phone: string;
-  mail: string;
+  email: string;
 };
 
-export default function LandlordName({ name, phone, mail }: LandlordNameProps) {
+export default function LandlordName({ name, phone, email }: LandlordNameProps) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
         <AppText style={styles.textName}>{name}</AppText>
         <AppText style={styles.textNumber}>{phone}</AppText>
-        <AppText style={styles.textNumber}>{mail}</AppText>
+        <AppText style={styles.textNumber}>{email}</AppText>
       </View>
     </View>
   );
