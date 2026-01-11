@@ -6,6 +6,7 @@ import { useEffect, useCallback } from "react";
 import * as NavigationBar from 'expo-navigation-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { View } from "react-native";
+import { SearchContextProvider } from "@/contexts/SearchContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -30,6 +31,7 @@ export default function Layout() {
 
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+      <SearchContextProvider>
       <NewPostProvider>
         <Stack
           screenOptions={{
@@ -38,6 +40,7 @@ export default function Layout() {
           }}
         />
       </NewPostProvider>
+      </SearchContextProvider>
     </View>
   );
 }
