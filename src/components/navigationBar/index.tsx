@@ -6,7 +6,7 @@ import { useRouter } from "expo-router";
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 
-export default function Menu() {
+export default function NavigationBar() {
 
   const router = useRouter();
 
@@ -36,15 +36,15 @@ export default function Menu() {
         <MaterialIcons name="search" size={28} color="#fff" />
       </TouchableOpacity>
 
-      {userType == "standard" ? (
-        <TouchableOpacity onPress={() => router.push("/favorites")}>
-          <MaterialIcons name="favorite" size={28} color="#fff" />
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity onPress={() => router.push("/myProperties")}>
+      {userType == "landLord" && (
+        <TouchableOpacity onPress={() => router.push("/myPosts")}>
           <MaterialIcons name="home" size={28} color="#fff" />
         </TouchableOpacity>
       )}
+      
+      <TouchableOpacity onPress={() => router.push("/favorites")}>
+        <MaterialIcons name="favorite" size={28} color="#fff" />
+      </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.push("/mapPage")}>
         <MaterialIcons name="map" size={28} color="#fff" />

@@ -4,72 +4,170 @@ import {
   ScrollView,
   View,
   Alert,
-  ActivityIndicator,
 } from "react-native";
-
+import React, { useContext, useEffect, useState } from "react";
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
 import AppText from "@/components/appText";
-import Menu from "@/components/menu";
-import { useRouter, useLocalSearchParams } from "expo-router";
-import { useContext, useEffect, useState } from "react";
-import { NewPostContext } from "@/contexts/NewPostContext";
+import NavigationBar from "@/components/navigationBar";
 import PhotoUpload from "@/components/photoUpload";
+import { useRouter } from "expo-router";
+import { NewPostContext } from "@/contexts/NewPostContext";
+import { supabase } from "@/lib/supabase";
 
-export default function AddProperty_5() {
+export default function App() {
   const router = useRouter();
 
   const {
-    addProperty5,
+    formData,
+    updateFormData,
+    saveProperty,
     isSubmitting,
-    submissionError,
     submissionSuccess,
+    submissionError,
     clearSubmissionError,
-    descricao: contextDescricao,
-    preco: contextPreco,
-    imagens: contextImagens,
+    resetForm,
     propertyIdForEdit,
   } = useContext(NewPostContext);
 
-  const { propertyId } = useLocalSearchParams<{ propertyId: string }>();
+  const [localData, setLocalData] = useState({
+    descricao: formData.descricao || "",
+    preco: "",
+    imagens: formData.imagens || [],
+  });
 
-  const [descricao, setDescricao] = useState<string>(contextDescricao);
-  const [preco, setPreco] = useState<string>(contextPreco?.toString() || "");
-  const [imagens, setImagens] = useState<string[]>(contextImagens);
+  const [isReadyToSave, setIsReadyToSave] = useState(false);
 
-  const [loading, setLoading] = useState(false);
+  // ================================================================================ //
+  //                              UPDATE WHEN HAS CHANGE
+  // ================================================================================ //
 
   useEffect(() => {
-    console.log("IMAGENS INICIAIS PASSADAS PARA O PhotoUpload:", contextImagens);
-    setDescricao(contextDescricao);
-    setPreco(contextPreco?.toString() || "");
-    setImagens(contextImagens);
-  }, [contextDescricao, contextPreco, contextImagens]);
 
-  const handleContinue = () => {
-    if (!descricao.trim() || !preco || !imagens || imagens.length === 0) {
+    const formattedPrice = formData.preco && formData.preco > 0 
+      ? formData.preco.toLocaleString('pt-BR', { 
+          minimumFractionDigits: 2, 
+          maximumFractionDigits: 2 
+        })
+      : ""
+    ;
+
+    setLocalData({
+      descricao: formData.descricao || "",
+      preco: formattedPrice,
+      imagens: formData.imagens || [],
+    });
+
+  }, [formData.descricao, formData.preco, formData.imagens, propertyIdForEdit]);
+
+  useEffect(() => {
+    if (isReadyToSave) {
+      saveProperty();
+      setIsReadyToSave(false);
+    }
+  }, [formData, isReadyToSave]);
+
+  useEffect(() => {
+    if (submissionSuccess) {
+      const message = propertyIdForEdit
+        ? "Imóvel atualizado com sucesso!"
+        : "O seu imóvel foi registado com sucesso!";
+      
+      Alert.alert("Sucesso!", message);
+      
+      resetForm();
+      router.replace("/myPosts");
+    }
+
+    if (submissionError) {
+      if (submissionError.includes("autenticado")) {
+        Alert.alert(
+          "Sessão Expirada", 
+          "A sua sessão expirou. Por favor, faça login novamente para salvar.",
+          [{ text: "Ir para Login", onPress: () => router.replace("/login") }]
+        );
+      } else {
+        Alert.alert("Erro na Submissão", submissionError);
+      }
+      clearSubmissionError();
+    }
+  }, [submissionSuccess, submissionError]);
+
+  // ================================================================================ //
+  //                                     HANDLERS 
+  // ================================================================================ //
+
+  const handleChange = (field: keyof typeof localData, value: any) => {
+    setLocalData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handlePrice = (value: string) => {
+
+    if (value === "") {
+      handleChange("preco", "");
+      return;
+    }
+
+    if (/[^0-9., ]/.test(value)) {
+      Alert.alert("Erro", "O valor inserido é inválido, preencha apenas com números");
+      handleChange("preco", "");
+      return;
+    }
+
+    const formatted = formatCurrency(value);
+    handleChange("preco", formatted); 
+  }
+
+  function formatCurrency(value: string) {
+    const digits = value.replace(/\D/g, "");
+    if (!digits) return "";
+    
+    const numberValue = (parseInt(digits) / 100).toFixed(2);
+    const [intPart, decimalPart] = numberValue.split(".");
+    
+    const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return `${formattedInt},${decimalPart}`;
+  }
+
+  const handleContinue = async () => {
+
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      Alert.alert(
+        "Acesso Negado",
+        "Precisa de estar autenticado para realizar esta operação.",
+        [{ text: "Fazer Login", onPress: () => router.replace("/login") }]
+      );
+      return;
+    }
+
+    if (!localData.descricao.trim() || !localData.preco || localData.imagens.length === 0){
       Alert.alert("Campos obrigatórios", "Por favor, preencha todos os campos.");
       return;
     }
 
-    addProperty5(descricao, parseFloat(preco), imagens);
+    const cleanValue = localData.preco.replace(/\./g, "").replace(",", ".");
+    const parsedPrice = parseFloat(cleanValue);
+
+    if (isNaN(parsedPrice) || parsedPrice <= 0) {
+      Alert.alert("Erro", "Insira um valor de aluguel válido.");
+      return;
+    }
+
+    updateFormData({
+      descricao: localData.descricao,
+      preco: parsedPrice,
+      imagens: localData.imagens,
+    });
+
+    setIsReadyToSave(true);
   };
 
-  useEffect(() => {
-    // Se a submissão terminou E foi um sucesso...
-    if (submissionSuccess && !isSubmitting) {
-      const message = propertyId ? "Imóvel atualizado com sucesso!" : "Seu imóvel foi cadastrado!";
-      Alert.alert("Sucesso!", message);
-      router.replace("/myProperties");
-    }
-
-    // Se um erro de submissão apareceu...
-    if (submissionError) {
-      Alert.alert("Erro ao cadastrar imóvel", submissionError);
-      clearSubmissionError(); // Limpa o erro para não mostrar o alerta de novo
-    }
-  }, [submissionSuccess, submissionError, isSubmitting]);
+  // ================================================================================ //
+  //                                     FRONT-END 
+  // ================================================================================ //
 
   return (
     <>
@@ -89,47 +187,55 @@ export default function AddProperty_5() {
         >
           <View style={styles.titleContainer}>
             <AppText style={styles.title}>DETALHES</AppText>
-            <AppText style={styles.subtitle}>DESCRIÇÃO</AppText>
+            <AppText style={styles.subtitle}>DESCRIÇÃO E VALORES</AppText>
           </View>
+
           <View style={styles.geralContainer}>
             <View style={styles.inputContainer}>
               <Input
                 title="Adicionar Descrição"
                 containerStyle={{ width: "100%" }}
-                onChangeText={(text: string) => setDescricao(text)}
-                value={descricao}
+                onChangeText={(val: string) => handleChange("descricao", val)}
+                value={localData.descricao}
+                multiline
               />
+              
               <Input
                 variant="secondary"
-                title="Mensalidade/Aluguel"
+                title="Mensalidade/Aluguer (R$)"
                 containerStyle={{ width: "100%" }}
                 keyboardType="numeric"
-                onChangeText={(text: string) => setPreco(text)}
-                value={preco}
+                onChangeText={(val: string) => handlePrice(val)}
+                value={localData.preco}
               />
 
-              <AppText style={styles.subtitle}>FOTOS (MAX 15)</AppText>
+              <AppText style={styles.subtitle}>FOTOS (MÁX. 15)</AppText>
               <View style={styles.subCategoryContainer}>
-                <PhotoUpload onImagesChange={(uris) => setImagens(uris)} initialState={imagens}/>
+                <PhotoUpload
+                  onImagesChange={(uris) => handleChange("imagens", uris)}
+                  initialState={localData.imagens}
+                />
               </View>
             </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
       <View style={styles.buttonsContainer}>
         <SquareButton
           name="Voltar"
           variant="mediumS"
           onPress={() => router.back()}
         />
-        <SquareButton 
-          name={propertyIdForEdit ? "Salvar Alterações" : "Cadastrar Imóvel"} 
-          variant="mediumP" 
-          onPress={handleContinue} 
-          disabled={isSubmitting} 
+        <SquareButton
+          name={propertyIdForEdit ? "Guardar Alterações" : "Registar Imóvel"}
+          variant="mediumP"
+          onPress={handleContinue}
+          disabled={isSubmitting}
         />
       </View>
-      <Menu />
+      
+      <NavigationBar />
     </>
   );
 }

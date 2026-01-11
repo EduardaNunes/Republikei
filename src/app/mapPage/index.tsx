@@ -7,7 +7,7 @@ import React, { useState, useEffect } from "react";
 import { styles } from "../../components/styles/homePage";
 import Input from "@/components/input";
 import AppText from "@/components/appText";
-import Menu from "@/components/menu";
+import NavigationBar from "@/components/navigationBar";
 import Categories from "@/components/categories";
 import { colors } from "@/styles/colors"; 
 import { useRouter } from "expo-router";
@@ -51,7 +51,8 @@ export default function MapPage() {
         .from('Imoveis')
         .select('*')
         .not('latitude', 'is', null)
-        .not('longitude', 'is', null);
+        .not('longitude', 'is', null)
+        .not('oculto', 'is', true);
 
       if (error) {
         console.error("Erro ao buscar imóveis:", error);
@@ -134,7 +135,7 @@ export default function MapPage() {
         )}
         
     </View>
-    <Menu></Menu>
+    <NavigationBar/>
     </>
   );
 }

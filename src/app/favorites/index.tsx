@@ -1,58 +1,114 @@
 import { View, ScrollView, Alert, ActivityIndicator } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { styles } from "../../components/styles/favorites";
 import AppText from "@/components/appText";
-import Menu from "@/components/menu";
+import NavigationBar from "@/components/navigationBar";
 import PostBlock from "@/components/postBlock";
 import { Imovel } from "@/utils/Imovel";
 import { supabase } from "@/lib/supabase";
 import { router } from "expo-router";
+import { postStatusPresenter } from "@/presenter/postStatusPresenter";
+
+interface FavoritesState {
+  all: Imovel[];
+}
 
 export default function Favorites() {
 
-  const [myFavorites, setMyFavorites] = useState<Imovel[]>([]);
+  const [posts, setPosts] = useState<FavoritesState>({ all: [] });
+  const [userId, setUserId] = useState('');
   const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-      const fetchImoveis = async () => {
+  // ================================================================================ //
+  //                              UPDATE WHEN HAS CHANGE
+  // ================================================================================ //
 
-        setLoading(true);
-        
-        try {
 
-          const { data: { user } } = await supabase.auth.getUser();
+  const fetchImoveis = useCallback(async () => {
 
-          if (!user) {
-            setMyFavorites([]); 
-            return;
-          }
+    setLoading(true);
+    
+    try {
 
-          const { data, error } = await supabase
-            .from('Favoritos')
-            .select('*')
-            .eq('User', user.id); 
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      else setUserId(user?.id || '')
 
-          if (error) throw error;
+      const userFavoritePosts = await getUserFavoritePosts(user?.id || '');
+      const formattedData = formatUserFavoritePosts(userFavoritePosts);
+      setPosts({ all: formattedData });
 
-          if (data) {
-            setMyFavorites(data);
-          }
+    } catch (error: any) {
+      console.error("Erro ao buscar favoritos:", error);
+      Alert.alert("Erro", "Não foi possível carregar seus favoritos.");
 
-        } catch (error: any) {
-          console.error("Erro ao buscar favoritos:", error);
-          Alert.alert("Erro", "Não foi possível carregar seus favoritos.");
-        } finally {
-          setLoading(false);
-        }
-      };
+    } finally {
+      setLoading(false);
 
-    fetchImoveis();
-  },[]);
-
-    if (loading) {
-      return <ActivityIndicator />;
     }
 
+  }, []);
+
+  useEffect(() => {
+    fetchImoveis();
+  }, [fetchImoveis]);
+
+  // ================================================================================ //
+  //                                 FETCH AUX FUNCTIONS 
+  // ================================================================================ //
+
+  const getUserFavoritePosts = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('Favoritos')
+      .select(`
+        post_id,
+        Imoveis (*)
+      `)
+      .eq('user_id', userId); 
+
+    if (error) throw error;
+    else return data || []
+  }
+
+  const formatUserFavoritePosts = (userFavoritePosts: any[]) => {
+    const formattedFavorites = userFavoritePosts
+      .map((post: any) => ({
+        ...post.Imoveis,
+        isFavorited: true
+      }))
+      .filter(post => post.id !== null)
+    ;
+    return formattedFavorites;
+  }
+
+
+  // ================================================================================ //
+  //                                     HANDLERS 
+  // ================================================================================ //
+  
+  const onToggleFavorite = async (post: Imovel) => {
+    await postStatusPresenter.handleStatusPress({
+      isOwner: false,
+      userId: userId,
+      post: post,
+      currentList: posts.all,
+      setPosts: setPosts,
+      refreshCallback: fetchImoveis
+    });
+    
+    setPosts(prev => ({
+      ...prev,
+      all: prev.all.filter(p => p.id !== post.id || p.isFavorited)
+    }));
+  };
+  
+  // ================================================================================ //
+  //                                     FRONT-END 
+  // ================================================================================ //
+  
+  if (loading) {
+    return <ActivityIndicator />;
+  }
 
   return (
     <>
@@ -61,24 +117,27 @@ export default function Favorites() {
         <View style={styles.titleContainer}>
           <AppText style={styles.title}>FAVORITOS</AppText>
         </View>
-          <AppText>Em Desenvolvimento</AppText>
-          {myFavorites.map((favorite) => (
-            <PostBlock
-              key={favorite.id}
-              onPress={() => router.push(`/pvuLandLord/${favorite.id}`)}
-              image={
-                favorite.imagens && favorite.imagens.length > 0
-                  ? { uri: favorite.imagens[0] }
-                  : require("../../assets/Imagem.png") 
-              }
-              title={favorite.tipoMoradiaEspecifico + " - " + (favorite.bairro || 'Sem Bairro')}
-              price={favorite.preco}
-              statusType="favorite" 
-              isActive={true}
-            />
-          ))}
+          {posts.all.length > 0 
+            ? posts.all.map((favorite) => (
+              <PostBlock
+                key={favorite.id}
+                onPress={() => router.push(`/pvuLandLord/${favorite.id}`)}
+                image={
+                  favorite.imagens && favorite.imagens.length > 0
+                    ? { uri: favorite.imagens[0] }
+                    : require("../../assets/Imagem.png") 
+                }
+                title={favorite.tipoMoradiaEspecifico + " - " + (favorite.bairro || 'Sem Bairro')}
+                price={favorite.preco}
+                statusType="favorite" 
+                isActive={!!favorite.isFavorited}
+                onStatusPress={() => onToggleFavorite(favorite)}
+              />
+            ))
+            : (<AppText>Nenhum favorito para exibir</AppText>)
+          }
       </ScrollView>
-      <Menu />
+      <NavigationBar />
     </>
   );
 }

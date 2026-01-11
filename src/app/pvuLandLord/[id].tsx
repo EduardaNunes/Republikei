@@ -5,7 +5,7 @@ import AppText from "@/components/appText";
 import SelectableBlock from "@/components/selectableBlock";
 import { router, useLocalSearchParams } from "expo-router";
 import StatusPost from "@/components/statusPost";
-import LandlordName from "@/components/landlordName";
+import OwnerData from "@/components/ownerPostData";
 import PriceAndContactButton from "@/components/priceAndContactButton";
 import BackButton from "@/components/backButton";
 import { ImageCarousel } from "@/components/imagesCarrossel";
@@ -13,8 +13,8 @@ import HouseInfoList from "@/components/houseInfoList/houseInfoList";
 import { useEffect, useState } from "react";
 import { Imovel } from "@/utils/Imovel";
 import { supabase } from "@/lib/supabase";
-import { characteristics } from "@/utils/enums";
 
+import { getPropertyDetails, handleDeleteAction, handleEditAction } from "@/presenter/postPvuPresenter";
 import { NewPostContext } from "@/contexts/NewPostContext";
 import { useContext } from "react";
 
@@ -26,15 +26,54 @@ export default function PvuLandLord() {
   const { loadPropertyForEdit } = useContext(NewPostContext);
 
   const [loading, setLoading] = useState(true);
-  const [userType, setUserType] = useState('');
-  const [userName, setUserName] = useState('');
-  const [userPhone, setUserPhone] = useState('');
-  const [userEmail, setUserEmail] = useState('');
 
-  const handleDelete = async () => {
+  const [ownerInfo, setOwnerInfo] = useState({
+    'type': '',
+    'name': '',
+    'phone': '',
+    'email': '',
+    'userIsOwner': false
+  })
+
+  // ================================================================================ //
+  //                              UPDATE WHEN HAS CHANGE
+  // ================================================================================ //
+
+  useEffect(() => {
+
+    if (!id) return;
+
+    const fetchDetails = async () => {
+      setLoading(true);
+      try {
+        const result = await getPropertyDetails(id);
+        
+        setProperty(result.property);
+        setOwnerInfo(result.ownerInfo);
+
+      } catch (error: any) {
+        Alert.alert("Erro", "Não foi possível carregar os detalhes do imóvel. | " + error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchDetails();
+
+  }, [id]);
+
+  // ================================================================================ //
+  //                                     HANDLERS 
+  // ================================================================================ //
+
+  const onEdit = () => {
+    if (property) handleEditAction(property, loadPropertyForEdit, router);
+  };
+
+  const onDelete = () => {
     Alert.alert(
       "Confirmar Exclusão",
-      "Você tem certeza que deseja excluir este imóvel? Esta ação não pode ser desfeita.",
+      "Deseja mesmo excluir?",
       [
         { text: "Cancelar", style: "cancel" },
         {
@@ -42,69 +81,24 @@ export default function PvuLandLord() {
           style: "destructive",
           onPress: async () => {
             setLoading(true);
-
             try {
-
-              const { error } = await supabase
-                .from('Imoveis')
-                .delete()
-                .eq('id', id);
-
-              if (error) throw error;
-
+              await handleDeleteAction(id); // Chama a lógica pura do presenter
               Alert.alert("Sucesso", "Imóvel excluído.");
-              router.replace('/myProperties'); 
-
-            } catch (error: any) {
-              Alert.alert("Erro", "Não foi possível excluir o imóvel.");
+              router.replace('/myPosts');
+            } catch (e) {
+              Alert.alert("Erro", "Falha ao excluir.");
             } finally {
               setLoading(false);
             }
-          },
-        },
+          }
+        }
       ]
     );
   };
 
-  useEffect(() => {
-
-    if (!id) return;
-
-    const fetchPropertyDetails = async () => {
-
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (user) {
-        setUserType(user.user_metadata.userType || null);
-        setUserName(user.user_metadata.displayName || '');
-        setUserEmail(user.email || 'E-mail não encontrado');
-        setUserPhone(user.phone || "");
-      }
-
-      setLoading(true);
-
-      try {
-
-        const { data, error } = await supabase
-          .from('Imoveis')
-          .select('*')
-          .eq('id', id)
-          .single();
-
-        if (error) throw error;
-        
-        if (data) setProperty(data); 
-        else throw new Error("Imóvel não encontrado.");
-
-      } catch (error: any) {
-        Alert.alert("Erro", "Não foi possível carregar os detalhes do imóvel.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPropertyDetails();
-  }, [id]);
+  // ================================================================================ //
+  //                                     FRONT-END 
+  // ================================================================================ //
 
   if (loading) {
     return <ActivityIndicator style={{ flex: 1 }} size="large" />;
@@ -113,17 +107,6 @@ export default function PvuLandLord() {
   if (!property) {
     return <AppText>Imóvel não encontrado.</AppText>;
   }
-
-  const statusType = userType === "owner" ? "visibility" : "favorite";
-  //const shouldShowStatusPost = !(userType === "owner" && statusType === "favorite");
-
-  const handleEdit = () => {
-    if (!property) return;
-    // 1. Carrega os dados do imóvel para o contexto
-    loadPropertyForEdit(property);
-    // 2. Navega para o início do formulário, passando o ID
-    router.push({ pathname: '/addProperty_1', params: { propertyId: id } });
-  };
 
   return (
     <>
@@ -184,14 +167,14 @@ export default function PvuLandLord() {
                 }/>
 
                 <AppText style={styles.subtitle}>LOCADOR</AppText>
-                <LandlordName name={userName || 'Sem Nome'} phone={userPhone || '(00) 00000-0000'} mail={userEmail || "???@gmail.com"} />
+                <OwnerData name={ownerInfo.name} phone={ownerInfo.phone} email={ownerInfo.email} />
 
               </View>
             </View>
         </View>
 
     </ScrollView>
-    <PriceAndContactButton price={property.preco} isOwner={userType === "owner"} onDelete={handleDelete} onEdit={handleEdit}/>
+    <PriceAndContactButton price={property.preco} isOwner={ownerInfo.userIsOwner} onDelete={onDelete} onEdit={onEdit}/>
     </>
   );
 }

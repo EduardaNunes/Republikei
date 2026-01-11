@@ -18,7 +18,7 @@ export default function StatusPost({ type, style, isActive, onPress }: StatusPos
   // // Proteção contra tipo inválido (opcional, mas recomendada)
   // if (type !== "favorite" && type !== "visibility") return null;
 
-  const isVisibility = type === "visibility";
+  const isOwner = type === "visibility";
   const visibilityIconName = isActive ? "visibility" : "visibility-off";
   const isOff = !isActive;
 
@@ -38,17 +38,16 @@ export default function StatusPost({ type, style, isActive, onPress }: StatusPos
       style={[
         styles.container,
         style,
-        // Aplica o fundo laranja apenas se for do tipo visibilidade E estiver oculto
-        isVisibility && isOff ? { backgroundColor: colors.orange[300] } : null,
+        isOwner && isOff ? { backgroundColor: colors.orange[300] } : null,
       ]}
     >
       <MaterialIcons
-        name={isVisibility ? visibilityIconName : favoriteIconName}
+        name={isOwner ? visibilityIconName : favoriteIconName}
         size={24}
         color={
-          isVisibility && isOff
-            ? "#fff" // Ícone branco no fundo laranja
-            : colors.orange[300] // Ícone laranja no fundo transparente
+          isOwner && isOff
+            ? "#fff" 
+            : colors.orange[300]
         }
       />
     </TouchableOpacity>
