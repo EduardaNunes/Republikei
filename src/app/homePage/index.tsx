@@ -7,6 +7,7 @@ import Categories from "@/components/categories";
 import PostBlock from "@/components/postBlock";
 import { colors } from "@/styles/colors";
 import { useHomePagePresenter } from "@/presenter/useHomePagePresenter";
+import { postStatusPresenter } from "@/presenter/postStatusPresenter";
 
 export default function HomePage() {
   const {
@@ -67,6 +68,7 @@ export default function HomePage() {
                 statusType={statusType}
                 onPress={() => handlePostPress(post.id)}
                 isActive={!post.oculto}
+                //onStatusPress={postStatusPresenter.handleStatusPress(isOwner)}
               />
             );
           })}

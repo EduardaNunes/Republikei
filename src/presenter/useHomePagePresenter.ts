@@ -76,6 +76,6 @@ export function useHomePagePresenter() {
     userId,
     handlePostPress,
     handleSearchPress,
-    setSelectedCategoryId, // Passando o setter diretamente para o componente de categorias
+    setSelectedCategoryId,
   };
 }

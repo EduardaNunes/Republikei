@@ -8,12 +8,17 @@ import { router } from "expo-router";
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 
+import { postStatusPresenter } from "@/presenter/postStatusPresenter";
 import { Imovel } from "@/utils/Imovel";
 
 export default function SearchResult() {
 
   const [myProperties, setMyProperties] = useState<Imovel[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // ================================================================================ //
+  //                              UPDATE WHEN HAS CHANGE
+  // ================================================================================ //
 
   const fetchImoveis = useCallback(async () => {
     setLoading(true);
@@ -42,28 +47,30 @@ export default function SearchResult() {
     fetchImoveis();
   }, [fetchImoveis]);
 
-  const handleToggleVisibility = async (propertyId: string, currentState: boolean) => {
-    const newState = !currentState;
-    
-    // Atualização otimista na UI
-    const updatedProperties = myProperties.map(p =>
-      p.id === propertyId ? { ...p, oculto: newState } : p
-    );
-    setMyProperties(updatedProperties);
+  // ================================================================================ //
+  //                                     HANDLERS 
+  // ================================================================================ //
 
-    // Atualiza o Supabase
-    const { error } = await supabase
-      .from('Imoveis')
-      .update({ oculto: newState })
-      .eq('id', propertyId);
+  const onToggleVisibility = async (propertyId: string, currentState: boolean) => {
     
-    // Se der erro...
+    const { updatedList, error } = await postStatusPresenter.handleToggleStatus(
+      myProperties, 
+      propertyId, 
+      currentState
+    );
+
+    setMyProperties(updatedList);
+
     if (error) {
       Alert.alert("Erro", "Não foi possível atualizar o status do imóvel. Sincronizando com o servidor...");
-      // ...simplesmente busque os dados novamente para reverter a UI para o estado real.
       fetchImoveis();
     }
+
   };
+
+  // ================================================================================ //
+  //                                     FRONT-END 
+  // ================================================================================ //
 
   if (loading) {
     return <ActivityIndicator />;
@@ -91,9 +98,8 @@ export default function SearchResult() {
               title={property.tipoMoradiaEspecifico + " - " + (property.bairro || 'Sem Bairro')}
               price={property.preco}
               statusType="visibility"
-              // 👇 PASSE AS PROPS CORRETAS AQUI 👇
-              isActive={!property.oculto} // Se 'oculto' é false, o ícone está 'ativo' (visível)
-              onStatusPress={() => handleToggleVisibility(property.id, property.oculto)}
+              isActive={!property.oculto}
+              onStatusPress={() => onToggleVisibility(property.id, property.oculto)}
             />
           ))}
         </ScrollView>
