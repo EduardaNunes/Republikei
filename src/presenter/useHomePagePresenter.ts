@@ -9,15 +9,14 @@ export function useHomePagePresenter() {
   const router = useRouter();
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("0");
-  const [allImoveis, setAllImoveis] = useState<Imovel[]>([]);
-  const [filteredImoveis, setFilteredImoveis] = useState<Imovel[]>([]);
+  const [allPosts, setAllPosts] = useState<Imovel[]>([]);
+  const [filteredPosts, setFilteredPosts] = useState<Imovel[]>([]);
   const [loading, setLoading] = useState(true);
   const [userType, setUserType] = useState('');
   const [userId, setUserId] = useState('');
 
-  // Efeito para buscar os dados iniciais
   useEffect(() => {
-    const fetchImoveis = async () => {
+    const fetchPosts = async () => {
       setLoading(true);
       
       const { data: { user } } = await supabase.auth.getUser();
@@ -37,18 +36,17 @@ export function useHomePagePresenter() {
         console.error("Erro ao buscar imóveis:", error);
         Alert.alert("Erro", "Não foi possível carregar os imóveis.");
       } else if (data) {
-        setAllImoveis(data);
+        setAllPosts(data);
       }
       
       setLoading(false);
     };
 
-    fetchImoveis();
+    fetchPosts();
   }, []);
 
-  // Efeito para filtrar os imóveis quando a categoria ou a lista principal mudam
   useEffect(() => {
-    const filtered = allImoveis.filter(imovel => {
+    const filtered = allPosts.filter(imovel => {
       if (imovel.oculto) {
         return false; 
       }
@@ -58,8 +56,8 @@ export function useHomePagePresenter() {
       const categoryName = categories.find(cat => cat.id === selectedCategoryId)?.name;
       return imovel.tipoMoradiaEspecifico === categoryName;
     });
-    setFilteredImoveis(filtered);
-  }, [selectedCategoryId, allImoveis]);
+    setFilteredPosts(filtered);
+  }, [selectedCategoryId, allPosts]);
 
 
   const handlePostPress = (postId: string) => {
@@ -72,7 +70,7 @@ export function useHomePagePresenter() {
 
   return {
     loading,
-    filteredImoveis,
+    filteredPosts,
     selectedCategoryId,
     userType,
     userId,
