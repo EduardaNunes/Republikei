@@ -5,7 +5,7 @@ import AppText from "@/components/appText";
 import SelectableBlock from "@/components/selectableBlock";
 import { router, useLocalSearchParams } from "expo-router";
 import StatusPost from "@/components/statusPost";
-import LandlordName from "@/components/landlordName";
+import OwnerData from "@/components/ownerPostData";
 import PriceAndContactButton from "@/components/priceAndContactButton";
 import BackButton from "@/components/backButton";
 import { ImageCarousel } from "@/components/imagesCarrossel";
@@ -167,7 +167,7 @@ export default function PvuLandLord() {
                 }/>
 
                 <AppText style={styles.subtitle}>LOCADOR</AppText>
-                <LandlordName name={ownerInfo.name} phone={ownerInfo.phone} email={ownerInfo.email} />
+                <OwnerData name={ownerInfo.name} phone={ownerInfo.phone} email={ownerInfo.email} />
 
               </View>
             </View>

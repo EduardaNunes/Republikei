@@ -4,7 +4,7 @@ import SquareButton from "@/components/button";
 import BackButton from "@/components/backButton";
 import Categories from "@/components/categories";
 import Input from "@/components/input";
-import LandlordName from "@/components/landlordName";
+import LandlordName from "@/components/ownerPostData";
 import PhotosCounter from "@/components/photosCounter";
 import PostBlock from "@/components/postBlock";
 import PriceAndContactButton from "@/components/priceAndContactButton";
