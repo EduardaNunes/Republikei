@@ -13,7 +13,6 @@ import HouseInfoList from "@/components/houseInfoList/houseInfoList";
 import { useEffect, useState } from "react";
 import { Imovel } from "@/utils/Imovel";
 import { supabase } from "@/lib/supabase";
-import { characteristics } from "@/utils/enums";
 
 import { NewPostContext } from "@/contexts/NewPostContext";
 import { useContext } from "react";
@@ -26,10 +25,86 @@ export default function PvuLandLord() {
   const { loadPropertyForEdit } = useContext(NewPostContext);
 
   const [loading, setLoading] = useState(true);
-  const [userType, setUserType] = useState('');
-  const [userName, setUserName] = useState('');
-  const [userPhone, setUserPhone] = useState('');
-  const [userEmail, setUserEmail] = useState('');
+
+  const [ownerInfo, setOwnerInfo] = useState({
+    'type': '',
+    'name': '',
+    'phone': '',
+    'email': '',
+    'userIsOwner': false
+  })
+
+  // ================================================================================ //
+  //                              UPDATE WHEN HAS CHANGE
+  // ================================================================================ //
+
+  useEffect(() => {
+
+    if (!id) return;
+
+    const fetchPropertyDetails = async () => {
+
+      setLoading(true);
+
+      try {
+
+        const { data, error } = await supabase
+          .from('Imoveis')
+          .select('*')
+          .eq('id', id)
+          .single()
+        ;
+
+        if (error) throw error;
+        
+        if (data){
+
+          setProperty(data);
+
+          const { data:  owner , error } = await supabase
+            .from('Users')
+            .select('*')
+            .eq('id', data.proprietario)
+            .single()
+          ;
+
+          console.log(owner)
+
+          const { data: { user } } = await supabase.auth.getUser();
+
+          setOwnerInfo({
+            'type': owner?.type|| null,
+            'name': owner?.name || '',
+            'phone': owner?.email || 'E-mail não encontrado',
+            'email': owner?.phone || '(00) 00000-0000',
+            'userIsOwner': user?.id === owner?.id
+          })
+
+          console.log(user?.id + " || " + owner?.id)
+          console.log(ownerInfo.userIsOwner)
+
+        } 
+        else throw new Error("Imóvel não encontrado.");
+
+      } catch (error: any) {
+        Alert.alert("Erro", "Não foi possível carregar os detalhes do imóvel. | " + error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPropertyDetails();
+  }, [id]);
+
+  // ================================================================================ //
+  //                                     HANDLERS 
+  // ================================================================================ //
+
+  const handleEdit = () => {
+    if (!property) return;
+    loadPropertyForEdit(property);
+    router.push({ pathname: '/addProperty_1', params: { propertyId: id } });
+  };
 
   const handleDelete = async () => {
     Alert.alert(
@@ -66,45 +141,9 @@ export default function PvuLandLord() {
     );
   };
 
-  useEffect(() => {
-
-    if (!id) return;
-
-    const fetchPropertyDetails = async () => {
-
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (user) {
-        setUserType(user.user_metadata.userType || null);
-        setUserName(user.user_metadata.displayName || '');
-        setUserEmail(user.email || 'E-mail não encontrado');
-        setUserPhone(user.phone || "");
-      }
-
-      setLoading(true);
-
-      try {
-
-        const { data, error } = await supabase
-          .from('Imoveis')
-          .select('*')
-          .eq('id', id)
-          .single();
-
-        if (error) throw error;
-        
-        if (data) setProperty(data); 
-        else throw new Error("Imóvel não encontrado.");
-
-      } catch (error: any) {
-        Alert.alert("Erro", "Não foi possível carregar os detalhes do imóvel.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPropertyDetails();
-  }, [id]);
+  // ================================================================================ //
+  //                                     FRONT-END 
+  // ================================================================================ //
 
   if (loading) {
     return <ActivityIndicator style={{ flex: 1 }} size="large" />;
@@ -113,17 +152,6 @@ export default function PvuLandLord() {
   if (!property) {
     return <AppText>Imóvel não encontrado.</AppText>;
   }
-
-  const statusType = userType === "owner" ? "visibility" : "favorite";
-  //const shouldShowStatusPost = !(userType === "owner" && statusType === "favorite");
-
-  const handleEdit = () => {
-    if (!property) return;
-    // 1. Carrega os dados do imóvel para o contexto
-    loadPropertyForEdit(property);
-    // 2. Navega para o início do formulário, passando o ID
-    router.push({ pathname: '/addProperty_1', params: { propertyId: id } });
-  };
 
   return (
     <>
@@ -184,14 +212,14 @@ export default function PvuLandLord() {
                 }/>
 
                 <AppText style={styles.subtitle}>LOCADOR</AppText>
-                <LandlordName name={userName || 'Sem Nome'} phone={userPhone || '(00) 00000-0000'} mail={userEmail || "???@gmail.com"} />
+                <LandlordName name={ownerInfo.name} phone={ownerInfo.phone} email={ownerInfo.email} />
 
               </View>
             </View>
         </View>
 
     </ScrollView>
-    <PriceAndContactButton price={property.preco} isOwner={userType === "owner"} onDelete={handleDelete} onEdit={handleEdit}/>
+    <PriceAndContactButton price={property.preco} isOwner={ownerInfo.userIsOwner} onDelete={handleDelete} onEdit={handleEdit}/>
     </>
   );
 }
