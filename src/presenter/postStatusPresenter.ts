@@ -44,16 +44,16 @@ export const postStatusPresenter = {
     userId: string,
     post: Imovel,
     currentList: Imovel[],
-    setList: (posts: Imovel[]) => void,
+    setPosts: (callback: (prev: any) => any) => void,
     refreshCallback: () => void
   }) => {
-    const { isOwner, userId, post, currentList, setList, refreshCallback } = params;
+    const { isOwner, userId, post, currentList, setPosts, refreshCallback } = params;
 
     if (isOwner) {
       const newState = !post.oculto;
       const updatedList = postStatusPresenter.getUpdatedVisibilityList(currentList, post.id, newState);
       
-      setList(updatedList);
+      setPosts(prev => ({ ...prev, all: updatedList }));
       
       const error = await postStatusPresenter.updateVisibility(post.id, newState);
       if (error) refreshCallback(); 
@@ -63,7 +63,7 @@ export const postStatusPresenter = {
       const newState = !post.isFavorited;
       const updatedList = postStatusPresenter.getUpdatedFavoriteList(currentList, post.id, newState);
       
-      setList(updatedList);
+      setPosts(prev => ({ ...prev, all: updatedList }));
       
       const error = await postStatusPresenter.updateFavorites(userId, post.id, newState);
       if (error) refreshCallback(); 

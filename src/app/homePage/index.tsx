@@ -13,7 +13,7 @@ export default function HomePage() {
   const {
     loading,
     allPosts,
-    setAllPosts,
+    setPosts,
     filteredPosts,
     selectedCategoryId,
     userId,
@@ -47,7 +47,7 @@ export default function HomePage() {
         </TouchableOpacity>
 
         <Categories 
-          selectedCategoryId={selectedCategoryId} 
+          selectedCategoryId={selectedCategoryId.toString()} 
           onCategorySelect={setSelectedCategoryId} 
         />
 
@@ -61,7 +61,7 @@ export default function HomePage() {
             const isOwner = userId === post.proprietario;
             const statusType = isOwner ? "visibility" : "favorite";
 
-            if (post.oculto) return
+            if (post.oculto) return null;
 
             return (
               <PostBlock
@@ -81,7 +81,7 @@ export default function HomePage() {
                   userId,
                   post,
                   currentList: allPosts,
-                  setList: setAllPosts,
+                  setPosts: setPosts,
                   refreshCallback: fetchPosts
                 })}
               />

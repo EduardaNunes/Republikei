@@ -4,16 +4,37 @@ import { useRouter } from "expo-router";
 import { Alert } from "react-native";
 import { Imovel } from "@/utils/Imovel";
 import { categories } from "@/utils/categories";
+import { User } from "@supabase/supabase-js";
+
+interface postsState{
+    all: Imovel[],
+    filtered: Imovel[],
+    userFavorite: Imovel[]
+    selectedCategory: String
+  }
 
 export function useHomePagePresenter() {
+
+  // ================================================================================ //
+  //                                      STATES
+  // ================================================================================ //
+
   const router = useRouter();
 
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("0");
-  const [allPosts, setAllPosts] = useState<Imovel[]>([]);
-  const [filteredPosts, setFilteredPosts] = useState<Imovel[]>([]);
+  const [posts, setPosts] = useState<postsState>({
+    all: [],
+    filtered: [],
+    userFavorite: [],
+    selectedCategory: '0'
+  })
+
   const [loading, setLoading] = useState(true);
   const [userType, setUserType] = useState('');
   const [userId, setUserId] = useState('');
+
+  // ================================================================================ //
+  //                                   FETCH LOGIC
+  // ================================================================================ //
 
   const fetchPosts = useCallback(async () => {
     setLoading(true);
@@ -25,32 +46,18 @@ export function useHomePagePresenter() {
         setUserId(user.id);
       }
 
-      const { data: posts, error: postsError } = await supabase
-        .from('Imoveis')
-        .select('*')
-        .eq('oculto', false)
-        .not('latitude', 'is', null)
-        .not('longitude', 'is', null);
+      const [allPosts, userFavoritePosts] = await Promise.all([
+        getAllPosts(),
+        getUserFavoritePosts(user?.id || '')
+      ]);
 
-      if (postsError) throw postsError;
+      const updatedPosts = updatePosts(allPosts, userFavoritePosts)
 
-      let favoritesId: string[] = [];
-      if (user?.id) {
-        const { data: favPosts } = await supabase
-          .from('Favoritos')
-          .select('post_id')
-          .eq('user_id', user?.id);
-        
-        if (favPosts) favoritesId = favPosts.map(favPost => favPost.post_id);
-      }
-
-      if (posts) {
-        const postsWithFavs = posts.map(post => ({
-          ...post,
-          isFavorited: favoritesId.includes(post.id)
-        }));
-        setAllPosts(postsWithFavs);
-      }
+      setPosts(prev => ({ 
+        ...prev, 
+        all: updatedPosts,
+        userFavorite: updatedPosts.filter(p => p.isFavorited)
+      }));
       
     } catch (error: any) {
       console.error("Erro na HomePage:", error.message);
@@ -60,21 +67,63 @@ export function useHomePagePresenter() {
     }
   }, []);
 
-  useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
+  // ================================================================================ //
+  //                              FETCH AUX FUNCTIONS
+  // ================================================================================ //
+
+  const setSelectedCategoryId = (id: string) => {
+    setPosts(prev => ({ ...prev, selectedCategory: id }));
+  };
+
+  const getAllPosts = async () => {
+    const { data: posts, error: postsError } = await supabase
+      .from('Imoveis')
+      .select('*')
+      .eq('oculto', false)
+      .not('latitude', 'is', null)
+      .not('longitude', 'is', null)
+    ;
+    if (postsError) throw postsError;
+    else return posts || [];
+  }
+
+  const getUserFavoritePosts = async (userId: string) => {
+    const { data: posts, error: postsError } = await supabase
+      .from('Favoritos')
+      .select('post_id')
+      .eq('user_id', userId)
+    ;
+    if (postsError) throw postsError;
+    else return posts || [];
+  }
+
+  const updatePosts = (all: Imovel[], userFavorites: any[]) => {
+    const userFavoritesId : string[] = userFavorites.map(post => post.post_id);
+    const allPostsWithFavState = all.map(post => ({...post, isFavorited: userFavoritesId.includes(post.id)}));
+    return allPostsWithFavState
+  }
+
+  // ================================================================================ //
+  //                              UPDATE WHEN HAS CHANGE
+  // ================================================================================ //
+
+  useEffect(() => {fetchPosts()}, [fetchPosts]);
 
   useEffect(() => {
-    const filtered = allPosts.filter(post => {
+    const filtered = posts.all.filter(post => {
 
-      if (selectedCategoryId === "0") return true;
-      const categoryName = categories.find(cat => cat.id === selectedCategoryId)?.name;
+      if (posts.selectedCategory === "0") return true;
+
+      const categoryName = categories.find(category => category.id === posts.selectedCategory)?.name;
       return post.tipoMoradiaEspecifico === categoryName;
-
     });
-    setFilteredPosts(filtered);
-  }, [selectedCategoryId, allPosts]);
+    
+    setPosts(prev => ({ ...prev, filtered }));
+  }, [posts.selectedCategory, posts.all]);
 
+  // ================================================================================ //
+  //                                    HANDLERS
+  // ================================================================================ //
 
   const handlePostPress = (postId: string) => {
     router.push(`/pvuLandLord/${postId}`);
@@ -84,18 +133,21 @@ export function useHomePagePresenter() {
     router.push("/searchPage");
   };
 
+  // ================================================================================ //
+  //                                PRESENTER RETURN
+  // ================================================================================ //
+
   return {
     loading,
-    allPosts,
-    setAllPosts,
-    filteredPosts,
-    setFilteredPosts,
-    selectedCategoryId,
+    allPosts: posts.all,
+    setPosts,
+    filteredPosts: posts.filtered,
+    selectedCategoryId: posts.selectedCategory,
     userType,
     userId,
+    setSelectedCategoryId,
     handlePostPress,
     handleSearchPress,
-    setSelectedCategoryId,
     fetchPosts
   };
 }
