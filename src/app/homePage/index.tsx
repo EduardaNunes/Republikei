@@ -11,7 +11,7 @@ import { useHomePagePresenter } from "@/presenter/useHomePagePresenter";
 export default function HomePage() {
   const {
     loading,
-    filteredImoveis,
+    filteredPosts,
     selectedCategoryId,
     userType,
     userId,
@@ -49,13 +49,11 @@ export default function HomePage() {
         </View>
 
         <View style={styles.postContainer}>
-          {filteredImoveis.map((post) => {
-            let statusType: "visibility" | "favorite" | undefined = undefined;
-            if (userType === "standard") {
-              statusType = "favorite";
-            } else if (userType === "owner" && userId === post.proprietario) {
-              statusType = undefined;
-            }
+          {filteredPosts.map((post) => {
+
+            const isOwner = userId === post.proprietario;
+            const statusType = isOwner ? "visibility" : "favorite";
+
             return (
               <PostBlock
                 key={post.id}
