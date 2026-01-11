@@ -51,7 +51,8 @@ export default function MapPage() {
         .from('Imoveis')
         .select('*')
         .not('latitude', 'is', null)
-        .not('longitude', 'is', null);
+        .not('longitude', 'is', null)
+        .not('oculto', 'is', true);
 
       if (error) {
         console.error("Erro ao buscar imóveis:", error);
