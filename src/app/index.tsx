@@ -55,8 +55,7 @@ export default function Index() {
             <AppText style={styles.title}>REPUBLIKEI</AppText>
           </View>
           <AppText style={styles.text}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Seu aplicativo de moradia universitária.
           </AppText>
         </View>
         <View style={styles.buttonContainer}>
