@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
-import { colors } from "@/styles/colors"; // Ajuste conforme seu arquivo de cores
+import { colors } from "@/styles/colors";
+import { fontSize } from "@/styles/fontSize";
 
 export const styles = StyleSheet.create({
   container: {
@@ -9,32 +10,31 @@ export const styles = StyleSheet.create({
   title: {
     color: colors.gray[100],
     fontSize: 14,
-    fontFamily: "Montserrat_400Regular", // Ajuste se sua fonte for diferente
+    fontFamily: "Montserrat_400Regular",
     marginBottom: 6,
   },
   inputContainer: {
     width: "100%",
     height: 56,
-    backgroundColor: colors.gray[900], // Cor de fundo do input
+    backgroundColor: colors.gray[800],
     borderRadius: 8,
     paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     borderWidth: 1,
-    borderColor: colors.gray[600],
+    borderColor: colors.gray[100],
   },
   inputText: {
-    color: colors.gray[100],
-    fontSize: 16,
+    color: colors.orange[300],
     fontFamily: "Montserrat_400Regular",
+    fontSize: fontSize.text.small,
   },
   placeholderText: {
-    color: colors.gray[400],
-    fontSize: 16,
+    color: colors.orange[300],
+    fontSize: fontSize.text.small,
     fontFamily: "Montserrat_400Regular",
   },
-  // Estilos do Modal
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
@@ -51,11 +51,11 @@ export const styles = StyleSheet.create({
   optionButton: {
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: colors.gray[600],
+    borderBottomColor: colors.gray[800],
   },
   optionText: {
-    color: colors.gray[100],
-    fontSize: 16,
+    color: colors.orange[300],
+    fontSize: fontSize.text.small,
     textAlign: "center",
     fontFamily: "Montserrat_400Regular",
   },
@@ -65,7 +65,8 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   cancelText: {
-    color: colors.orange[300],
+    fontSize: 18,
+    color: colors.gray[100],
     fontWeight: "bold",
   }
 });

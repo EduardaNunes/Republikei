@@ -40,7 +40,7 @@ export default function SelectInput({ title, placeholder, options, value, onSele
         <Text style={selectedLabel ? styles.inputText : styles.placeholderText}>
           {selectedLabel || placeholder || "Selecione..."}
         </Text>
-        <MaterialIcons name="arrow-drop-down" size={24} color={colors.gray[400]} />
+        <MaterialIcons name="arrow-drop-down" size={24} color={colors.gray[800]} />
       </TouchableOpacity>
 
       <Modal
