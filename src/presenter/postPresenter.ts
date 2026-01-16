@@ -18,7 +18,7 @@ async function uploadImages(userId: string, images: string[]): Promise<string[]>
     }
 
     const fileName = `imovel-${userId}-${new Date().getTime()}-${Math.random()}.jpg`;
-    const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+    const base64 = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
     
     const { error } = await supabase.storage
       .from('imoveis-imagens')
