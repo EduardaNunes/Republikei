@@ -2,9 +2,9 @@ import { View, Image } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 //import { Image } from "expo-image";
 
-import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
-import * as NavigationBar from 'expo-navigation-bar';
+import { StatusBar } from "expo-status-bar";
+import { useEffect, useState } from "react";
+import * as NavigationBar from "expo-navigation-bar";
 
 import { styles } from "../components/styles/indexStyles";
 import { colors } from "@/styles/colors";
@@ -16,7 +16,6 @@ import { supabase } from "@/lib/supabase";
 import { Session } from "@supabase/supabase-js";
 
 export default function Index() {
-
   const router = useRouter();
 
   const [session, setSession] = useState<Session | null>(null);
@@ -38,31 +37,31 @@ export default function Index() {
 
   return (
     <View style={styles.container}>
-      <StatusBar hidden={true} />
-      <Image
-        source={require("@/assets/background.png")}
-        style={styles.background}
-        resizeMode="cover"
-      />
-      <View style={styles.containerTextAndButton}>
-        <View>
-          <View style={styles.titleContainer}>
-            <MaterialIcons
-              name="location-on"
-              size={40}
-              color={colors.orange[300]}
+        <StatusBar hidden={true} />
+        <Image source={require("@/assets/icon_paper_plane.png")} style={styles.planeIcon} />
+
+        <View style={styles.logoContainer}>
+            <Image source={require("@/assets/logo_icon.png")} style={styles.logo} />
+
+            <View style={styles.titleContainer}>
+            <Image
+                source={require("@/assets/logo_name.png")}
+                style={styles.logo_name}
             />
-            <AppText style={styles.title}>REPUBLIKEI</AppText>
-          </View>
-          <AppText style={styles.text}>
-            Seu aplicativo de moradia universitária.
-          </AppText>
+
+            <AppText style={styles.text}>Seu app de moradia estudantil</AppText>
+            </View>
         </View>
-        <View style={styles.buttonContainer}>
-          <SquareButton name="Cadastro" variant="secondary" onPress={() => router.push("/signUp")}/>
-          <SquareButton name="Login" onPress={() => router.push("/login")}/>
+
+        <View style={styles.buttonsContainer}>
+            <Image
+                source={require("@/assets/paper_texture.png")}
+                style={styles.paperTexture}
+            />
+            <SquareButton name="Cadastro" variant="darkGray" onPress={() => router.push("/signUp")}/>
+            <SquareButton name="Login" variant="darkGray" onPress={() => router.push("/login")} />
+            <SquareButton name="Não funciona ainda" variant="white" onPress={() => router.push("")} />
         </View>
-      </View>
     </View>
   );
 }

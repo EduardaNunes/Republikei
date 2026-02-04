@@ -8,4 +8,9 @@ export const colors = {
     300: "#D3530D",
     800: "#622B0D",
   },
+
+  backgroundGreen: "#028068",
+  darkGray: "#191818",
+  white: "#ffffff",
+
 };

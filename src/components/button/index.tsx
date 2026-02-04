@@ -6,11 +6,15 @@ import AppText from "../appText";
 
 type Props = TouchableOpacityProps & {
   name: string;
-  variant?: "primary" | "secondary" | "mediumP" | "mediumS" | "shortP" | "shortS" ;
+  variant?: "darkGray" | "white" |"primary" | "secondary" | "mediumP" | "mediumS" | "shortP" | "shortS" ;
 };
 
-export default function SquareButton({ name, variant = "primary", ...rest }: Props) {
+export default function Button({ name, variant = "primary", ...rest }: Props) {
+
   const containerVariants = {
+    darkGray: styles.darkGrayButton,
+    white: styles.whiteButton,
+
     primary: styles.primaryContainer,
     secondary: styles.secondaryContainer,
     mediumP: styles.mediumPrimaryContainer,
@@ -20,6 +24,9 @@ export default function SquareButton({ name, variant = "primary", ...rest }: Pro
   };
 
   const titleVariants = {
+    darkGray: styles.darkGrayButtonText,
+    white: styles.whiteButtonText,
+
     primary: styles.primaryTitle,
     secondary: styles.secondaryTitle,
     mediumP: styles.mediumPrimaryTitle,

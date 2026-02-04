@@ -3,6 +3,38 @@ import { colors } from "@/styles/colors"; // Certifique-se que `colors.orange[30
 import { fontSize } from "@/styles/fontSize";
 
 export const styles = StyleSheet.create({
+  
+  // Republikei
+
+  darkGrayButton:{
+    backgroundColor: colors.darkGray,
+    paddingVertical: 12,
+    paddingHorizontal: fontSize.text.small,
+    borderRadius: 24,
+    width: "100%",
+    alignItems: "center",  
+  },
+  whiteButton:{
+    backgroundColor: colors.white,
+    paddingVertical: 12,
+    paddingHorizontal: fontSize.text.small,
+    borderRadius: 24,
+    width: "100%",
+    alignItems: "center",  
+    borderColor: colors.darkGray,
+    borderWidth: 2.5
+  },
+  darkGrayButtonText:{
+    color: colors.white,
+    fontSize: fontSize.text.medium,
+    fontWeight: "bold",
+  },
+  whiteButtonText:{
+    color: colors.darkGray,
+    fontSize: fontSize.text.medium,
+    fontWeight: "bold",
+  },
+
   // Containers
   primaryContainer: {
     backgroundColor: colors.orange[300],
