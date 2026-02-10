@@ -3,6 +3,40 @@ import { colors } from "@/styles/colors";
 import { fontSize } from "@/styles/fontSize";
 
 export const styles = StyleSheet.create({
+
+  // Republikei
+
+  darkGrayContainer:{
+    width: "100%",
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.darkGray,
+    paddingHorizontal: fontSize.text.small,
+    borderRadius: 24,
+  },
+  whiteContainer:{
+    width: "100%",
+    flexDirection: 'row',
+    alignItems: "center",  
+    backgroundColor: colors.white,
+    paddingHorizontal: fontSize.text.small,
+    borderRadius: 24,
+    borderColor: colors.darkGray,
+    borderWidth: 2.5
+  },
+
+  
+  darkGrayContainerText:{
+    color: colors.white,
+    fontSize: fontSize.text.small,
+  },
+  whiteContainerText:{
+    color: colors.darkGray,
+    fontSize: fontSize.text.small,
+  },
+
+  // Old
+
   primaryContainer: {
     height: 52,
     width: "100%",

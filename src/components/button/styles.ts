@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 
-  // Containers
+  // Base Containers
   primaryContainer: {
     backgroundColor: colors.orange[300],
     paddingVertical: 12,
@@ -90,7 +90,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  // Titles
+  // Base Titles
   primaryTitle: {
     color: colors.gray[100],
     fontSize: fontSize.text.medium,

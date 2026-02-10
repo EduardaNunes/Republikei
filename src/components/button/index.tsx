@@ -9,7 +9,7 @@ type Props = TouchableOpacityProps & {
   variant?: "darkGray" | "white" |"primary" | "secondary" | "mediumP" | "mediumS" | "shortP" | "shortS" ;
 };
 
-export default function Button({ name, variant = "primary", ...rest }: Props) {
+export default function Button({ name, variant = "darkGray", ...rest }: Props) {
 
   const containerVariants = {
     darkGray: styles.darkGrayButton,

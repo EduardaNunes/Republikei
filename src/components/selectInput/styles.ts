@@ -1,49 +1,58 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 import { colors } from "@/styles/colors";
 import { fontSize } from "@/styles/fontSize";
 
+const { width: screenWidth, height: screenHeight} = Dimensions.get("window");
+
 export const styles = StyleSheet.create({
-  container: {
+
+  // General
+  flexRow:{
+    display: 'flex',
+    flexDirection: 'row'
+  },
+
+  // Input Container
+  darkGrayContainer:{
     width: "100%",
-    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.darkGray,
+    paddingHorizontal: fontSize.text.small,
+    borderRadius: 24,
   },
-  title: {
-    color: colors.gray[100],
-    fontSize: 14,
-    fontFamily: "Montserrat_400Regular",
-    marginBottom: 6,
-  },
-  inputContainer: {
+  whiteContainer:{
     width: "100%",
-    height: 56,
-    backgroundColor: colors.gray[800],
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderWidth: 1,
-    borderColor: colors.gray[100],
+    flexDirection: 'row',
+    alignItems: "center",  
+    backgroundColor: colors.white,
+    paddingHorizontal: fontSize.text.small,
+    borderRadius: 24,
+    borderColor: colors.darkGray,
+    borderWidth: 2.5
   },
-  inputText: {
-    color: colors.orange[300],
-    fontFamily: "Montserrat_400Regular",
+
+  // Input Text
+  darkGrayContainerText:{
+    color: colors.white,
     fontSize: fontSize.text.small,
   },
-  placeholderText: {
-    color: colors.orange[300],
+  whiteContainerText:{
+    color: colors.darkGray,
     fontSize: fontSize.text.small,
-    fontFamily: "Montserrat_400Regular",
   },
+
+  // Modal
   modalOverlay: {
-    flex: 1,
+    width: screenWidth, 
+    height: screenHeight,
     backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "center",
     alignItems: "center",
   },
   modalContent: {
     width: "80%",
-    backgroundColor: colors.gray[800],
+    backgroundColor: colors.darkGray,
     borderRadius: 12,
     padding: 16,
     maxHeight: "50%",
@@ -51,13 +60,12 @@ export const styles = StyleSheet.create({
   optionButton: {
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: colors.gray[800],
+    borderBottomColor: colors.white,
   },
   optionText: {
-    color: colors.orange[300],
+    color: colors.white,
     fontSize: fontSize.text.small,
     textAlign: "center",
-    fontFamily: "Montserrat_400Regular",
   },
   cancelButton: {
     marginTop: 10,

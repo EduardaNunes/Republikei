@@ -13,7 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import React, { useState, useEffect } from "react";
 
-import { styles } from "../../components/styles/signInLandLordStyles";
+import { styles } from "../../components/styles/signUpStyles";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
 import SelectInput from "@/components/selectInput";
@@ -147,28 +147,28 @@ export default function SignUp() {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
           style={styles.container}
-          contentContainerStyle={styles.scrollViewContent}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         >
-          <BackButton onPress={() => router.back()} />
-          <SafeAreaView style={styles.imgContainer}>
-            <Image source={require("@/assets/cadLocat-icon.png")} />{""}
-            <AppText style={styles.title}> CADASTRO </AppText>
-          </SafeAreaView>
+          <BackButton variant = "medium" type = "back" onPress={() => router.back()} />
 
-          <View style={styles.containerTextAndButton}>''
-            <View style={styles.inputContainer}>
+          <View style={styles.headerContainer}>
+            <Image style={styles.starImage} source={require("@/assets/star_icon.png")} />
+            <Image style={styles.textImage} source={require("@/assets/signUp_name.png")} />
+            <Image style={styles.armImage} source={require("@/assets/arm_icon.png")} />
+          </View>
+
+          <View style={styles.inputsAndButtonContainer}>''
+            <View style={styles.inputsContainer}>
               <Input
-                title="Usuário"
                 onChangeText={(text: string) => handleUserChange('name', text)}
                 value={signUpData.user.name}
                 placeholder="Usuário"
+                icon='account-circle'
                 autoCapitalize="none"
               />
 
               <SelectInput
-                title="Tipo de Usuário"
                 placeholder="Selecione o tipo..."
                 options={userTypeOptions}
                 value={signUpData.user.type}
@@ -176,37 +176,37 @@ export default function SignUp() {
               />
 
               <Input
-                title="Email"
                 onChangeText={(text: string) => handleUserChange('email', text)}
                 value={signUpData.user.email}
-                placeholder="email@address.com"
+                placeholder="email"
+                icon='email'
                 autoCapitalize="none"
               />
 
               <Input
-                title="Telefone"
                 onChangeText={(text: string) => handleUserChange('phone', text)}
                 value={signUpData.user.phone}
-                placeholder="(00) 0 0000-0000"
+                placeholder="telefone"
+                icon='phone'
                 autoCapitalize="none"
                 keyboardType="phone-pad"
               />
 
               <Input
-                title="Senha"
                 secureTextEntry={true}
                 onChangeText={(text: string) => handleBaseChange('password', text)}
                 value={signUpData.password}
                 placeholder="Senha"
+                icon='lock'
                 autoCapitalize="none"
               />
 
               <Input
-                title="Confirmar Senha"
                 secureTextEntry={true}
                 onChangeText={(text: string) => handleBaseChange('passwordConfirmation', text)}
                 value={signUpData.passwordConfirmation}
                 placeholder="Confirmar Senha"
+                icon='lock'
                 autoCapitalize="none"
               />
               {signUpData.passwordConfirmation !== "" && !checkIfPasswordIsValid() && (
@@ -215,6 +215,7 @@ export default function SignUp() {
             </View>
             <SquareButton
               name="Cadastrar"
+              variant='white'
               disabled={loading}
               onPress={() => signUp()}
             />
