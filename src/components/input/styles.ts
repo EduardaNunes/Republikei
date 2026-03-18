@@ -25,7 +25,6 @@ export const styles = StyleSheet.create({
     borderWidth: 2.5
   },
 
-  
   darkGrayContainerText:{
     color: colors.white,
     fontSize: fontSize.text.small,

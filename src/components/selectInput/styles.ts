@@ -9,7 +9,9 @@ export const styles = StyleSheet.create({
   // General
   flexRow:{
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
   },
 
   // Input Container
@@ -34,6 +36,8 @@ export const styles = StyleSheet.create({
 
   // Input Text
   darkGrayContainerText:{
+    paddingTop: 8,
+    paddingBottom: 8,
     color: colors.white,
     fontSize: fontSize.text.small,
   },

@@ -13,7 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import React, { useState, useEffect } from "react";
 
-import { styles } from "../../components/styles/signUpStyles";
+import { styles } from "../../components/styles/signUp";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
 import SelectInput from "@/components/selectInput";
@@ -147,6 +147,7 @@ export default function SignUp() {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
           style={styles.container}
+          contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         >
@@ -155,10 +156,17 @@ export default function SignUp() {
           <View style={styles.headerContainer}>
             <Image style={styles.starImage} source={require("@/assets/star_icon.png")} />
             <Image style={styles.textImage} source={require("@/assets/signUp_name.png")} />
-            <Image style={styles.armImage} source={require("@/assets/arm_icon.png")} />
           </View>
 
-          <View style={styles.inputsAndButtonContainer}>''
+          <View style={styles.backgroundImageContainer}>
+            <Image style={styles.armImage} source={require("@/assets/arm_icon.png")} />
+            <Image
+              source={require("@/assets/paper_texture.png")}
+              style={styles.paperTexture}
+            />
+          </View>
+
+          <View style={styles.inputsAndButtonContainer}>
             <View style={styles.inputsContainer}>
               <Input
                 onChangeText={(text: string) => handleUserChange('name', text)}
@@ -178,7 +186,7 @@ export default function SignUp() {
               <Input
                 onChangeText={(text: string) => handleUserChange('email', text)}
                 value={signUpData.user.email}
-                placeholder="email"
+                placeholder="Email"
                 icon='email'
                 autoCapitalize="none"
               />
@@ -186,7 +194,7 @@ export default function SignUp() {
               <Input
                 onChangeText={(text: string) => handleUserChange('phone', text)}
                 value={signUpData.user.phone}
-                placeholder="telefone"
+                placeholder="Telefone"
                 icon='phone'
                 autoCapitalize="none"
                 keyboardType="phone-pad"
