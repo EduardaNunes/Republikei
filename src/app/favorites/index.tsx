@@ -8,6 +8,7 @@ import { Imovel } from "@/utils/Imovel";
 import { supabase } from "@/lib/supabase";
 import { router } from "expo-router";
 import { postStatusPresenter } from "@/presenter/postStatusPresenter";
+import { colors } from "@/styles/colors";
 
 interface FavoritesState {
   all: Imovel[];
@@ -107,7 +108,7 @@ export default function Favorites() {
   // ================================================================================ //
   
   if (loading) {
-    return <ActivityIndicator />;
+    return <ActivityIndicator color={colors.backgroundGreen}/>;
   }
 
   return (

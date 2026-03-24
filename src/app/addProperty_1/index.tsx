@@ -8,6 +8,7 @@ import { useRouter } from "expo-router";
 import { NewPostContext } from "@/contexts/NewPostContext";
 import { useContext, useState, useEffect } from "react";
 import axios from 'axios';
+import { colors } from "@/styles/colors";
 
 export default function AddProperty_1() {
   const router = useRouter();
@@ -179,7 +180,7 @@ export default function AddProperty_1() {
                   maxLength={8}
                   containerStyle={{flex: 1}}
                 />
-                {cepLoading && <ActivityIndicator style={{marginLeft: 10}}/>}
+                {cepLoading && <ActivityIndicator style={{marginLeft: 10}} color={colors.backgroundGreen}/>}
               </View>
               <Input
                 title="Rua"

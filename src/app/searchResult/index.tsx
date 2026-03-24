@@ -10,6 +10,7 @@ import { router, useRouter } from "expo-router";
 import { SearchContext } from "@/contexts/SearchContext";
 import { Imovel } from "@/utils/Imovel";
 import { supabase } from "@/lib/supabase";
+import { colors } from "@/styles/colors";
 
 export default function SearchResult() {
 
@@ -81,7 +82,7 @@ export default function SearchResult() {
         </View>
 
         {loading ? (
-          <ActivityIndicator size="large" color="#000" style={{ marginTop: 50 }} />
+          <ActivityIndicator size="large" color={colors.backgroundGreen} style={{ marginTop: 50 }} />
         ) : (
           results.map((post) => (
             <PostBlock

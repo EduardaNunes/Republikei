@@ -9,6 +9,7 @@ import NavigationBar from "@/components/navigationBar";
 import { useRouter } from "expo-router";
 import { supabase } from "../../lib/supabase";
 import { UserAttributes } from "@supabase/supabase-js";
+import { colors } from "@/styles/colors";
 
 export default function ProfileRenter() {
   const [userType, setUserType] = useState<string | null>(null);
@@ -151,7 +152,7 @@ export default function ProfileRenter() {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" color={colors.backgroundGreen}/>
       </View>
     );
   }

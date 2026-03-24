@@ -112,7 +112,7 @@ export default function MapPage() {
               />
             ))}
           </MapView>
-          {loading && <ActivityIndicator style={StyleSheet.absoluteFillObject} size="large" />}
+          {loading && <ActivityIndicator style={StyleSheet.absoluteFillObject} color={colors.backgroundGreen} size="large" />}
         </View>
         {selectedImovel && (
           <TouchableOpacity 

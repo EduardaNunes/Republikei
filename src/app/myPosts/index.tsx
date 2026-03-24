@@ -10,6 +10,7 @@ import { supabase } from "@/lib/supabase";
 
 import { postStatusPresenter } from "@/presenter/postStatusPresenter";
 import { Imovel } from "@/utils/Imovel";
+import { colors } from "@/styles/colors";
 
 interface PostsState {
   all: Imovel[];
@@ -87,7 +88,7 @@ export default function SearchResult() {
   // ================================================================================ //
 
   if (loading) {
-    return <ActivityIndicator />;
+    return <ActivityIndicator color={colors.backgroundGreen}/>;
   }
 
   return (

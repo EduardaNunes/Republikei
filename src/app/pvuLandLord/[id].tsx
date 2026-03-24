@@ -17,6 +17,7 @@ import { supabase } from "@/lib/supabase";
 import { getPropertyDetails, handleDeleteAction, handleEditAction } from "@/presenter/postPvuPresenter";
 import { NewPostContext } from "@/contexts/NewPostContext";
 import { useContext } from "react";
+import { colors } from "@/styles/colors";
 
 export default function PvuLandLord() {
 
@@ -101,7 +102,7 @@ export default function PvuLandLord() {
   // ================================================================================ //
 
   if (loading) {
-    return <ActivityIndicator style={{ flex: 1 }} size="large" />;
+    return <ActivityIndicator style={{ flex: 1 }} size="large" color={colors.backgroundGreen}/>;
   }
 
   if (!property) {
