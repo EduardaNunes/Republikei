@@ -1,4 +1,4 @@
-import { FlatList, View, ScrollView, Alert, ActivityIndicator, TouchableOpacity } from "react-native"; 
+import { FlatList, View, ScrollView, Alert, ActivityIndicator, TouchableOpacity, Image } from "react-native"; 
 import { styles } from "../../components/styles/myPosts";
 import AppText from "@/components/appText";
 import NavigationBar from "@/components/navigationBar";
@@ -91,47 +91,52 @@ export default function SearchResult() {
   }
 
   return (
-    <>
-      <View style={styles.superContainer}>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={{ alignItems: "center", gap: 20, paddingBottom: 100 }}
-        >
-          <View style={styles.titleContainer}>
-            <AppText style={styles.title}>MEUS IMÓVEIS</AppText>
-          </View>
+    <View style={styles.superContainer}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{ alignItems: "center", gap: 20, paddingBottom: 100 }}
+      >
+        <View style={styles.backgroundImageContainer}>
+          <Image
+            source={require("@/assets/paper_texture.png")}
+            style={styles.paperTexture}
+          />
+        </View>
 
-          {posts.all.length > 0 ? (
-            posts.all.map((property) => (
-              <PostBlock
-                key={property.id}
-                onPress={() => router.push(`/pvuLandLord/${property.id}`)}
-                image={
-                  property.imagens && property.imagens.length > 0
-                    ? { uri: property.imagens[0] }
-                    : require("../../assets/Imagem.png")
-                }
-                title={property.tipoMoradiaEspecifico + " - " + (property.bairro || 'Sem Bairro')}
-                price={property.preco}
-                statusType="visibility"
-                isActive={!property.oculto}
-                onStatusPress={() => onToggleVisibility(property)}
-              />
-            ))
-          ) : (
-            <View style={{ marginTop: 40 }}>
-              <AppText>Você ainda não possui imóveis cadastrados.</AppText>
-            </View>
-          )}
-        </ScrollView>
-        
-        <BackButton
-          type="plus"
-          variant="medium"
-          onPress={() => router.push("/addProperty_1")}
-        />
-      </View>
+        <View style={styles.titleContainer}>
+          <AppText style={styles.title}>MEUS IMÓVEIS</AppText>
+        </View>
+
+        {posts.all.length > 0 ? (
+          posts.all.map((property) => (
+            <PostBlock
+              key={property.id}
+              onPress={() => router.push(`/pvuLandLord/${property.id}`)}
+              image={
+                property.imagens && property.imagens.length > 0
+                  ? { uri: property.imagens[0] }
+                  : require("../../assets/Imagem.png")
+              }
+              title={property.tipoMoradiaEspecifico + " - " + (property.bairro || 'Sem Bairro')}
+              price={property.preco}
+              statusType="visibility"
+              isActive={!property.oculto}
+              onStatusPress={() => onToggleVisibility(property)}
+            />
+          ))
+        ) : (
+          <View>
+            <AppText style={styles.notFoundText}>Você ainda não possui imóveis cadastrados.</AppText>
+          </View>
+        )}
+      </ScrollView>
+      
+      <BackButton
+        type="plus"
+        variant="medium"
+        onPress={() => router.push("/addProperty_1")}
+      />
       <NavigationBar />
-    </>
+    </View>
   );
 }
