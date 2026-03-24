@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    borderColor: colors.orange[300],
+    borderColor: colors.white,
     borderWidth: 3,
     borderStyle: "solid",
     borderRadius: "50%",

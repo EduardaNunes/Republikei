@@ -38,17 +38,13 @@ export default function StatusPost({ type, style, isActive, onPress }: StatusPos
       style={[
         styles.container,
         style,
-        isOwner && isOff ? { backgroundColor: colors.orange[300] } : null,
+        isOwner && isOff ? { backgroundColor: colors.white } : null,
       ]}
     >
       <MaterialIcons
         name={isOwner ? visibilityIconName : favoriteIconName}
         size={24}
-        color={
-          isOwner && isOff
-            ? "#fff" 
-            : colors.orange[300]
-        }
+        color={colors.white}
       />
     </TouchableOpacity>
   );
