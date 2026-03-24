@@ -9,7 +9,8 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 40,
-    zIndex:2,
+    zIndex: 2,
+    backgroundColor: "#fff"
   },
   priceText: {
     fontSize: fontSize.title.medium,
