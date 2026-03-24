@@ -1,4 +1,4 @@
-import { View, ScrollView, Alert, ActivityIndicator } from "react-native";
+import { View, ScrollView, Alert, ActivityIndicator, Image } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { styles } from "../../components/styles/favorites";
 import AppText from "@/components/appText";
@@ -113,29 +113,39 @@ export default function Favorites() {
   return (
     <>
       <ScrollView style={styles.container}
-        contentContainerStyle={{ alignItems: "center", gap: 20 }}>
+        contentContainerStyle={{ alignItems: "center", gap: 20 }}
+      >
+
+        <View style={styles.backgroundImageContainer}>
+          <Image
+            source={require("@/assets/paper_texture.png")}
+            style={styles.paperTexture}
+          />
+        </View>
+
         <View style={styles.titleContainer}>
           <AppText style={styles.title}>FAVORITOS</AppText>
         </View>
-          {posts.all.length > 0 
-            ? posts.all.map((favorite) => (
-              <PostBlock
-                key={favorite.id}
-                onPress={() => router.push(`/pvuLandLord/${favorite.id}`)}
-                image={
-                  favorite.imagens && favorite.imagens.length > 0
-                    ? { uri: favorite.imagens[0] }
-                    : require("../../assets/Imagem.png") 
-                }
-                title={favorite.tipoMoradiaEspecifico + " - " + (favorite.bairro || 'Sem Bairro')}
-                price={favorite.preco}
-                statusType="favorite" 
-                isActive={!!favorite.isFavorited}
-                onStatusPress={() => onToggleFavorite(favorite)}
-              />
-            ))
-            : (<AppText>Nenhum favorito para exibir</AppText>)
-          }
+        
+        {posts.all.length > 0 
+          ? posts.all.map((favorite) => (
+            <PostBlock
+              key={favorite.id}
+              onPress={() => router.push(`/pvuLandLord/${favorite.id}`)}
+              image={
+                favorite.imagens && favorite.imagens.length > 0
+                  ? { uri: favorite.imagens[0] }
+                  : require("../../assets/Imagem.png") 
+              }
+              title={favorite.tipoMoradiaEspecifico + " - " + (favorite.bairro || 'Sem Bairro')}
+              price={favorite.preco}
+              statusType="favorite" 
+              isActive={!!favorite.isFavorited}
+              onStatusPress={() => onToggleFavorite(favorite)}
+            />
+          ))
+          : (<AppText style={styles.notFoundText}>Nenhum favorito para exibir</AppText>)
+        }
       </ScrollView>
       <NavigationBar />
     </>
