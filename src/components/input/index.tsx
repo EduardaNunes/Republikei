@@ -7,12 +7,14 @@ import AppText from "../appText";
 
 type Props = TextInputProps & {
   title?: string;
+  titleVariant?: "darkGray" | "white" | "green"
   variant?: "darkGray" | "primary" | "secondary";
+  size?: "big" | "medium" | "small"
   containerStyle?: object;
   icon?: ComponentProps<typeof MaterialIcons>["name"]
 };
 
-export default function Input({ title, variant = "darkGray",containerStyle = {}, icon, ...rest }: Props) {
+export default function Input({ title, titleVariant = "darkGray", variant = "darkGray",size = "big", containerStyle = {}, icon, ...rest }: Props) {
   
   const containerVariants = {
 
@@ -25,10 +27,18 @@ export default function Input({ title, variant = "darkGray",containerStyle = {},
     secondary: styles.secondaryContainer,
   };
 
+  const containerSizeVariants = {
+    big: styles.bigContainer,
+    medium: styles.mediumContainer,
+    small: styles.smallContainer
+  }
+
   const textVariants = {
     // Republikei
     darkGray: styles.darkGrayContainerText,
     white: styles.whiteContainerText,
+
+    darkGrayM: styles.darkGrayContainerText,
 
     // Old
     primary: styles.text,
@@ -40,25 +50,36 @@ export default function Input({ title, variant = "darkGray",containerStyle = {},
     darkGray: styles.darkGrayContainerPlaceholder,
     white: styles.whiteContainerPlaceholder,
 
+    darkGrayM: styles.darkGrayContainerPlaceholder,
+
     // Old
     primary: styles.text,
     secondary: styles.text,
   }
+
+  const titleVariants = {
+    darkGray: styles.darkGrayTitleText,
+    white: styles.whiteTitleText,
+    green: styles.greenTitleText,
+  }
   
   return (
-    <View style={containerVariants[variant]}>
-      { icon &&
-        <MaterialIcons
-          name={icon}
-          color={textVariants[variant].color}
-          size={28}
+    <View style={containerSizeVariants[size]}>
+      {title && <AppText style={titleVariants[titleVariant]}>{title}</AppText>}
+      <View style={containerVariants[variant]}>
+        { icon &&
+          <MaterialIcons
+            name={icon}
+            color={textVariants[variant].color}
+            size={28}
+          />
+        }
+        <TextInput
+          style={textVariants[variant]}
+          placeholderTextColor={placeholderTextVariants[variant].color}
+          {...rest}
         />
-      }
-      <TextInput
-        style={textVariants[variant]}
-        placeholderTextColor={placeholderTextVariants[variant].color}
-        {...rest}
-      />
+      </View>
     </View>
   );
 }
