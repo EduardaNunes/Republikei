@@ -2,22 +2,55 @@ import { StyleSheet, Dimensions } from "react-native";
 import { colors } from "@/styles/colors";
 import { fontSize } from "@/styles/fontSize";
 
+const { width: screenWidth, height: screenHeight} = Dimensions.get("window");
+
 export const styles = StyleSheet.create({
-  container: {
+
+  // Background Image
+  backgroundImageContainer:{
     flex: 1,
-    width: Dimensions.get("window").width,
-    flexDirection: "column",
-    padding: 20,
-    borderRadius:20,
-    marginTop:250,
-    paddingBottom:70,
-    backgroundColor:colors.gray[800],
+    width: screenWidth,
+    position: 'absolute',
+    zIndex: -1,
+    backgroundColor: colors.white
+  },
+  paperTexture: {
+    flex: 2,
+    top: -40,
+    width: screenWidth * 4,
+    resizeMode: 'contain', 
+    alignSelf: 'center', 
   },
   image: {
+    flex: 1,
     width: "100%",
     height: 300,
-    position:"absolute"
-    },
+  },
+
+  // containers
+  container: {
+    flex: 1,
+    width: screenWidth,
+    height: screenHeight,
+    flexDirection: "column",
+    padding: 20,
+  },
+  headerSpacerContainer:{
+    flex: 1,
+    maxHeight: 280
+  },
+  scrollView:{
+    flex: 2,
+  },
+  infoContainer:{
+    flex: 1,
+  },
+
+  // Texts
+  texts:{
+    color: colors.darkGray,
+    fontSize: fontSize.text.small
+  },
 
   inputContainer: {
     gap: 20,
@@ -35,12 +68,12 @@ export const styles = StyleSheet.create({
     marginBottom:70,
   },
   title: {
-    color: colors.orange[300],
+    color: colors.backgroundGreen,
     fontSize: fontSize.title.big,
     fontWeight: "700",
   },
   subtitle: {
-    color: colors.gray[100],
+    color: colors.darkGray,
     fontSize: fontSize.title.medium,
     fontWeight: "700",
   },

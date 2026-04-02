@@ -31,7 +31,7 @@ export default function PriceAndContactButton({
           </TouchableOpacity>
         </View>
       ) : (
-         <SquareButton name="Mapa" variant="shortP" />
+         <SquareButton name="Mapa" variant="darkGrayS" />
       )}
     </View>
   );

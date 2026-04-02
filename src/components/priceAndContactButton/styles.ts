@@ -1,6 +1,8 @@
 import { colors } from "@/styles/colors";
 import { fontSize } from "@/styles/fontSize";
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
+
+const { width: screenWidth, height: screenHeight} = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
   container: {
@@ -9,17 +11,20 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 40,
+    paddingVertical: 20,
     zIndex: 2,
-    backgroundColor: "#fff"
+    backgroundColor: colors.backgroundGreen,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   priceText: {
     fontSize: fontSize.title.medium,
-    color: colors.orange[300],
+    color: colors.white,
   },
   iconButton: {
     padding: 8,
     borderRadius: 8,
-    backgroundColor: colors.orange[300],
+    backgroundColor: colors.white,
     justifyContent: "center",
     alignItems: "center",
   },

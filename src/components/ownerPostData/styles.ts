@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { colors } from "@/styles/colors";
+import { fontSize } from "@/styles/fontSize";
 
 export const styles = StyleSheet.create({
   container: {
@@ -8,7 +9,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth:2,
     padding:8,
-    borderColor:colors.orange[300],
+    borderColor:colors.backgroundGreen,
     borderRadius:12
   },
   textContainer: {
@@ -18,12 +19,13 @@ export const styles = StyleSheet.create({
 
   },
   textName: {
-    color: colors.orange[300],
+    color: colors.backgroundGreen,
     fontSize: 22,
     fontWeight: "bold",
   },
   textNumber: {
-    color: "#fff",
-    fontSize: 16,
+    color: colors.darkGray,
+    //fontWeight: 'bold',
+    fontSize: fontSize.text.medium,
   },
 });

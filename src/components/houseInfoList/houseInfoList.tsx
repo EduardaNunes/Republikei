@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { styles } from "./styles"
 import AppText from "@/components/appText";
 
 type HouseInfo = {
@@ -16,9 +17,10 @@ type HouseInfo = {
 
 type Props = {
   data: HouseInfo;
+  variant: "darkGray" | "white"
 };
 
-export default function HouseInfoList({ data }: Props) {
+export default function HouseInfoList({ data, variant}: Props) {
   const infoMap: { key: keyof HouseInfo; label: string }[] = [
     { key: "banheiros", label: "Nº Banheiros" },
     { key: "salasEstar", label: "Nº Salas de Estar" },
@@ -32,12 +34,17 @@ export default function HouseInfoList({ data }: Props) {
     { key: "pessoasPorMoradia", label: "Nº Pessoas/Moradia" },
   ];
 
+  const textVariants = {
+    darkGray: styles.darkGrayText,
+    white: styles.whiteText
+  }
+
   return (
     <View>
       {infoMap.map(({ key, label }) => {
         const value = data[key];
         if (value && value > 0) {
-          return <AppText key={key}>{`${label}: ${value}`}</AppText>;
+          return <AppText style={textVariants[variant]} key={key}>{`${label}: ${value}`}</AppText>;
         }
         return null;
       })}
