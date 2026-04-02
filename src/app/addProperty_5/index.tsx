@@ -210,6 +210,7 @@ export default function App() {
               <Input
                 title="Mensalidade/Aluguer (R$)"
                 titleVariant="green"
+                placeholder="R$"
                 keyboardType="numeric"
                 onChangeText={(val: string) => handlePrice(val)}
                 value={localData.preco}
