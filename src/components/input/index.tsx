@@ -39,6 +39,10 @@ export default function Input({ title, variant = "darkGray",containerStyle = {},
     // Republikei
     darkGray: styles.darkGrayContainerPlaceholder,
     white: styles.whiteContainerPlaceholder,
+
+    // Old
+    primary: styles.text,
+    secondary: styles.text,
   }
   
   return (

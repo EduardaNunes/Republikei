@@ -1,4 +1,4 @@
-import { View, KeyboardAvoidingView, ScrollView, Platform, Alert, ActivityIndicator } from "react-native";
+import { View, KeyboardAvoidingView, ScrollView, Platform, Alert, ActivityIndicator, Image } from "react-native";
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
@@ -151,6 +151,12 @@ export default function AddProperty_1() {
 
   return (
     <>
+      <View style={styles.backgroundImageContainer}>
+        <Image
+          source={require("@/assets/paper_texture.png")}
+          style={styles.paperTexture}
+        />
+      </View>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -173,7 +179,7 @@ export default function AddProperty_1() {
             <View style={styles.inputContainer}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Input
-                  title="CEP"
+                  placeholder="CEP"
                   keyboardType="numeric"
                   onChangeText={handleCepChange}
                   value={localData.cep}
@@ -183,30 +189,34 @@ export default function AddProperty_1() {
                 {cepLoading && <ActivityIndicator style={{marginLeft: 10}} color={colors.backgroundGreen}/>}
               </View>
               <Input
-                title="Rua"
+                placeholder="Rua"
                 onChangeText={(t) => handleChange("rua", t)}
                 value={localData.rua}
               />
               <Input
-                title="Bairro"
+                placeholder="Bairro"
                 onChangeText={(t) => handleChange("bairro", t)}
                 value={localData.bairro}
               />
               <View style={styles.subinputContainer}>
-                <Input
-                  variant="secondary"
-                  title="Número"
-                  containerStyle={{ width: "48%" }}
-                  onChangeText={(t) => handleChange("numero", t)}
-                  value={localData.numero}
-                />
-                <Input
-                  variant="secondary"
-                  title="Complemento"
-                  containerStyle={{ width: "48%" }}
-                  onChangeText={(t) => handleChange("complemento", t)}
-                  value={localData.complemento}
-                />
+                <View style={styles.subinputSmallContainer}>
+                  <Input
+                    variant="darkGray"
+                    placeholder="Número"
+                    containerStyle={{ width: "48%" }}
+                    onChangeText={(t) => handleChange("numero", t)}
+                    value={localData.numero}
+                  />
+                </View>
+                <View style={styles.subinputSmallContainer}>
+                  <Input
+                    variant="darkGray"
+                    placeholder="Complemento"
+                    containerStyle={{ width: "48%" }}
+                    onChangeText={(t) => handleChange("complemento", t)}
+                    value={localData.complemento}
+                  />
+                </View>
               </View>
             </View>
           </View>
@@ -215,12 +225,12 @@ export default function AddProperty_1() {
       <View style={styles.buttonsContainer}>
         <SquareButton
           name="Cancelar"
-          variant="mediumS"
+          variant="darkGrayS"
           onPress={handleCancel}
         />
         <SquareButton
           name="Continuar"
-          variant="mediumP"
+          variant="greenS"
           disabled={loading}
           onPress={handleContinue}
         />
