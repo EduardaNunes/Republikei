@@ -177,7 +177,7 @@ export default function ProfileRenter() {
           <View style={styles.inputContainer}>
             
             <Input 
-              title="Nome" 
+              placeholder="Nome" 
               value={name} 
               onChangeText={setName} 
               editable={isEditing}
@@ -185,32 +185,36 @@ export default function ProfileRenter() {
             />
             
             <Input
-              title="Email"
+              placeholder="Email"
               value={email}
               onChangeText={setEmail}
               editable={isEditing}
               icon='email'
             />
 
-            {isEditing && (<Input
-              title="Senha Antiga"
-              value={senhaAntiga}
-              onChangeText={setSenhaAntiga}
-              secureTextEntry
-              editable={isEditing}
-              icon="lock"
-            />)}
-            {isEditing && (<Input
-              title="Nova Senha"
-              value={senha}
-              onChangeText={setSenha}
-              secureTextEntry
-              editable={isEditing} 
-              icon="lock"
-            />)}
             {isEditing && (
               <Input
-                title="Confirmar Nova Senha"
+                placeholder="Senha Antiga"
+                value={senhaAntiga}
+                onChangeText={setSenhaAntiga}
+                secureTextEntry
+                editable={isEditing}
+                icon="lock"
+              />
+            )}
+            {isEditing && (
+              <Input
+                placeholder="Nova Senha"
+                value={senha}
+                onChangeText={setSenha}
+                secureTextEntry
+                editable={isEditing} 
+                icon="lock"
+              />
+            )}
+            {isEditing && (
+              <Input
+                placeholder="Confirmar Nova Senha"
                 value={confirmarSenha}
                 onChangeText={setConfirmarSenha}
                 secureTextEntry

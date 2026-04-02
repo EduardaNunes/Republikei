@@ -34,6 +34,15 @@ export const styles = StyleSheet.create({
     fontSize: fontSize.text.small,
   },
 
+  darkGrayContainerPlaceholder:{
+    color: colors.gray,
+    fontSize: fontSize.text.small,
+  },
+  whiteContainerPlaceholder:{
+    color: colors.gray,
+    fontSize: fontSize.text.small,
+  },
+
   // Old
 
   primaryContainer: {

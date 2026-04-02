@@ -34,6 +34,12 @@ export default function Input({ title, variant = "darkGray",containerStyle = {},
     primary: styles.text,
     secondary: styles.text,
   }
+
+  const placeholderTextVariants = {
+    // Republikei
+    darkGray: styles.darkGrayContainerPlaceholder,
+    white: styles.whiteContainerPlaceholder,
+  }
   
   return (
     <View style={containerVariants[variant]}>
@@ -46,7 +52,7 @@ export default function Input({ title, variant = "darkGray",containerStyle = {},
       }
       <TextInput
         style={textVariants[variant]}
-        placeholderTextColor={textVariants[variant].color}
+        placeholderTextColor={placeholderTextVariants[variant].color}
         {...rest}
       />
     </View>
