@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
  uploadButton: {
-    backgroundColor: colors.orange[300],
+    backgroundColor: colors.backgroundGreen,
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
