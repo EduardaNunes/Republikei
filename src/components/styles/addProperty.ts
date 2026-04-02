@@ -56,9 +56,6 @@ export const styles = StyleSheet.create({
     gap: 10,
 
   },
-  subinputSmallContainer:{
-    flex: 1
-  },
   title: {
     color: colors.backgroundGreen,
     fontSize: fontSize.title.big,

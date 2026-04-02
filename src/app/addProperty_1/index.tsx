@@ -179,6 +179,8 @@ export default function AddProperty_1() {
             <View style={styles.inputContainer}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Input
+                  title="CEP"
+                  titleVariant="green"
                   placeholder="CEP"
                   keyboardType="numeric"
                   onChangeText={handleCepChange}
@@ -189,34 +191,38 @@ export default function AddProperty_1() {
                 {cepLoading && <ActivityIndicator style={{marginLeft: 10}} color={colors.backgroundGreen}/>}
               </View>
               <Input
+                title="Rua"
+                titleVariant="green"
                 placeholder="Rua"
                 onChangeText={(t) => handleChange("rua", t)}
                 value={localData.rua}
               />
               <Input
+                title="Bairro"
+                titleVariant="green"
                 placeholder="Bairro"
                 onChangeText={(t) => handleChange("bairro", t)}
                 value={localData.bairro}
               />
               <View style={styles.subinputContainer}>
-                <View style={styles.subinputSmallContainer}>
-                  <Input
-                    variant="darkGray"
-                    placeholder="Número"
-                    containerStyle={{ width: "48%" }}
-                    onChangeText={(t) => handleChange("numero", t)}
-                    value={localData.numero}
-                  />
-                </View>
-                <View style={styles.subinputSmallContainer}>
-                  <Input
-                    variant="darkGray"
-                    placeholder="Complemento"
-                    containerStyle={{ width: "48%" }}
-                    onChangeText={(t) => handleChange("complemento", t)}
-                    value={localData.complemento}
-                  />
-                </View>
+                <Input
+                  variant="darkGray"
+                  size="medium"
+                  title="Número"
+                  titleVariant="green"
+                  placeholder="Número"
+                  onChangeText={(t) => handleChange("numero", t)}
+                  value={localData.numero}
+                />
+                <Input
+                  variant="darkGray"
+                  size="medium"
+                  title="Complemento"
+                  titleVariant="green"
+                  placeholder="Complemento"
+                  onChangeText={(t) => handleChange("complemento", t)}
+                  value={localData.complemento}
+                />
               </View>
             </View>
           </View>
