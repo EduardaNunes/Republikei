@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, Platform, ScrollView, View, Alert } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, View, Alert, Image } from "react-native";
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
@@ -86,6 +86,12 @@ export default function AddProperty_2() {
 
   return (
     <>
+      <View style={styles.backgroundImageContainer}>
+        <Image
+          source={require("@/assets/paper_texture.png")}
+          style={styles.paperTexture}
+        />
+      </View>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -107,16 +113,20 @@ export default function AddProperty_2() {
             <View style={styles.inputContainer}>
               <View style={styles.subinputContainer}>
                 <Input
-                  variant="secondary"
+                  variant="darkGray"
+                  size="medium"
                   title="Banheiros"
+                  titleVariant="green"
                   keyboardType="numeric"
                   containerStyle={{ width: "48%" }}
                   onChangeText={(text) => handleChange("banheiro", text)}
                   value={localEspaco.banheiro}
                 />
                 <Input
-                  variant="secondary"
+                  variant="darkGray"
+                  size="medium"
                   title="Salas Jantar"
+                  titleVariant="green"
                   keyboardType="numeric"
                   containerStyle={{ width: "48%" }}
                   onChangeText={(text) => handleChange("salaJantar", text)}
@@ -125,16 +135,20 @@ export default function AddProperty_2() {
               </View>
               <View style={styles.subinputContainer}>
                 <Input
-                  variant="secondary"
+                  variant="darkGray"
+                  size="medium"
                   title="Salas de Estar"
+                  titleVariant="green"
                   keyboardType="numeric"
                   containerStyle={{ width: "48%" }}
                   onChangeText={(text) => handleChange("salaEstar", text)}
                   value={localEspaco.salaEstar}
                 />
                 <Input
-                  variant="secondary"
+                  variant="darkGray"
+                  size="medium"
                   title="Áreas de Serviço"
+                  titleVariant="green"
                   keyboardType="numeric"
                   containerStyle={{ width: "48%" }}
                   onChangeText={(text) => handleChange("areaServico", text)}
@@ -143,16 +157,20 @@ export default function AddProperty_2() {
               </View>
               <View style={styles.subinputContainer}>
                 <Input
-                  variant="secondary"
+                  variant="darkGray"
+                  size="medium"
                   title="Vagas Garagem"
+                  titleVariant="green"
                   keyboardType="numeric"
                   containerStyle={{ width: "48%" }}
                   onChangeText={(text) => handleChange("vagaGaragem", text)}
                   value={localEspaco.vagaGaragem}
                 />
                 <Input
-                  variant="secondary"
+                  variant="darkGray"
+                  size="medium"
                   title="Cozinhas"
+                  titleVariant="green"
                   keyboardType="numeric"
                   containerStyle={{ width: "48%" }}
                   onChangeText={(text) => handleChange("cozinha", text)}
@@ -161,16 +179,20 @@ export default function AddProperty_2() {
               </View>
               <View style={styles.subinputContainer}>
                 <Input
-                  variant="secondary"
+                  variant="darkGray"
+                  size="medium"
                   title="Varandas"
+                  titleVariant="green"
                   keyboardType="numeric"
                   containerStyle={{ width: "48%" }}
                   onChangeText={(text) => handleChange("varanda", text)}
                   value={localEspaco.varanda}
                 />
                 <Input
-                  variant="secondary"
+                  variant="darkGray"
+                  size="medium"
                   title="Pessoas na Casa"
+                  titleVariant="green"
                   keyboardType="numeric"
                   containerStyle={{ width: "48%" }}
                   onChangeText={setPessoasCasa}
@@ -184,12 +206,12 @@ export default function AddProperty_2() {
       <View style={styles.buttonsContainer}>
         <SquareButton
           name="Voltar"
-          variant="mediumS"
+          variant="darkGrayS"
           onPress={() => router.back()}
         />
         <SquareButton
           name="Continuar"
-          variant="mediumP"
+          variant="greenS"
           onPress={handleContinue}
         />
       </View>
