@@ -180,20 +180,20 @@ export default function AddProperty_4_compartilhada() {
               )}
             </View>
           </View>
+          <View style={styles.buttonsContainer}>
+            <SquareButton
+              name="Voltar"
+              variant="darkGrayS"
+              onPress={() => router.back()}
+            />
+            <SquareButton
+              name="Continuar"
+              variant="greenS"
+              onPress={handleContinue}
+            />
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
-      <View style={styles.buttonsContainer}>
-        <SquareButton
-          name="Voltar"
-          variant="darkGrayS"
-          onPress={() => router.back()}
-        />
-        <SquareButton
-          name="Continuar"
-          variant="greenS"
-          onPress={handleContinue}
-        />
-      </View>
       <NavigationBar />
     </>
   );
