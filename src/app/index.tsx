@@ -60,7 +60,7 @@ export default function Index() {
             />
             <SquareButton name="Cadastro" variant="darkGray" onPress={() => router.push("/signUp")}/>
             <SquareButton name="Login" variant="darkGray" onPress={() => router.push("/login")} />
-            <SquareButton name="Não funciona ainda" variant="white" onPress={() => router.push("")} />
+            {/*<SquareButton name="Não funciona ainda" variant="white" onPress={() => router.push("")} />*/}
         </View>
     </View>
   );
