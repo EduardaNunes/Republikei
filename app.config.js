@@ -1,4 +1,4 @@
-{
+export default {
   "expo": {
     "name": "Republikei",
     "slug": "Republikei",
@@ -16,20 +16,21 @@
     "ios": {
       "supportsTablet": true,
       "config": {
-        "googleMapsApiKey": "process.env.GOOGLE_MAPS_API_KEY"
+        "googleMapsApiKey": process.env.GOOGLE_MAPS_API_KEY
       }
     },
     "android": {
       "config": {
         "googleMaps": {
-          "apiKey": "process.env.GOOGLE_MAPS_API_KEY"
+          "apiKey": process.env.GOOGLE_MAPS_API_KEY
         }
       },
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#080808"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.dudanunes.Republikei"
     },
     "web": {
       "bundler": "metro",
@@ -39,6 +40,12 @@
     "plugins": [
       "expo-router",
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "6e85b063-8dc5-4177-bf81-2aeda699190c"
+      }
+    }
   }
 }
