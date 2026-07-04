@@ -57,25 +57,38 @@ export default function Login() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
+      style={{ flex: 1 }}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <BackButton onPress={() => router.back()} />
-          <SafeAreaView style={styles.imgContainer}>
-            <Image source={require("@/assets/login-icon.png")} />
-            <AppText style={styles.title}> LOGIN </AppText>
-          </SafeAreaView>
+        <ScrollView contentContainerStyle={styles.container}>
+
+          <View>
+            <BackButton variant = "medium" type = "back" onPress={() => router.back()} />
+          </View>
+
+          <View style={styles.backgroundImageContainer}>
+            <Image style={styles.armImage} source={require("@/assets/arm_icon.png")} />
+            <Image
+              source={require("@/assets/paper_texture.png")}
+              style={styles.paperTexture}
+            />
+          </View>
+
+          <View style={styles.headerContainer}>
+            <Image style={styles.textImage} source={require("@/assets/signIn_name.png")} />
+          </View>
 
           <View style={styles.containerTextAndButton}>
+
             <View style={styles.inputContainer}>
               <Input
                 title="Email"
                 onChangeText={setEmail} 
                 value={email}
-                placeholder="email@address.com"
+                placeholder="Email@address.com"
                 autoCapitalize="none"
                 keyboardType="email-address"
+                icon='email'
               />
 
               <Input
@@ -85,6 +98,7 @@ export default function Login() {
                 secureTextEntry
                 placeholder="Password"
                 autoCapitalize="none"
+                icon='lock'
               />
             </View>
 
@@ -95,13 +109,15 @@ export default function Login() {
                 onPress={handleSignIn}
               />
               <View style={styles.signInContainer}>
-                <AppText>Não tem Login?</AppText>
+                <AppText style={styles.askText}>Não tem Login?</AppText>
                 <TouchableOpacity onPress={navigateToSignUp}>
                   <AppText style={styles.signInText}>Cadastrar</AppText>
                 </TouchableOpacity>
               </View>
             </View>
+
           </View>
+
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>

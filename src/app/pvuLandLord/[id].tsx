@@ -17,6 +17,7 @@ import { supabase } from "@/lib/supabase";
 import { getPropertyDetails, handleDeleteAction, handleEditAction } from "@/presenter/postPvuPresenter";
 import { NewPostContext } from "@/contexts/NewPostContext";
 import { useContext } from "react";
+import { colors } from "@/styles/colors";
 
 export default function PvuLandLord() {
 
@@ -101,7 +102,7 @@ export default function PvuLandLord() {
   // ================================================================================ //
 
   if (loading) {
-    return <ActivityIndicator style={{ flex: 1 }} size="large" />;
+    return <ActivityIndicator style={{ flex: 1 }} size="large" color={colors.backgroundGreen}/>;
   }
 
   if (!property) {
@@ -110,71 +111,82 @@ export default function PvuLandLord() {
 
   return (
     <>
-    <ScrollView >
-        <BackButton onPress={() => router.back()}/>
+    <View style={styles.container}>  
+      <View>
+        <BackButton onPress={() => router.back()}/>   
+      </View>
+      <View style={styles.backgroundImageContainer}>
         <ImageCarousel 
-          images={
-            property.imagens && property.imagens.length > 0
-            ? property.imagens.map(url => ({ uri: url }))
-            : [require("../../assets/Imagem.png")]
-          }
-          style={styles.image}/>
+            images={
+              property.imagens && property.imagens.length > 0
+              ? property.imagens.map(url => ({ uri: url }))
+              : [require("../../assets/Imagem.png")]
+            }
+            style={styles.image}
+          />
+        <Image
+          source={require("@/assets/paper_texture.png")}
+          style={styles.paperTexture}
+        />
+      </View>
+      <View style={styles.headerSpacerContainer}></View>
+      <ScrollView style={styles.scrollView}>
+          <View style={styles.infoContainer}>
 
-        <View style={styles.container}>
-
-            <View  style={styles.titleContainer}>
-                <AppText style={styles.title}>{property.tipoMoradiaEspecifico + " - " + (property.bairro || "Sem Bairro")}</AppText>
-                {/*shouldShowStatusPost && <StatusPost type={statusType} isActive={!property.oculto}/>*/}
-            </View>
-
-            <AppText>{property.descricao}</AppText>
-
-            <View style={styles.geralContainer}>
-              <View  style={styles.inputContainer}>
-
-                <AppText style={styles.subtitle}>TIPO DE MORADOR</AppText>
-                <SelectableBlock objects={[{id: "1" , name: property.tipoVaga}]} readOnly/>
-
-                <AppText style={styles.subtitle}>TIPO DE MORADIA</AppText>
-                <SelectableBlock objects={[{id: "1" , name: property.tipoMoradia}]} readOnly/>
-
-                <AppText style={styles.subtitle}>CARACTERÍSTICAS</AppText>
-                <SelectableBlock readOnly objects={(property.caracteristicas || [] ).map((caracteristica, index) => ({id: index.toString(), name: caracteristica}) )}/>
-
-                <AppText style={styles.subtitle}>MOBÍLIA</AppText>
-                <SelectableBlock readOnly objects={(property.moveisDisponiveis || [] ).map((movel, index) => ({id: index.toString(), name: movel}) )}/>
-
-                <AppText style={styles.subtitle}>ENDEREÇO</AppText>
-                <AppText>
-                  {`${property.rua}, nº ${property.numero}, Bairro ${property.bairro} - ${property.cep} - `}
-                  {property.complemento ? `, ${property.complemento}` : ""}
-                </AppText>
-
-                <AppText style={styles.subtitle}>MAIS INFORMAÇÕES</AppText>
-                <HouseInfoList data={
-                  {
-                    banheiros: property.num_banheiro,
-                    salasEstar: property.num_salaEstar,
-                    cozinhas: property.num_cozinha,
-                    pessoasPorMoradia: property.num_pessoasCasa,
-                    pessoasPorQuarto: property.num_pessoasQuarto,
-                    areasServico: property.num_areaServico,
-                    vagasGaragem: property.num_garagem,
-                    salasJantar: property.num_salaJantar,
-                    varandas: property.num_varanda,
-                    quartos: property.num_quartos,  
-                  }
-                }/>
-
-                <AppText style={styles.subtitle}>LOCADOR</AppText>
-                <OwnerData name={ownerInfo.name} phone={ownerInfo.phone} email={ownerInfo.email} />
-
+              <View  style={styles.titleContainer}>
+                  <AppText style={styles.title}>{property.tipoMoradiaEspecifico + " - " + (property.bairro || "Sem Bairro")}</AppText>
+                  {/*shouldShowStatusPost && <StatusPost type={statusType} isActive={!property.oculto}/>*/}
               </View>
-            </View>
-        </View>
 
-    </ScrollView>
+              <AppText style={styles.texts}>{property.descricao}</AppText>
+
+              <View style={styles.geralContainer}>
+                <View  style={styles.inputContainer}>
+
+                  <AppText style={styles.subtitle}>TIPO DE MORADOR</AppText>
+                  <SelectableBlock objects={[{id: "1" , name: property.tipoVaga}]} readOnly/>
+
+                  <AppText style={styles.subtitle}>TIPO DE MORADIA</AppText>
+                  <SelectableBlock objects={[{id: "1" , name: property.tipoMoradia}]} readOnly/>
+
+                  <AppText style={styles.subtitle}>CARACTERÍSTICAS</AppText>
+                  <SelectableBlock readOnly objects={(property.caracteristicas || [] ).map((caracteristica, index) => ({id: index.toString(), name: caracteristica}) )}/>
+
+                  <AppText style={styles.subtitle}>MOBÍLIA</AppText>
+                  <SelectableBlock readOnly objects={(property.moveisDisponiveis || [] ).map((movel, index) => ({id: index.toString(), name: movel}) )}/>
+
+                  <AppText style={styles.subtitle}>ENDEREÇO</AppText>
+                  <AppText style={styles.texts}>
+                    {`${property.rua}, nº ${property.numero}, Bairro ${property.bairro} - ${property.cep} - `}
+                    {property.complemento ? `, ${property.complemento}` : ""}
+                  </AppText>
+
+                  <AppText style={styles.subtitle}>MAIS INFORMAÇÕES</AppText>
+                  <HouseInfoList variant="darkGray" data={
+                    {
+                      banheiros: property.num_banheiro,
+                      salasEstar: property.num_salaEstar,
+                      cozinhas: property.num_cozinha,
+                      pessoasPorMoradia: property.num_pessoasCasa,
+                      pessoasPorQuarto: property.num_pessoasQuarto,
+                      areasServico: property.num_areaServico,
+                      vagasGaragem: property.num_garagem,
+                      salasJantar: property.num_salaJantar,
+                      varandas: property.num_varanda,
+                      quartos: property.num_quartos,  
+                    }
+                  }/>
+
+                  <AppText style={styles.subtitle}>LOCADOR</AppText>
+                  <OwnerData name={ownerInfo.name} phone={ownerInfo.phone} email={ownerInfo.email} />
+
+                </View>
+              </View>
+          </View>
+
+      </ScrollView>
+    </View>
     <PriceAndContactButton price={property.preco} isOwner={ownerInfo.userIsOwner} onDelete={onDelete} onEdit={onEdit}/>
-    </>
+  </>
   );
 }

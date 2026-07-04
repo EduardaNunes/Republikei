@@ -2,13 +2,14 @@ import { StyleSheet, Dimensions } from "react-native";
 import { colors } from "@/styles/colors";
 import { fontSize } from "@/styles/fontSize";
 
+const { width: screenWidth, height: screenHeight} = Dimensions.get("window");
+
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: Dimensions.get("window").width,
+    width: screenWidth,
     flexDirection: "column",
     paddingHorizontal: 20,
-    marginBottom: 80,
     gap:10,
   },
   postContainer: {
@@ -20,8 +21,26 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
 
   },
+
+  // Background Image
+  backgroundImageContainer:{
+    flex: 1,
+    width: screenWidth,
+    position: 'absolute',
+    zIndex: -1,
+    backgroundColor: colors.white
+  },
+  paperTexture: {
+    flex: 1,
+    top: -50,
+    width: screenWidth * 4,
+    resizeMode: 'contain', 
+    alignSelf: 'center', 
+  },
+
+// Texts
   title: {
-    color: colors.orange[300],
+    color: colors.backgroundGreen,
     fontSize: fontSize.title.big,
     fontWeight: "700",
   },
@@ -30,6 +49,11 @@ export const styles = StyleSheet.create({
     justifyContent:"flex-start",
     alignItems: "center",
     marginVertical: 28,
+  },
+  notFoundText: {
+    marginTop: 40,
+    color: colors.darkGray,
+    fontWeight: 'bold'
   },
   
 });

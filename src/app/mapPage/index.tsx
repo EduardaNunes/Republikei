@@ -4,8 +4,7 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { supabase } from "../../lib/supabase";
 
 import React, { useState, useEffect } from "react";
-import { styles } from "../../components/styles/homePage";
-import Input from "@/components/input";
+import { styles } from "../../components/styles/mapPage";
 import AppText from "@/components/appText";
 import NavigationBar from "@/components/navigationBar";
 import Categories from "@/components/categories";
@@ -86,13 +85,21 @@ export default function MapPage() {
 
   return (
     <>
-    <View style={styles.container}>
-        {/* <Input placeholder="Pesquisar" placeholderTextColor={colors.gray[100]}></Input>*/}
+      <View style={styles.backgroundImageContainer}>
+        <Image
+          source={require("@/assets/paper_texture.png")}
+          style={styles.paperTexture}
+        />
+      </View>
+
+      <View style={styles.container}>
+
         <Categories 
           selectedCategoryId={selectedCategoryId} 
           onCategorySelect={setSelectedCategoryId} 
         />
-        <View  style={localStyles.mapContainer}>
+
+        <View  style={styles.mapContainer}>
           <MapView
             style={StyleSheet.absoluteFillObject}
             userInterfaceStyle='dark'
@@ -112,76 +119,29 @@ export default function MapPage() {
               />
             ))}
           </MapView>
-          {loading && <ActivityIndicator style={StyleSheet.absoluteFillObject} size="large" />}
+          {loading && <ActivityIndicator style={StyleSheet.absoluteFillObject} color={colors.backgroundGreen} size="large" />}
         </View>
         {selectedImovel && (
           <TouchableOpacity 
-            style={localStyles.calloutContainer}
+            style={styles.calloutContainer}
             onPress={() => router.push(`/pvuLandLord/${selectedImovel.id}`)}
           >
             <Image 
-              style={localStyles.calloutImage} 
+              style={styles.calloutImage} 
               source={
                 selectedImovel.imagens && selectedImovel.imagens.length > 0
                   ? { uri: selectedImovel.imagens[0] }
                   : require("../../assets/Imagem.png") 
               }
             />
-            <View style={localStyles.calloutTextContainer}>
-              <AppText style={localStyles.calloutTitle}>{selectedImovel.rua}, {selectedImovel.numero}</AppText>
-              <AppText style={localStyles.calloutPrice}>R$ {selectedImovel.preco}/mês</AppText>
+            <View style={styles.calloutTextContainer}>
+              <AppText style={styles.calloutTitle}>{selectedImovel.rua}, {selectedImovel.numero}</AppText>
+              <AppText style={styles.calloutPrice}>R$ {selectedImovel.preco}/mês</AppText>
             </View>
           </TouchableOpacity>
         )}
-        
-    </View>
-    <NavigationBar/>
+      </View>
+      <NavigationBar/>
     </>
   );
 }
-
-const localStyles = StyleSheet.create({
-  mapContainer: {
-    flex: 1,
-    width: '100%',
-    marginTop: 10,
-    borderRadius: 15,
-    overflow: 'hidden',
-  },
-  calloutContainer: {
-    position: 'absolute',
-    bottom: 90,
-    left: '5%',
-    width: '90%',
-    backgroundColor: 'white',
-    borderRadius: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 5,
-  },
-  calloutImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 10,
-    backgroundColor: '#eee',
-  },
-  calloutTextContainer: {
-    flex: 1,
-    marginLeft: 10,
-  },
-  calloutTitle: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    color: '#333',
-  },
-  calloutPrice: {
-    fontSize: 14,
-    color: 'green',
-    marginTop: 5,
-  },
-});

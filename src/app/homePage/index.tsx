@@ -1,4 +1,4 @@
-import { View, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, ScrollView, TouchableOpacity, ActivityIndicator, Image } from "react-native";
 import React from "react";
 import { styles } from "../../components/styles/homePage";
 import AppText from "@/components/appText";
@@ -8,6 +8,7 @@ import PostBlock from "@/components/postBlock";
 import { colors } from "@/styles/colors";
 import { useHomePagePresenter } from "@/presenter/useHomePagePresenter";
 import { postStatusPresenter } from "@/presenter/postStatusPresenter";
+import Input from "@/components/input";
 
 export default function HomePage() {
   const {
@@ -30,20 +31,33 @@ export default function HomePage() {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color={colors.orange[300]} />
+        <ActivityIndicator size="large" color={colors.backgroundGreen}/>
       </View>
     );
   }
 
   return (
     <>
+      <View style={styles.backgroundImageContainer}>
+        <Image
+          source={require("@/assets/paper_texture.png")}
+          style={styles.paperTexture}
+        />
+      </View>
+
       <ScrollView style={styles.container}>
+
         <TouchableOpacity
           onPress={handleSearchPress}
-          style={styles.fakeInput}
           activeOpacity={0.8}
         >
-          <AppText style={styles.fakeInputText}>Pesquisar</AppText>
+          <Input
+            title=""
+            placeholder="Pesquisar"
+            autoCapitalize="none"
+            icon='search'
+
+          />
         </TouchableOpacity>
 
         <Categories 
@@ -89,6 +103,7 @@ export default function HomePage() {
           })}
         </View>
       </ScrollView>
+
       <NavigationBar />
     </>
   );

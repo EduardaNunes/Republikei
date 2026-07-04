@@ -10,14 +10,14 @@ type Props = PressableProps & {
 };
 
 export function Category({ name, isSelected, ...rest }: Props) {
-  const backgroundColor = isSelected ? colors.orange[300] : colors.gray[800];
+  const backgroundColor = isSelected ? colors.backgroundGreen : colors.darkGray;
 
   return (
     <Pressable
       style={[styles.container, { backgroundColor }]}
       {...rest}
     >
-      <AppText style={[styles.name, { color: colors.gray[100] }]}>
+      <AppText style={[styles.name, { color: colors.white }]}>
         {name}
       </AppText>
     </Pressable>

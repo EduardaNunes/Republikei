@@ -1,4 +1,4 @@
-import { View, KeyboardAvoidingView, ScrollView, Platform, Alert, ActivityIndicator } from "react-native";
+import { View, KeyboardAvoidingView, ScrollView, Platform, Alert, ActivityIndicator, Image } from "react-native";
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
@@ -8,6 +8,7 @@ import { useRouter } from "expo-router";
 import { NewPostContext } from "@/contexts/NewPostContext";
 import { useContext, useState, useEffect } from "react";
 import axios from 'axios';
+import { colors } from "@/styles/colors";
 
 export default function AddProperty_1() {
   const router = useRouter();
@@ -150,6 +151,12 @@ export default function AddProperty_1() {
 
   return (
     <>
+      <View style={styles.backgroundImageContainer}>
+        <Image
+          source={require("@/assets/paper_texture.png")}
+          style={styles.paperTexture}
+        />
+      </View>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -173,36 +180,46 @@ export default function AddProperty_1() {
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Input
                   title="CEP"
+                  titleVariant="green"
+                  placeholder="CEP"
                   keyboardType="numeric"
                   onChangeText={handleCepChange}
                   value={localData.cep}
                   maxLength={8}
                   containerStyle={{flex: 1}}
                 />
-                {cepLoading && <ActivityIndicator style={{marginLeft: 10}}/>}
+                {cepLoading && <ActivityIndicator style={{marginLeft: 10}} color={colors.backgroundGreen}/>}
               </View>
               <Input
                 title="Rua"
+                titleVariant="green"
+                placeholder="Rua"
                 onChangeText={(t) => handleChange("rua", t)}
                 value={localData.rua}
               />
               <Input
                 title="Bairro"
+                titleVariant="green"
+                placeholder="Bairro"
                 onChangeText={(t) => handleChange("bairro", t)}
                 value={localData.bairro}
               />
               <View style={styles.subinputContainer}>
                 <Input
-                  variant="secondary"
+                  variant="darkGray"
+                  size="medium"
                   title="Número"
-                  containerStyle={{ width: "48%" }}
+                  titleVariant="green"
+                  placeholder="Número"
                   onChangeText={(t) => handleChange("numero", t)}
                   value={localData.numero}
                 />
                 <Input
-                  variant="secondary"
+                  variant="darkGray"
+                  size="medium"
                   title="Complemento"
-                  containerStyle={{ width: "48%" }}
+                  titleVariant="green"
+                  placeholder="Complemento"
                   onChangeText={(t) => handleChange("complemento", t)}
                   value={localData.complemento}
                 />
@@ -214,12 +231,12 @@ export default function AddProperty_1() {
       <View style={styles.buttonsContainer}>
         <SquareButton
           name="Cancelar"
-          variant="mediumS"
+          variant="darkGrayS"
           onPress={handleCancel}
         />
         <SquareButton
           name="Continuar"
-          variant="mediumP"
+          variant="greenS"
           disabled={loading}
           onPress={handleContinue}
         />

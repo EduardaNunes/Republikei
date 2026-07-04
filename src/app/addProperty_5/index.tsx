@@ -4,6 +4,7 @@ import {
   ScrollView,
   View,
   Alert,
+  Image
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { styles } from "../../components/styles/addProperty";
@@ -171,6 +172,12 @@ export default function App() {
 
   return (
     <>
+      <View style={styles.backgroundImageContainer}>
+        <Image
+          source={require("@/assets/paper_texture.png")}
+          style={styles.paperTexture}
+        />
+      </View>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -194,16 +201,16 @@ export default function App() {
             <View style={styles.inputContainer}>
               <Input
                 title="Adicionar Descrição"
-                containerStyle={{ width: "100%" }}
+                titleVariant="green"
                 onChangeText={(val: string) => handleChange("descricao", val)}
                 value={localData.descricao}
                 multiline
               />
               
               <Input
-                variant="secondary"
                 title="Mensalidade/Aluguer (R$)"
-                containerStyle={{ width: "100%" }}
+                titleVariant="green"
+                placeholder="R$"
                 keyboardType="numeric"
                 onChangeText={(val: string) => handlePrice(val)}
                 value={localData.preco}
@@ -224,12 +231,12 @@ export default function App() {
       <View style={styles.buttonsContainer}>
         <SquareButton
           name="Voltar"
-          variant="mediumS"
+          variant="darkGrayS"
           onPress={() => router.back()}
         />
         <SquareButton
-          name={propertyIdForEdit ? "Guardar Alterações" : "Registar Imóvel"}
-          variant="mediumP"
+          name={propertyIdForEdit ? "Salvar" : "Registar"}
+          variant="greenS"
           onPress={handleContinue}
           disabled={isSubmitting}
         />

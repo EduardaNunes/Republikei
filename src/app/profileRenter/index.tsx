@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform } from "react-native";
+import { View, ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, Image } from "react-native";
 import { styles } from "../../components/styles/profileRenter";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
@@ -9,6 +9,7 @@ import NavigationBar from "@/components/navigationBar";
 import { useRouter } from "expo-router";
 import { supabase } from "../../lib/supabase";
 import { UserAttributes } from "@supabase/supabase-js";
+import { colors } from "@/styles/colors";
 
 export default function ProfileRenter() {
   const [userType, setUserType] = useState<string | null>(null);
@@ -151,76 +152,98 @@ export default function ProfileRenter() {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" color={colors.backgroundGreen}/>
       </View>
     );
   }
 
   return (
     <>
-    <KeyboardAvoidingView
-    style={{ flex: 1 }}
-    behavior={Platform.OS === "ios" ? "padding" : undefined}
-  >
-      <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1, paddingBottom: 120 }}>
-        <View style={styles.titleContainer}>
-          <AppText style={styles.title}>{isEditing ? "EDITAR PERFIL" : 'PERFIL'}</AppText>
-        </View>
+      <View style={styles.backgroundImageContainer}>
+        <Image
+          source={require("@/assets/paper_texture.png")}
+          style={styles.paperTexture}
+        />
+      </View>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1, paddingBottom: 120 }}>
+          <View style={styles.titleContainer}>
+            <AppText style={styles.title}>{isEditing ? "EDITAR PERFIL" : 'PERFIL'}</AppText>
+          </View>
 
-        <View style={styles.inputContainer}>
-          
-          <Input title="Nome" value={name} onChangeText={setName} editable={isEditing} />
-          
-          <Input
-            title="Email"
-            value={email}
-            onChangeText={setEmail}
-            editable={isEditing} 
-          />
-          {isEditing && (<Input
-            title="Senha Antiga"
-            value={senhaAntiga}
-            onChangeText={setSenhaAntiga}
-            secureTextEntry
-            editable={isEditing} 
-          />)}
-          {isEditing && (<Input
-            title="Nova Senha"
-            value={senha}
-            onChangeText={setSenha}
-            secureTextEntry
-            editable={isEditing} 
-          />)}
-          {isEditing && (
-            <Input
-              title="Confirmar Nova Senha"
-              value={confirmarSenha}
-              onChangeText={setConfirmarSenha}
-              secureTextEntry
+          <View style={styles.inputContainer}>
+            
+            <Input 
+              placeholder="Nome" 
+              value={name} 
+              onChangeText={setName} 
+              editable={isEditing}
+              icon='person' 
             />
-          )}
-          {userType === "owner" && (
-            <>
-              <Input title="Celular" value={celular} onChangeText={setCelular} editable={isEditing} />
-              <Input title="Descrição" value={descricao} onChangeText={setDescricao} editable={isEditing} />
-            </>
-          )}
-        </View>
+            
+            <Input
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              editable={isEditing}
+              icon='email'
+            />
 
-        <View style={styles.buttonsContainer}>
-          {isEditing ? (
-            <>
-              <SquareButton name="Cancelar" variant="shortS" onPress={handleCancel} />
-              <SquareButton name="Salvar" variant="shortP" onPress={handleSave} />
-            </>
-          ) : (
-            <>
-              <SquareButton name="Logout" variant="shortS" onPress={handleLogout} />
-              <SquareButton name="Editar" variant="shortP" onPress={() => setIsEditing(true)} />
-            </>
-          )}
-        </View>
-      </ScrollView>
+            {isEditing && (
+              <Input
+                placeholder="Senha Antiga"
+                value={senhaAntiga}
+                onChangeText={setSenhaAntiga}
+                secureTextEntry
+                editable={isEditing}
+                icon="lock"
+              />
+            )}
+            {isEditing && (
+              <Input
+                placeholder="Nova Senha"
+                value={senha}
+                onChangeText={setSenha}
+                secureTextEntry
+                editable={isEditing} 
+                icon="lock"
+              />
+            )}
+            {isEditing && (
+              <Input
+                placeholder="Confirmar Nova Senha"
+                value={confirmarSenha}
+                onChangeText={setConfirmarSenha}
+                secureTextEntry
+                icon="lock"
+              />
+            )}
+            {userType === "owner" && (
+              <>
+                <Input title="Celular" value={celular} onChangeText={setCelular} editable={isEditing} />
+                <Input title="Descrição" value={descricao} onChangeText={setDescricao} editable={isEditing} />
+              </>
+            )}
+          </View>
+
+          <View style={styles.buttonsContainer}>
+            {isEditing ? (
+              <>
+                <SquareButton name="Cancelar" variant="darkGrayS" onPress={handleCancel} />
+                <SquareButton name="Salvar" variant="greenS" onPress={handleSave} />
+              </>
+            ) : (
+              <>
+                <SquareButton name="Logout" variant="darkGrayS" onPress={handleLogout} />
+                <SquareButton name="Editar" variant="greenS" onPress={() => setIsEditing(true)} />
+              </>
+            )}
+          </View>
+        </ScrollView>
+
       </KeyboardAvoidingView>
       <NavigationBar />
     </>

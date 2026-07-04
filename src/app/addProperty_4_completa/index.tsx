@@ -4,6 +4,7 @@ import {
   ScrollView,
   View,
   Alert,
+  Image
 } from "react-native";
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
@@ -87,6 +88,12 @@ export default function AddProperty_4_completa() {
 
   return (
     <>
+      <View style={styles.backgroundImageContainer}>
+        <Image
+          source={require("@/assets/paper_texture.png")}
+          style={styles.paperTexture}
+        />
+      </View>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -115,9 +122,10 @@ export default function AddProperty_4_completa() {
               <AppText style={styles.subtitle}>QUANTIDADE</AppText>
               <View style={styles.subinputContainer}>
                 <Input
-                  variant="secondary"
+                  variant="darkGray"
+                  size="medium"
                   title="Quartos"
-                  containerStyle={{ width: "48%" }}
+                  titleVariant="green"
                   keyboardType="numeric"
                   onChangeText={(val: string) => handleChange("quantQuartos", val)}
                   value={localData.quantQuartos}
@@ -135,20 +143,20 @@ export default function AddProperty_4_completa() {
               )}
             </View>
           </View>
+            <View style={styles.buttonsContainer}>
+              <SquareButton
+                name="Voltar"
+                variant="darkGrayS"
+                onPress={() => router.back()}
+              />
+              <SquareButton
+                name="Continuar"
+                variant="greenS"
+                onPress={handleContinue}
+              />
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
-      <View style={styles.buttonsContainer}>
-        <SquareButton
-          name="Voltar"
-          variant="mediumS"
-          onPress={() => router.back()}
-        />
-        <SquareButton
-          name="Continuar"
-          variant="mediumP"
-          onPress={handleContinue}
-        />
-      </View>
       <NavigationBar />
     </>
   );

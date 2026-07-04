@@ -1,5 +1,4 @@
 import { styles } from "./styles";
-import BottomContainer from "../bottomContainer";
 import AppText from "../appText";
 import { View, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -19,7 +18,7 @@ export default function PriceAndContactButton({
   onDelete,
 }: PriceAndContactButtonProps) {
   return (
-    <BottomContainer backgroundColor="#fff" style={styles.container}>
+    <View style={styles.container}>
       <AppText style={styles.priceText}>R$ {price}/mês</AppText>
       {isOwner ? (
         <View style={{ flexDirection: "row", gap: 20 }}>
@@ -32,8 +31,8 @@ export default function PriceAndContactButton({
           </TouchableOpacity>
         </View>
       ) : (
-         <SquareButton name="Mapa" variant="shortP" />
+         <SquareButton name="Mapa" variant="darkGrayS" />
       )}
-    </BottomContainer>
+    </View>
   );
 }

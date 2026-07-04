@@ -4,6 +4,7 @@ import {
   ScrollView,
   View,
   Alert,
+  Image
 } from "react-native";
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
@@ -102,6 +103,12 @@ export default function AddProperty_4_compartilhada() {
 
   return (
     <>
+      <View style={styles.backgroundImageContainer}>
+        <Image
+          source={require("@/assets/paper_texture.png")}
+          style={styles.paperTexture}
+        />
+      </View>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -130,16 +137,20 @@ export default function AddProperty_4_compartilhada() {
               <AppText style={styles.subtitle}>QUANTIDADE DE PESSOAS</AppText>
               <View style={styles.subinputContainer}>
                 <Input
-                  variant="secondary"
+                  variant="darkGray"
+                  size="medium"
                   title="No Quarto"
+                  titleVariant="green"
                   containerStyle={{ width: "48%" }}
                   keyboardType="numeric"
                   onChangeText={(val) => handleChange("individual", val)}
                   value={localData.individual}
                 />
                 <Input
-                  variant="secondary"
+                  variant="darkGray"
+                  size="medium"
                   title="Na Moradia"
+                  titleVariant="green"
                   containerStyle={{ width: "48%" }}
                   keyboardType="numeric"
                   onChangeText={(val) => handleChange("quantPessoasCasa", val)}
@@ -148,8 +159,10 @@ export default function AddProperty_4_compartilhada() {
               </View>
               <AppText style={styles.subtitle}>QUANTIDADE DE QUARTOS</AppText>
               <Input
-                variant="secondary"
+                variant="darkGray"
+                size="medium"
                 title="Quartos"
+                titleVariant="green"
                 keyboardType="numeric"
                 onChangeText={(val) => handleChange("quantQuartos", val)}
                 value={localData.quantQuartos}
@@ -167,20 +180,20 @@ export default function AddProperty_4_compartilhada() {
               )}
             </View>
           </View>
+          <View style={styles.buttonsContainer}>
+            <SquareButton
+              name="Voltar"
+              variant="darkGrayS"
+              onPress={() => router.back()}
+            />
+            <SquareButton
+              name="Continuar"
+              variant="greenS"
+              onPress={handleContinue}
+            />
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
-      <View style={styles.buttonsContainer}>
-        <SquareButton
-          name="Voltar"
-          variant="mediumS"
-          onPress={() => router.back()}
-        />
-        <SquareButton
-          name="Continuar"
-          variant="mediumP"
-          onPress={handleContinue}
-        />
-      </View>
       <NavigationBar />
     </>
   );

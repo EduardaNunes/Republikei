@@ -4,6 +4,7 @@ import {
   ScrollView,
   View,
   Alert,
+  Image
 } from "react-native";
 import { styles } from "../../components/styles/addProperty";
 import SquareButton from "@/components/button";
@@ -100,6 +101,12 @@ export default function AddProperty_3() {
 
   return (
     <>
+      <View style={styles.backgroundImageContainer}>
+        <Image
+          source={require("@/assets/paper_texture.png")}
+          style={styles.paperTexture}
+        />
+      </View>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -155,12 +162,12 @@ export default function AddProperty_3() {
       <View style={styles.buttonsContainer}>
         <SquareButton
           name="Voltar"
-          variant="mediumS"
+          variant="darkGrayS"
           onPress={() => router.back()}
         />
         <SquareButton
           name="Continuar"
-          variant="mediumP"
+          variant="greenS"
           onPress={handleContinue}
         />
       </View>

@@ -1,10 +1,10 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./styles";
-import BottomContainer from "../bottomContainer";
-import { ActivityIndicator, TouchableOpacity } from "react-native";
+import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
+import { colors } from "@/styles/colors";
 
 export default function NavigationBar() {
 
@@ -27,11 +27,11 @@ export default function NavigationBar() {
   }, []);
 
   if (loading) {
-    return (<BottomContainer style={styles.container}><ActivityIndicator color="#fff" /></BottomContainer>); // Ou return null;
+    return (<View style={styles.container}><ActivityIndicator color={colors.backgroundGreen} /></View>); // Ou return null;
   }
 
   return (
-    <BottomContainer style={styles.container}>
+    <View style={styles.container}>
       <TouchableOpacity onPress={() => router.push("/homePage")}>
         <MaterialIcons name="search" size={28} color="#fff" />
       </TouchableOpacity>
@@ -50,16 +50,11 @@ export default function NavigationBar() {
         <MaterialIcons name="map" size={28} color="#fff" />
       </TouchableOpacity>
 
-      {userType == "standard" ? (
-        <TouchableOpacity onPress={() => router.push("/profileRenter")}>
-          <MaterialIcons name="person" size={28} color="#fff" />
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity onPress={() => router.push("/profileRenter")}>
-          <MaterialIcons name="person" size={28} color="#fff" />
-        </TouchableOpacity>
-      )}
-    </BottomContainer>
+      <TouchableOpacity onPress={() => router.push("/profileRenter")}>
+        <MaterialIcons name="person" size={28} color="#fff" />
+      </TouchableOpacity>
+
+    </View>
   );
 }
 

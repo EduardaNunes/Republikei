@@ -5,8 +5,6 @@ import { fontSize } from "@/styles/fontSize";
 export const styles = StyleSheet.create({
   containerBack:{
     position: "absolute",
-    left: 10,
-    top: 50,
     zIndex: 1,
   },
   containerPlus:{
@@ -16,19 +14,21 @@ export const styles = StyleSheet.create({
     zIndex: 1,
   },
   mediumContainer: {
-    padding: 13,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 50,
-    elevation: 5,
-    height: 60,
-    width: 60,
-    backgroundColor: colors.orange[300],
+    height: 50,
+    width: 50,
+    backgroundColor: colors.white,
   },
   smallContainer: {
-    padding: 10,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 50,
-    elevation: 5,
     height: 40,
     width: 40,
-    backgroundColor: colors.orange[300],
+    backgroundColor: colors.white,
   },
 });

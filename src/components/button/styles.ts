@@ -4,7 +4,7 @@ import { fontSize } from "@/styles/fontSize";
 
 export const styles = StyleSheet.create({
   
-  // Republikei
+  // Republikei Buttons
 
   darkGrayButton:{
     backgroundColor: colors.darkGray,
@@ -24,6 +24,34 @@ export const styles = StyleSheet.create({
     borderColor: colors.darkGray,
     borderWidth: 2.5
   },
+  darkGraySmallButton:{
+    backgroundColor: colors.darkGray,
+    paddingVertical: 18,
+    paddingHorizontal: fontSize.text.small,
+    borderRadius: 24,
+    width: "40%",
+    alignItems: "center",  
+  },
+  greenSmallButton:{
+    backgroundColor: colors.backgroundGreen,
+    paddingVertical: 18,
+    paddingHorizontal: fontSize.text.small,
+    borderRadius: 24,
+    width: "40%",
+    alignItems: "center",  
+  },
+  whiteSmallButton:{
+    backgroundColor: colors.white,
+    paddingVertical: 18,
+    paddingHorizontal: fontSize.text.small,
+    borderRadius: 24,
+    width: "40%",
+    alignItems: "center",  
+    borderColor: colors.darkGray,
+    borderWidth: 2.5
+  },
+
+  // Republikei Texts
   darkGrayButtonText:{
     color: colors.white,
     fontSize: fontSize.text.medium,
@@ -34,8 +62,23 @@ export const styles = StyleSheet.create({
     fontSize: fontSize.text.medium,
     fontWeight: "bold",
   },
+  darkGraySmallButtonText:{
+    color: colors.white,
+    fontSize: fontSize.text.small,
+    fontWeight: "bold",
+  },
+  greenSmallButtonText:{
+    color: colors.white,
+    fontSize: fontSize.text.small,
+    fontWeight: "bold",
+  },
+  whiteSmallButtonText:{
+    color: colors.darkGray,
+    fontSize: fontSize.text.small,
+    fontWeight: "bold",
+  },
 
-  // Containers
+  // Base Containers
   primaryContainer: {
     backgroundColor: colors.orange[300],
     paddingVertical: 12,
@@ -90,7 +133,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  // Titles
+  // Base Titles
   primaryTitle: {
     color: colors.gray[100],
     fontSize: fontSize.text.medium,

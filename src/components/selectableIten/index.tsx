@@ -2,7 +2,6 @@ import { Pressable } from "react-native";
 import { colors } from "@/styles/colors";
 import { styles } from "./styles";
 import AppText from "../appText";
-import { fontSize } from "@/styles/fontSize";
 
 type SelectableItenProps = {
   text: string;
@@ -19,12 +18,11 @@ export function SelectableIten({
     <Pressable
       style={[
         styles.container,
-        { backgroundColor: colors.gray[800] },
-        isSelected && { backgroundColor: colors.orange[300] },
+        isSelected && { backgroundColor: colors.backgroundGreen },
       ]}
       onPress={onPress}
     >
-      <AppText style={[{ color: colors.gray[100], fontSize: fontSize.text.small }]}>{text}</AppText>
+      <AppText style={[styles.text , isSelected && {color: colors.white}]}>{text}</AppText>
     </Pressable>
   );
 }

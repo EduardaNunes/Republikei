@@ -25,13 +25,14 @@ export const styles = StyleSheet.create({
     height: 220,
   },
   title: {
-    color: colors.orange[300],
+    color: colors.backgroundGreen,
     fontSize: fontSize.title.medium,
     fontWeight: "bold",
   },
   price: {
     fontSize: fontSize.text.small,
-    color: "#fff",
+    color: colors.darkGray,
+    fontWeight: 'bold'
   },
   status: {
     position: "absolute",
