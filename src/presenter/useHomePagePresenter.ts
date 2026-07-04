@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import { Alert } from "react-native";
 import { Imovel } from "@/utils/Imovel";
 import { categories } from "@/utils/categories";
+import { avaliacaoPresenter } from "@/presenter/avaliacaoPresenter";
 import { User } from "@supabase/supabase-js";
 
 interface postsState{
@@ -53,10 +54,19 @@ export function useHomePagePresenter() {
 
       const updatedPosts = updatePosts(allPosts, userFavoritePosts)
 
-      setPosts(prev => ({ 
-        ...prev, 
-        all: updatedPosts,
-        userFavorite: updatedPosts.filter(p => p.isFavorited)
+      const ids = updatedPosts.map((post) => post.id);
+      const mediasMap = await avaliacaoPresenter.getMediaAvaliacoesPorImoveis(ids);
+
+      const postsComMedia: Imovel[] = updatedPosts.map((post) => ({
+        ...post,
+        avaliacaoMedia: mediasMap.get(post.id)?.media || 0,
+        totalAvaliacoes: mediasMap.get(post.id)?.total || 0,
+      }));
+
+      setPosts(prev => ({
+        ...prev,
+        all: postsComMedia,
+        userFavorite: postsComMedia.filter(p => p.isFavorited)
       }));
       
     } catch (error: any) {
@@ -75,7 +85,7 @@ export function useHomePagePresenter() {
     setPosts(prev => ({ ...prev, selectedCategory: id }));
   };
 
-  const getAllPosts = async () => {
+  const getAllPosts = async (): Promise<Imovel[]> => {
     const { data: posts, error: postsError } = await supabase
       .from('Imoveis')
       .select('*')
@@ -84,7 +94,7 @@ export function useHomePagePresenter() {
       .not('longitude', 'is', null)
     ;
     if (postsError) throw postsError;
-    else return posts || [];
+    else return (posts || []) as Imovel[];
   }
 
   const getUserFavoritePosts = async (userId: string) => {
@@ -97,10 +107,10 @@ export function useHomePagePresenter() {
     else return posts || [];
   }
 
-  const updatePosts = (all: Imovel[], userFavorites: any[]) => {
-    const userFavoritesId : string[] = userFavorites.map(post => post.post_id);
-    const allPostsWithFavState = all.map(post => ({...post, isFavorited: userFavoritesId.includes(post.id)}));
-    return allPostsWithFavState
+  const updatePosts = (all: Imovel[], userFavorites: any[]): Imovel[] => {
+    const userFavoritesId: string[] = userFavorites.map(post => post.post_id);
+    const allPostsWithFavState = all.map(post => ({ ...post, isFavorited: userFavoritesId.includes(post.id) }));
+    return allPostsWithFavState;
   }
 
   // ================================================================================ //
