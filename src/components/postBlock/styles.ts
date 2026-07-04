@@ -40,4 +40,14 @@ export const styles = StyleSheet.create({
     right: 6,
     zIndex: 1,
   },
+  ratingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 2,
+  },
+  ratingText: {
+    fontSize: fontSize.text.small,
+    color: colors.darkGray,
+  },
 });

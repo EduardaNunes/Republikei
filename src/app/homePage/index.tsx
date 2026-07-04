@@ -98,6 +98,8 @@ export default function HomePage() {
                   setPosts: setPosts,
                   refreshCallback: fetchPosts
                 })}
+                avaliacaoMedia={post.avaliacaoMedia}
+                totalAvaliacoes={post.totalAvaliacoes}
               />
             );
           })}
