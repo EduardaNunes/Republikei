@@ -13,6 +13,7 @@ import HouseInfoList from "@/components/houseInfoList/houseInfoList";
 import { useEffect, useState } from "react";
 import { Imovel } from "@/utils/Imovel";
 import { supabase } from "@/lib/supabase";
+import ReviewsSection from "@/components/reviewsSection";
 
 import { getPropertyDetails, handleDeleteAction, handleEditAction } from "@/presenter/postPvuPresenter";
 import { NewPostContext } from "@/contexts/NewPostContext";
@@ -179,6 +180,8 @@ export default function PvuLandLord() {
 
                   <AppText style={styles.subtitle}>LOCADOR</AppText>
                   <OwnerData name={ownerInfo.name} phone={ownerInfo.phone} email={ownerInfo.email} />
+                  <AppText style={styles.subtitle}>AVALIAÇÕES</AppText>
+                  <ReviewsSection imovelId={property.id} isOwner={ownerInfo.userIsOwner} />
 
                 </View>
               </View>
