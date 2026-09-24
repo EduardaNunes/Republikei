@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Alert, ScrollView, View } from "react-native";
-import { styles } from "../../components/styles/profileRenter";
+import { styles } from "../../components/styles/profileLandLord";
 import SquareButton from "@/components/button";
 import Input from "@/components/input";
 import AppText from "@/components/appText";

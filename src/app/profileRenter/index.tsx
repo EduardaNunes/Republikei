@@ -1,15 +1,91 @@
-import React, { useEffect, useState } from "react";
-import { View, ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, Image } from "react-native";
-import { styles } from "../../components/styles/profileRenter";
-import SquareButton from "@/components/button";
-import Input from "@/components/input";
-import AppText from "@/components/appText";
-import NavigationBar from "@/components/navigationBar";
-
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  View,
+  ScrollView,
+  Alert,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  TextInput,
+  TextInputProps,
+  TouchableOpacity,
+} from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { supabase } from "../../lib/supabase";
 import { UserAttributes } from "@supabase/supabase-js";
+
+import { supabase } from "../../lib/supabase";
+import { styles } from "../../components/styles/profile";
+import AppText from "@/components/appText";
+import Logo from "@/components/logo";
+import NavigationBar from "@/components/navigationBar";
 import { colors } from "@/styles/colors";
+import { getInitials } from "@/utils/chat";
+
+type IconName = keyof typeof MaterialIcons.glyphMap;
+
+const USER_TYPE_LABEL: Record<string, string> = {
+  landLord: "Proprietário",
+  student: "Estudante",
+};
+
+// ================================================================================ //
+//                                  SMALL COMPONENTS
+// ================================================================================ //
+
+function InfoRow({ icon, label, value, last }: { icon: IconName; label: string; value: string; last?: boolean }) {
+  return (
+    <View style={[styles.row, !last && styles.rowDivider]}>
+      <View style={styles.iconBox}>
+        <MaterialIcons name={icon} size={18} color={colors.primary} />
+      </View>
+      <View style={styles.rowTextBox}>
+        <AppText style={styles.rowLabel}>{label}</AppText>
+        <AppText style={styles.rowValue}>{value}</AppText>
+      </View>
+    </View>
+  );
+}
+
+function MenuRow({ icon, label, onPress, last }: { icon: IconName; label: string; onPress: () => void; last?: boolean }) {
+  return (
+    <TouchableOpacity style={[styles.row, !last && styles.rowDivider]} onPress={onPress} activeOpacity={0.7}>
+      <View style={styles.iconBox}>
+        <MaterialIcons name={icon} size={18} color={colors.primary} />
+      </View>
+      <AppText style={styles.menuLabel}>{label}</AppText>
+      <MaterialIcons name="chevron-right" size={20} color={colors.textMuted} />
+    </TouchableOpacity>
+  );
+}
+
+type FieldProps = TextInputProps & { label: string; icon: IconName };
+
+function Field({ label, icon, multiline, ...rest }: FieldProps) {
+  return (
+    <View style={styles.field}>
+      <AppText style={styles.fieldLabel}>{label}</AppText>
+      <View style={[styles.fieldBox, multiline && styles.fieldBoxMultiline]}>
+        <MaterialIcons
+          name={icon}
+          size={20}
+          color={colors.textMuted}
+          style={multiline ? { marginTop: 12 } : undefined}
+        />
+        <TextInput
+          style={[styles.fieldInput, multiline && styles.fieldInputMultiline]}
+          placeholderTextColor={colors.textMuted}
+          multiline={multiline}
+          {...rest}
+        />
+      </View>
+    </View>
+  );
+}
+
+// ================================================================================ //
+//                                       SCREEN
+// ================================================================================ //
 
 export default function ProfileRenter() {
   const [userType, setUserType] = useState<string | null>(null);
@@ -17,6 +93,7 @@ export default function ProfileRenter() {
   const [descricao, setDescricao] = useState("");
 
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   const [name, setName] = useState("");
@@ -26,15 +103,45 @@ export default function ProfileRenter() {
   const [confirmarSenha, setConfirmarSenha] = useState("");
 
   const router = useRouter();
+  const isLandlord = userType === "landLord";
 
-   const handleLogout = () => {
+  // ================================================================================ //
+  //                              UPDATE WHEN HAS CHANGE
+  // ================================================================================ //
+
+  const loadUser = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (user) {
+      setName(user.user_metadata.displayName || '');
+      setEmail(user.email || 'E-mail não encontrado');
+      setUserType(user.user_metadata.userType || null);
+      setCelular(user.phone || "");
+      setDescricao(user.user_metadata.descricao || "");
+    }
+  }, []);
+
+  useEffect(() => {
+    const init = async () => {
+      setLoading(true);
+      await loadUser();
+      setLoading(false);
+    };
+
+    init();
+  }, [loadUser]);
+
+  // ================================================================================ //
+  //                                     HANDLERS 
+  // ================================================================================ //
+
+  const handleLogout = () => {
     Alert.alert(
       "Sair da Conta", 
       "Você tem certeza que deseja se desconectar?",
       [
         {
           text: "Cancelar",
-          onPress: () => console.log("Logout cancelado pelo usuário."),
           style: "cancel"
         },
         { 
@@ -54,27 +161,19 @@ export default function ProfileRenter() {
     );
   };
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      setLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (user) {
-        setName(user.user_metadata.displayName || '');
-        setEmail(user.email || 'E-mail não encontrado');
-        setUserType(user.user_metadata.userType || null);
-        setCelular(user.phone || "");
-        setDescricao(user.user_metadata.descricao  || "");
-      }
-      setLoading(false);
-    };
-
-    fetchUserData();
-  }, []);
+  const clearPasswords = () => {
+    setSenhaAntiga("");
+    setSenha("");
+    setConfirmarSenha("");
+  };
 
   const handleSave = async () => {
+    if (!name.trim()) {
+      Alert.alert("Atenção", "Informe seu nome.");
+      return;
+    }
     if (!senhaAntiga) {
-      Alert.alert("Atenção", "Por favor, informe sua senha antiga para salvar as alterações.");
+      Alert.alert("Atenção", "Por favor, informe sua senha atual para salvar as alterações.");
       return;
     }
     if (senha && senha !== confirmarSenha) {
@@ -82,9 +181,9 @@ export default function ProfileRenter() {
       return;
     }
 
-    setLoading(true);
+    setSaving(true);
 
-      try {
+    try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || !user.email) throw new Error("Não foi possível identificar o usuário.");
 
@@ -94,7 +193,7 @@ export default function ProfileRenter() {
       });
 
       if (signInError) {
-        throw new Error("A senha antiga está incorreta.");
+        throw new Error("A senha atual está incorreta.");
       }
 
       const authUpdateData: UserAttributes = {};
@@ -107,8 +206,18 @@ export default function ProfileRenter() {
         authUpdateData.email = email;
       }
 
-      if (name !== user.user_metadata.displayName) {
-        authUpdateData.data = { displayName: name }
+      const metadataChanges: Record<string, string> = {};
+
+      if (name.trim() !== (user.user_metadata.displayName || "")) {
+        metadataChanges.displayName = name.trim();
+      }
+
+      if (isLandlord && descricao !== (user.user_metadata.descricao || "")) {
+        metadataChanges.descricao = descricao;
+      }
+
+      if (Object.keys(metadataChanges).length > 0) {
+        authUpdateData.data = metadataChanges;
       }
 
       if (Object.keys(authUpdateData).length > 0) {
@@ -116,6 +225,7 @@ export default function ProfileRenter() {
         if (authError) throw authError;
       }
 
+      await loadUser();
       Alert.alert("Sucesso", "Perfil atualizado!");
       setIsEditing(false);
 
@@ -126,126 +236,232 @@ export default function ProfileRenter() {
       }
 
     } finally {
-      setSenhaAntiga("");
-      setSenha("");
-      setConfirmarSenha("");
-      setLoading(false);
+      clearPasswords();
+      setSaving(false);
     }
-
   };
 
   const handleCancel = async () => {
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      setName(user.user_metadata.displayName || 'Sem Nome');
-      setEmail(user.email || 'E-mail não encontrado');
-    }
-    
-    setSenhaAntiga("");
-    setSenha("");
-    setConfirmarSenha(""); 
-    
+    clearPasswords();
+    await loadUser(); // descarta o que foi digitado
     setIsEditing(false);
   };
 
+  // ================================================================================ //
+  //                                     FRONT-END 
+  // ================================================================================ //
+
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color={colors.backgroundGreen}/>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
 
   return (
-    <>
-      <View style={styles.backgroundImageContainer}>
-        <Image
-          source={require("@/assets/paper_texture.png")}
-          style={styles.paperTexture}
-        />
+    <View style={styles.screen}>
+      <View style={styles.header}>
+        <View style={styles.headerTopRow}>
+          <Logo />
+          <View style={styles.headerIcons}>
+            <TouchableOpacity style={styles.iconButton} onPress={() => router.push("/chatHub")}>
+              <MaterialIcons name="chat-bubble-outline" size={20} color={colors.navy} />
+              <View style={styles.iconDot} />
+            </TouchableOpacity>
+            {/* TODO: apontar para a tela de notificações quando existir */}
+            <TouchableOpacity style={styles.iconButton}>
+              <MaterialIcons name="notifications-none" size={20} color={colors.navy} />
+              <View style={styles.iconDot} />
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
+
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1, paddingBottom: 120 }}>
-          <View style={styles.titleContainer}>
-            <AppText style={styles.title}>{isEditing ? "EDITAR PERFIL" : 'PERFIL'}</AppText>
-          </View>
+        <ScrollView
+          style={styles.content}
+          contentContainerStyle={styles.contentContainer}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {isEditing ? (
+            <>
+              <AppText style={styles.sectionTitle}>Editar perfil</AppText>
 
-          <View style={styles.inputContainer}>
-            
-            <Input 
-              placeholder="Nome" 
-              value={name} 
-              onChangeText={setName} 
-              editable={isEditing}
-              icon='person' 
-            />
-            
-            <Input
-              placeholder="Email"
-              value={email}
-              onChangeText={setEmail}
-              editable={isEditing}
-              icon='email'
-            />
+              <View style={styles.section}>
+                <View style={[styles.card, styles.formGap]}>
+                  <Field
+                    label="Nome"
+                    icon="person"
+                    value={name}
+                    onChangeText={setName}
+                    placeholder="Seu nome"
+                  />
+                  <Field
+                    label="E-mail"
+                    icon="email"
+                    value={email}
+                    onChangeText={setEmail}
+                    placeholder="voce@email.com"
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                  />
+                  {isLandlord && (
+                    <Field
+                      label="Descrição"
+                      icon="notes"
+                      value={descricao}
+                      onChangeText={setDescricao}
+                      placeholder="Conte um pouco sobre você"
+                      multiline
+                    />
+                  )}
+                </View>
+              </View>
 
-            {isEditing && (
-              <Input
-                placeholder="Senha Antiga"
-                value={senhaAntiga}
-                onChangeText={setSenhaAntiga}
-                secureTextEntry
-                editable={isEditing}
-                icon="lock"
-              />
-            )}
-            {isEditing && (
-              <Input
-                placeholder="Nova Senha"
-                value={senha}
-                onChangeText={setSenha}
-                secureTextEntry
-                editable={isEditing} 
-                icon="lock"
-              />
-            )}
-            {isEditing && (
-              <Input
-                placeholder="Confirmar Nova Senha"
-                value={confirmarSenha}
-                onChangeText={setConfirmarSenha}
-                secureTextEntry
-                icon="lock"
-              />
-            )}
-            {userType === "owner" && (
-              <>
-                <Input title="Celular" value={celular} onChangeText={setCelular} editable={isEditing} />
-                <Input title="Descrição" value={descricao} onChangeText={setDescricao} editable={isEditing} />
-              </>
-            )}
-          </View>
+              <View style={styles.section}>
+                <AppText style={styles.sectionTitle}>Segurança</AppText>
+                <View style={[styles.card, styles.formGap]}>
+                  <Field
+                    label="Senha atual"
+                    icon="lock"
+                    value={senhaAntiga}
+                    onChangeText={setSenhaAntiga}
+                    placeholder="Obrigatória para salvar"
+                    secureTextEntry
+                    autoCapitalize="none"
+                  />
+                  <Field
+                    label="Nova senha"
+                    icon="lock-outline"
+                    value={senha}
+                    onChangeText={setSenha}
+                    placeholder="Deixe em branco para manter"
+                    secureTextEntry
+                    autoCapitalize="none"
+                  />
+                  <Field
+                    label="Confirmar nova senha"
+                    icon="lock-outline"
+                    value={confirmarSenha}
+                    onChangeText={setConfirmarSenha}
+                    placeholder="Repita a nova senha"
+                    secureTextEntry
+                    autoCapitalize="none"
+                  />
+                  <AppText style={styles.helperText}>
+                    Por segurança, confirme sua senha atual para salvar qualquer alteração.
+                  </AppText>
+                </View>
+              </View>
 
-          <View style={styles.buttonsContainer}>
-            {isEditing ? (
-              <>
-                <SquareButton name="Cancelar" variant="darkGrayS" onPress={handleCancel} />
-                <SquareButton name="Salvar" variant="greenS" onPress={handleSave} />
-              </>
-            ) : (
-              <>
-                <SquareButton name="Logout" variant="darkGrayS" onPress={handleLogout} />
-                <SquareButton name="Editar" variant="greenS" onPress={() => setIsEditing(true)} />
-              </>
-            )}
-          </View>
+              <View style={styles.buttonsRow}>
+                <TouchableOpacity
+                  style={[styles.outlineButton, styles.buttonFlex]}
+                  onPress={handleCancel}
+                  disabled={saving}
+                >
+                  <AppText style={styles.outlineButtonText}>Cancelar</AppText>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.primaryButton, styles.buttonFlex]}
+                  onPress={handleSave}
+                  disabled={saving}
+                >
+                  {saving ? (
+                    <ActivityIndicator color={colors.white} />
+                  ) : (
+                    <AppText style={styles.primaryButtonText}>Salvar</AppText>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </>
+          ) : (
+            <>
+              <View style={styles.heroCard}>
+                <View style={styles.avatar}>
+                  <AppText style={styles.avatarText}>{getInitials(name || "?")}</AppText>
+                </View>
+                <AppText style={styles.heroName}>{name || "Sem nome"}</AppText>
+                <AppText style={styles.heroEmail}>{email}</AppText>
+                {!!userType && (
+                  <View style={styles.typeChip}>
+                    <AppText style={styles.typeChipText}>
+                      {USER_TYPE_LABEL[userType] ?? userType}
+                    </AppText>
+                  </View>
+                )}
+              </View>
+
+              <View style={styles.section}>
+                <AppText style={styles.sectionTitle}>Minha conta</AppText>
+                <View style={styles.card}>
+                  <InfoRow icon="person" label="Nome" value={name || "Não informado"} />
+                  <InfoRow
+                    icon="email"
+                    label="E-mail"
+                    value={email}
+                    last={!celular && !(isLandlord && descricao)}
+                  />
+                  {!!celular && (
+                    <InfoRow
+                      icon="phone"
+                      label="Telefone"
+                      value={celular}
+                      last={!(isLandlord && descricao)}
+                    />
+                  )}
+                  {isLandlord && !!descricao && (
+                    <InfoRow icon="notes" label="Descrição" value={descricao} last />
+                  )}
+                </View>
+              </View>
+
+              <View style={styles.section}>
+                <AppText style={styles.sectionTitle}>Atalhos</AppText>
+                <View style={styles.card}>
+                  <MenuRow
+                    icon="chat-bubble-outline"
+                    label="Minhas conversas"
+                    onPress={() => router.push("/chatHub")}
+                    last={false}
+                  />
+                  <MenuRow
+                    icon="favorite-border"
+                    label="Meus favoritos"
+                    onPress={() => router.push("/favorites")}
+                    last={!isLandlord}
+                  />
+                  {isLandlord && (
+                    <MenuRow
+                      icon="campaign"
+                      label="Meus anúncios"
+                      onPress={() => router.push("/myPosts")}
+                      last
+                    />
+                  )}
+                </View>
+              </View>
+
+              <View style={{ gap: 10 }}>
+                <TouchableOpacity style={styles.primaryButton} onPress={() => setIsEditing(true)}>
+                  <AppText style={styles.primaryButtonText}>Editar perfil</AppText>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.dangerButton} onPress={handleLogout}>
+                  <MaterialIcons name="logout" size={18} color={colors.danger} />
+                  <AppText style={styles.dangerButtonText}>Sair da conta</AppText>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
         </ScrollView>
-
       </KeyboardAvoidingView>
+
       <NavigationBar />
-    </>
+    </View>
   );
 }

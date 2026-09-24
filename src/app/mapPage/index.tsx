@@ -25,8 +25,6 @@ interface Imovel {
   tipoMoradiaEspecifico?: string;
 }
 
-// initialRegion (e não region): assim o mapa não "volta" para o ponto inicial
-// toda vez que a tela re-renderiza (ex.: ao tocar em um marcador).
 const INITIAL_REGION = {
   latitude: -21.7731029,
   longitude: -43.3705765,
