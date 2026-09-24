@@ -63,6 +63,10 @@ export const styles = StyleSheet.create({
     paddingBottom: 100,
   },
 
+  categoriesRow: {
+    marginBottom: 20,
+  },
+
   sectionHeaderRow: {
     flexDirection: "row",
     alignItems: "center",

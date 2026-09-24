@@ -5,7 +5,9 @@ import { styles } from "../../components/styles/favorites";
 import AppText from "@/components/appText";
 import Logo from "@/components/logo";
 import NavigationBar from "@/components/navigationBar";
+import Categories from "@/components/categories";
 import PostBlock from "@/components/postBlock";
+import { categories } from "@/utils/categories";
 import { Imovel } from "@/utils/Imovel";
 import { supabase } from "@/lib/supabase";
 import { router } from "expo-router";
@@ -22,6 +24,7 @@ export default function Favorites() {
   const [posts, setPosts] = useState<FavoritesState>({ all: [] });
   const [userId, setUserId] = useState('');
   const [loading, setLoading] = useState(true);
+  const [selectedCategoryId, setSelectedCategoryId] = useState('0'); // "0" = Todos
 
   // ================================================================================ //
   //                              UPDATE WHEN HAS CHANGE
@@ -128,7 +131,17 @@ export default function Favorites() {
     );
   }
 
-  const total = posts.all.length;
+  const selectedCategoryName = categories.find(
+    (category) => category.id === selectedCategoryId
+  )?.name;
+
+  const filteredPosts =
+    selectedCategoryId === "0"
+      ? posts.all
+      : posts.all.filter((post) => post.tipoMoradiaEspecifico === selectedCategoryName);
+
+  const hasFavorites = posts.all.length > 0;
+  const total = filteredPosts.length;
 
   return (
     <View style={styles.screen}>
@@ -154,6 +167,13 @@ export default function Favorites() {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
+        <View style={styles.categoriesRow}>
+          <Categories
+            selectedCategoryId={selectedCategoryId}
+            onCategorySelect={setSelectedCategoryId}
+          />
+        </View>
+
         <View style={styles.sectionHeaderRow}>
           <AppText style={styles.sectionTitle}>Favoritos</AppText>
           {total > 0 && (
@@ -164,7 +184,7 @@ export default function Favorites() {
         </View>
 
         {total > 0 
-          ? posts.all.map((favorite) => (
+          ? filteredPosts.map((favorite) => (
             <PostBlock
               key={favorite.id}
               onPress={() => router.push(`/pvuLandLord/${favorite.id}`)}
@@ -187,9 +207,13 @@ export default function Favorites() {
               <View style={styles.emptyIconBox}>
                 <MaterialIcons name="favorite-border" size={28} color={colors.primary} />
               </View>
-              <AppText style={styles.emptyTitle}>Nenhum favorito ainda</AppText>
+              <AppText style={styles.emptyTitle}>
+                {hasFavorites ? "Nenhum favorito nessa categoria" : "Nenhum favorito ainda"}
+              </AppText>
               <AppText style={styles.emptyText}>
-                Toque no coração de um anúncio para salvá-lo aqui.
+                {hasFavorites
+                  ? "Escolha outra categoria para ver seus outros favoritos."
+                  : "Toque no coração de um anúncio para salvá-lo aqui."}
               </AppText>
             </View>
           )
