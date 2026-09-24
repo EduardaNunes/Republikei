@@ -1,5 +1,4 @@
 import { Pressable, PressableProps } from "react-native";
-import { colors } from "@/styles/colors";
 import { styles } from "./styles";
 import AppText from "../appText";
 
@@ -10,14 +9,12 @@ type Props = PressableProps & {
 };
 
 export function Category({ name, isSelected, ...rest }: Props) {
-  const backgroundColor = isSelected ? colors.backgroundGreen : colors.darkGray;
-
   return (
     <Pressable
-      style={[styles.container, { backgroundColor }]}
+      style={[styles.container, isSelected && styles.containerActive]}
       {...rest}
     >
-      <AppText style={[styles.name, { color: colors.white }]}>
+      <AppText style={[styles.name, isSelected ? styles.nameActive : styles.nameInactive]}>
         {name}
       </AppText>
     </Pressable>

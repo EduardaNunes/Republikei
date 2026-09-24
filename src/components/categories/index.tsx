@@ -1,5 +1,5 @@
 import { FlatList } from "react-native";
-import { styles } from "./styles";
+import { styles } from "./styles_old";
 import { categories } from "@/utils/categories";
 import { Category } from "@/components/category";
 //import { useState } from "react";

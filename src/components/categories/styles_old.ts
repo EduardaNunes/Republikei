@@ -2,11 +2,12 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    height: 32,
-    maxHeight: 32,
+    height: 40,
+    maxHeight: 40,
+    marginVertical:20,
   },
   content: {
-    gap: 10,
-    paddingRight: 4,
+    gap: 8,
+    paddingHorizontal: 24,
   },
 });

@@ -7,6 +7,9 @@ export const styles = StyleSheet.create({
     width: width,
     height: width * 0.6,
   },
+  scroll: {
+    flex: 1,
+  },
   image: {
     width: width,
     height: "100%",
@@ -14,16 +17,18 @@ export const styles = StyleSheet.create({
   pagination: {
     flexDirection: "row",
     position: "absolute",
-    bottom: 10,
-    alignSelf: "center",
+    bottom: 16,
+    left: 20,
   },
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginHorizontal: 4,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    marginHorizontal: 3,
   },
   activeDot: {
+    width: 22,
+    borderRadius: 3,
     backgroundColor: "white",
   },
   inactiveDot: {

@@ -1,13 +1,16 @@
 import { View, Image, TouchableOpacity } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "./styles";
-import StatusPost from "../statusPost";
 import AppText from "../appText";
-import StarRating from "../starRating";
+import { colors } from "@/styles/colors";
 
 type PostBlockProps = {
   image: any;
   title: string;
   price: number;
+  type?: string;
+  address?: string;
+  tags?: string[];
   statusType?: "visibility" | "favorite";
   onPress?: () => void;
   isActive: boolean;
@@ -20,6 +23,9 @@ export default function PostBlock({
   image,
   title,
   price,
+  type,
+  address,
+  tags = [],
   statusType,
   onPress,
   isActive,
@@ -27,34 +33,74 @@ export default function PostBlock({
   avaliacaoMedia = 0,
   totalAvaliacoes = 0,
 }: PostBlockProps) {
+  const iconOn = statusType === "visibility" ? "visibility" : "favorite";
+  const iconOff = statusType === "visibility" ? "visibility-off" : "favorite-border";
+  const safeTags = tags ?? [];
+
   return (
     <TouchableOpacity
-      style={styles.containerPreview}
+      style={styles.container}
       onPress={onPress}
       disabled={!onPress}
+      activeOpacity={0.9}
     >
-      {statusType && (
-        <StatusPost
-          style={styles.status}
-          type={statusType}
-          isActive={isActive}
-          onPress={onStatusPress}
-        />
-      )}
+      <View style={styles.imageWrapper}>
+        <Image source={image} style={styles.image} />
 
-      <Image source={image} style={styles.imagePreview} />
-      <AppText style={styles.title}>{title}</AppText>
+        {statusType && (
+          <TouchableOpacity style={styles.favoriteButton} onPress={onStatusPress}>
+            <MaterialIcons
+              name={isActive ? iconOn : iconOff}
+              size={18}
+              color={isActive ? colors.primary : colors.textMuted}
+            />
+          </TouchableOpacity>
+        )}
 
-      <View style={styles.ratingRow}>
-        <StarRating rating={avaliacaoMedia} readOnly size={14} />
-        <AppText style={styles.ratingText}>
-          {totalAvaliacoes > 0
-            ? `${avaliacaoMedia.toFixed(1)} (${totalAvaliacoes})`
-            : "Sem avaliações"}
-        </AppText>
+        <View style={styles.priceBadge}>
+          <AppText style={styles.priceBadgeText}>R$ {price}/mês</AppText>
+        </View>
+
+        {!!type && (
+          <View style={styles.typeBadge}>
+            <AppText style={styles.typeBadgeText}>{type}</AppText>
+          </View>
+        )}
       </View>
 
-      <AppText style={styles.price}>R$ {price}/mês</AppText>
+      <View style={styles.content}>
+        <AppText style={styles.title}>{title}</AppText>
+
+        {!!address && (
+          <View style={styles.addressRow}>
+            <MaterialIcons name="place" size={13} color={colors.textMuted} />
+            <AppText style={styles.addressText} numberOfLines={1}>
+              {address}
+            </AppText>
+          </View>
+        )}
+
+        {safeTags.length > 0 && (
+          <View style={styles.tagsRow}>
+            {safeTags.slice(0, 3).map((tag) => (
+              <View key={tag} style={styles.tag}>
+                <AppText style={styles.tagText}>{tag}</AppText>
+              </View>
+            ))}
+          </View>
+        )}
+
+        <View style={styles.footerRow}>
+          <View style={styles.ratingRow}>
+            <MaterialIcons name="star" size={14} color={colors.star} />
+            <AppText style={styles.ratingValue}>{avaliacaoMedia.toFixed(1)}</AppText>
+            <AppText style={styles.ratingTotal}>
+              {totalAvaliacoes > 0 ? `(${totalAvaliacoes} avaliações)` : "Sem avaliações"}
+            </AppText>
+          </View>
+          <AppText style={styles.viewDetails}>Ver detalhes →</AppText>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 }

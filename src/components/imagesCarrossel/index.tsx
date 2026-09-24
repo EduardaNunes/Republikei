@@ -17,7 +17,8 @@ interface ImageCarouselProps {
   autoPlay?: boolean;
   autoPlayInterval?: number;
   showPagination?: boolean;
-  style?: object
+  style?: object;
+  height?: number; // altura fixa do carrossel (evita depender de "100%")
 }
 
 export function ImageCarousel({
@@ -26,6 +27,7 @@ export function ImageCarousel({
   autoPlayInterval = 3000,
   showPagination = true,
   style,
+  height = width * 0.6,
 }: ImageCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -58,9 +60,10 @@ export function ImageCarousel({
   };
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, { height }, style]}>
       <ScrollView
         ref={scrollViewRef}
+        style={{ height }}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
@@ -71,7 +74,7 @@ export function ImageCarousel({
           <Image
             key={index}
             source={imageSource}
-            style={[styles.image, { width: width }]}
+            style={{ width, height }}
             resizeMode="cover"
           />
         ))}

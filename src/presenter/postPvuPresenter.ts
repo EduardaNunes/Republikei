@@ -29,8 +29,8 @@ export async function getPropertyDetails(propertyId: string) {
     ownerInfo: {
       type: owner?.type || null,
       name: owner?.name || '',
-      phone: owner?.email || 'E-mail não encontrado',
-      email: owner?.phone || '(00) 00000-0000',
+      phone: owner?.phone || '(00) 00000-0000',
+      email: owner?.email || 'E-mail não encontrado',
       userIsOwner: user?.id === owner?.id
     }
   };
