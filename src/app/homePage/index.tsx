@@ -22,6 +22,7 @@ export default function HomePage() {
     userId,
     handlePostPress,
     handleSearchPress,
+    handleChatPress,
     setSelectedCategoryId,
     fetchPosts,
   } = useHomePagePresenter();
@@ -44,11 +45,11 @@ export default function HomePage() {
         <View style={styles.headerTopRow}>
           <Logo />
           <View style={styles.headerIcons}>
-            {/* TODO: apontar para as telas de chat/notificações quando existirem */}
-            <TouchableOpacity style={styles.iconButton}>
+            <TouchableOpacity style={styles.iconButton} onPress={handleChatPress}>
               <MaterialIcons name="chat-bubble-outline" size={20} color={colors.navy} />
               <View style={styles.iconDot} />
             </TouchableOpacity>
+            {/* TODO: apontar para as telas de chat/notificações quando existirem */}
             <TouchableOpacity style={styles.iconButton}>
               <MaterialIcons name="notifications-none" size={20} color={colors.navy} />
               <View style={styles.iconDot} />

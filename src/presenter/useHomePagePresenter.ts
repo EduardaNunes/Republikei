@@ -143,6 +143,10 @@ export function useHomePagePresenter() {
     router.push("/searchPage");
   };
 
+  const handleChatPress = () => {
+    router.push("/chatHub");
+  };
+
   // ================================================================================ //
   //                                PRESENTER RETURN
   // ================================================================================ //
@@ -158,6 +162,7 @@ export function useHomePagePresenter() {
     setSelectedCategoryId,
     handlePostPress,
     handleSearchPress,
+    handleChatPress,
     fetchPosts
   };
 }
