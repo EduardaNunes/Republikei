@@ -7,9 +7,10 @@ import { Category } from "@/components/category";
 type CategoriesProps = {
   selectedCategoryId: string;
   onCategorySelect: (id: string) => void;
+  compact?: boolean; // sem margem vertical, para usar dentro de headers
 }
 
-export default function Categories({ selectedCategoryId, onCategorySelect }: CategoriesProps) {
+export default function Categories({ selectedCategoryId, onCategorySelect, compact = false }: CategoriesProps) {
   //const [selectedCategoryId, setSelectedCategoryId] = useState<string>("0"); 
 
   const handleSelect = (id: string) => {
@@ -30,7 +31,7 @@ export default function Categories({ selectedCategoryId, onCategorySelect }: Cat
         />
       )}
       horizontal
-      style={styles.container}
+      style={[styles.container, compact && { marginVertical: 0, height: 32, maxHeight: 32 }]}
       contentContainerStyle={styles.content}
       showsHorizontalScrollIndicator={false}
     />

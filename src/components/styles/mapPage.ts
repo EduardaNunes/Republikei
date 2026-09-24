@@ -1,75 +1,154 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet, Dimensions, Platform } from "react-native";
 import { colors } from "@/styles/colors";
-import { fontSize } from "@/styles/fontSize";
 
-const { width: screenWidth, height: screenHeight} = Dimensions.get("window");
+const { width: screenWidth } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
-
-  // Background Image
-  backgroundImageContainer:{
+  screen: {
     flex: 1,
     width: screenWidth,
-    position: 'absolute',
-    zIndex: -1,
-    backgroundColor: colors.white
-  },
-  paperTexture: {
-    flex: 1,
-    top: -50,
-    width: screenWidth * 4,
-    resizeMode: 'contain', 
-    alignSelf: 'center', 
+    backgroundColor: colors.backgroundLight,
   },
 
-  // Containers
-  container: {
-    flex: 1,
-    width: screenWidth,
-    flexDirection: "column",
+  // Header (mesmo padrão da home e dos favoritos)
+  header: {
+    backgroundColor: colors.white,
+    paddingHorizontal: 20,
+    paddingTop: Platform.OS === "ios" ? 12 : 24,
+    paddingBottom: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderLight,
   },
+  headerTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  headerIcons: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  iconButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.backgroundLight,
+  },
+  iconDot: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.primary,
+  },
+  categoriesRow: {
+    marginTop: 14,
+  },
+
+  // Mapa
   mapContainer: {
     flex: 1,
-    width: '100%',
-    overflow: 'hidden',
+    width: "100%",
+    overflow: "hidden",
+  },
+  resultsPill: {
+    position: "absolute",
+    top: 12,
+    left: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 20,
+    backgroundColor: colors.white,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  resultsPillText: {
+    color: colors.navy,
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  loadingBox: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.white,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 4,
   },
 
-  // Calllout
+  // Card do imóvel selecionado
   calloutContainer: {
-    position: 'absolute',
-    bottom: 90,
-    left: '5%',
-    width: '90%',
-    backgroundColor: 'white',
-    borderRadius: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
+    position: "absolute",
+    bottom: 84,
+    left: 20,
+    right: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
     padding: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 5,
+    borderRadius: 16,
+    backgroundColor: colors.white,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 6,
   },
   calloutImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 10,
-    backgroundColor: '#eee',
+    width: 84,
+    height: 84,
+    borderRadius: 12,
+    backgroundColor: colors.old_gray[100],
   },
   calloutTextContainer: {
     flex: 1,
-    marginLeft: 10,
+    gap: 4,
+  },
+  calloutTypeBadge: {
+    alignSelf: "flex-start",
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 20,
+    backgroundColor: colors.primaryLight,
+  },
+  calloutTypeBadgeText: {
+    color: colors.primary,
+    fontSize: 11,
+    fontWeight: "600",
   },
   calloutTitle: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    color: colors.darkGray,
+    color: colors.navy,
+    fontSize: 15,
+    fontWeight: "700",
   },
   calloutPrice: {
+    color: colors.primary,
     fontSize: 14,
-    color: colors.backgroundGreen,
-    marginTop: 5,
+    fontWeight: "700",
   },
-  
+  calloutLink: {
+    color: colors.primary,
+    fontSize: 12,
+    fontWeight: "600",
+  },
 });
