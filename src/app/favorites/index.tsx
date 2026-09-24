@@ -1,13 +1,16 @@
-import { View, ScrollView, Alert, ActivityIndicator, Image } from "react-native";
+import { View, ScrollView, Alert, ActivityIndicator, TouchableOpacity } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
 import { styles } from "../../components/styles/favorites";
 import AppText from "@/components/appText";
+import Logo from "@/components/logo";
 import NavigationBar from "@/components/navigationBar";
 import PostBlock from "@/components/postBlock";
 import { Imovel } from "@/utils/Imovel";
 import { supabase } from "@/lib/supabase";
 import { router } from "expo-router";
 import { postStatusPresenter } from "@/presenter/postStatusPresenter";
+import { avaliacaoPresenter } from "@/presenter/avaliacaoPresenter";
 import { colors } from "@/styles/colors";
 
 interface FavoritesState {
@@ -37,7 +40,17 @@ export default function Favorites() {
 
       const userFavoritePosts = await getUserFavoritePosts(user?.id || '');
       const formattedData = formatUserFavoritePosts(userFavoritePosts);
-      setPosts({ all: formattedData });
+
+      const ids = formattedData.map((post) => post.id);
+      const mediasMap = await avaliacaoPresenter.getMediaAvaliacoesPorImoveis(ids);
+
+      const dataWithRatings = formattedData.map((post) => ({
+        ...post,
+        avaliacaoMedia: mediasMap.get(post.id)?.media || 0,
+        totalAvaliacoes: mediasMap.get(post.id)?.total || 0,
+      }));
+
+      setPosts({ all: dataWithRatings });
 
     } catch (error: any) {
       console.error("Erro ao buscar favoritos:", error);
@@ -108,27 +121,49 @@ export default function Favorites() {
   // ================================================================================ //
   
   if (loading) {
-    return <ActivityIndicator color={colors.backgroundGreen}/>;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
   }
 
+  const total = posts.all.length;
+
   return (
-    <>
-      <ScrollView style={styles.container}
-        contentContainerStyle={{ alignItems: "center", gap: 20 }}
+    <View style={styles.screen}>
+      <View style={styles.header}>
+        <View style={styles.headerTopRow}>
+          <Logo />
+          <View style={styles.headerIcons}>
+            <TouchableOpacity style={styles.iconButton} onPress={() => router.push("/chatHub")}>
+              <MaterialIcons name="chat-bubble-outline" size={20} color={colors.navy} />
+              <View style={styles.iconDot} />
+            </TouchableOpacity>
+            {/* TODO: apontar para a tela de notificações quando existir */}
+            <TouchableOpacity style={styles.iconButton}>
+              <MaterialIcons name="notifications-none" size={20} color={colors.navy} />
+              <View style={styles.iconDot} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
       >
-
-        <View style={styles.backgroundImageContainer}>
-          <Image
-            source={require("@/assets/paper_texture.png")}
-            style={styles.paperTexture}
-          />
+        <View style={styles.sectionHeaderRow}>
+          <AppText style={styles.sectionTitle}>Favoritos</AppText>
+          {total > 0 && (
+            <AppText style={styles.sectionCount}>
+              {total} {total === 1 ? "imóvel" : "imóveis"}
+            </AppText>
+          )}
         </View>
 
-        <View style={styles.titleContainer}>
-          <AppText style={styles.title}>FAVORITOS</AppText>
-        </View>
-        
-        {posts.all.length > 0 
+        {total > 0 
           ? posts.all.map((favorite) => (
             <PostBlock
               key={favorite.id}
@@ -143,12 +178,25 @@ export default function Favorites() {
               statusType="favorite" 
               isActive={!!favorite.isFavorited}
               onStatusPress={() => onToggleFavorite(favorite)}
+              avaliacaoMedia={favorite.avaliacaoMedia}
+              totalAvaliacoes={favorite.totalAvaliacoes}
             />
           ))
-          : (<AppText style={styles.notFoundText}>Nenhum favorito para exibir</AppText>)
+          : (
+            <View style={styles.emptyContainer}>
+              <View style={styles.emptyIconBox}>
+                <MaterialIcons name="favorite-border" size={28} color={colors.primary} />
+              </View>
+              <AppText style={styles.emptyTitle}>Nenhum favorito ainda</AppText>
+              <AppText style={styles.emptyText}>
+                Toque no coração de um anúncio para salvá-lo aqui.
+              </AppText>
+            </View>
+          )
         }
       </ScrollView>
+
       <NavigationBar />
-    </>
+    </View>
   );
 }

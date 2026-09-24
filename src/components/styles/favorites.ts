@@ -1,59 +1,111 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet, Dimensions, Platform } from "react-native";
 import { colors } from "@/styles/colors";
 import { fontSize } from "@/styles/fontSize";
 
-const { width: screenWidth, height: screenHeight} = Dimensions.get("window");
+const { width: screenWidth } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
     width: screenWidth,
-    flexDirection: "column",
+    backgroundColor: colors.backgroundLight,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: colors.backgroundLight,
+  },
+
+  // Header (mesmo padrão da home)
+  header: {
+    backgroundColor: colors.white,
     paddingHorizontal: 20,
-    gap:10,
+    paddingTop: Platform.OS === "ios" ? 12 : 24,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderLight,
   },
-  postContainer: {
-    gap: 16,
-    marginBottom: 28,
-    flexDirection:"row",
-    flexWrap: "wrap",
-    alignItems:'center',
+  headerTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
-
+  },
+  headerIcons: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  iconButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.backgroundLight,
+  },
+  iconDot: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.primary,
   },
 
-  // Background Image
-  backgroundImageContainer:{
+  // Content
+  content: {
     flex: 1,
-    width: screenWidth,
-    position: 'absolute',
-    zIndex: -1,
-    backgroundColor: colors.white
   },
-  paperTexture: {
-    flex: 1,
-    top: -50,
-    width: screenWidth * 4,
-    resizeMode: 'contain', 
-    alignSelf: 'center', 
+  contentContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 100,
   },
 
-// Texts
-  title: {
-    color: colors.backgroundGreen,
-    fontSize: fontSize.title.big,
+  sectionHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    color: colors.navy,
+    fontSize: fontSize.text.big,
     fontWeight: "700",
   },
-  titleContainer: {
-    flexDirection: "row",
-    justifyContent:"flex-start",
+  sectionCount: {
+    color: colors.textMuted,
+    fontSize: fontSize.text.small,
+    fontWeight: "600",
+  },
+
+  // Estado vazio
+  emptyContainer: {
     alignItems: "center",
-    marginVertical: 28,
+    paddingVertical: 60,
+    paddingHorizontal: 40,
+    gap: 8,
   },
-  notFoundText: {
-    marginTop: 40,
-    color: colors.darkGray,
-    fontWeight: 'bold'
+  emptyIconBox: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: colors.primaryLight,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 8,
   },
-  
+  emptyTitle: {
+    color: colors.navy,
+    fontSize: fontSize.text.big - 4,
+    fontWeight: "700",
+    textAlign: "center",
+  },
+  emptyText: {
+    color: colors.textGray,
+    fontSize: 13,
+    lineHeight: 20,
+    textAlign: "center",
+  },
 });
