@@ -12,7 +12,6 @@ type Tab = {
   label: string;
   route:
     | "/homePage"
-    | "/searchPage"
     | "/mapPage"
     | "/favorites"
     | "/profileRenter"
@@ -42,10 +41,12 @@ export default function NavigationBar() {
 
   const isLandlord = userType === "landLord";
 
+  // A pesquisa deixou de ser uma aba: os filtros avançados abrem pelo ícone
+  // de filtro na home e nos favoritos. Só proprietários têm a aba "Anunciar".
   const tabs: Tab[] = [
-    isLandlord
-      ? { key: "search", label: "Anunciar", route: "/myPosts", iconOn: "campaign", iconOff: "campaign" }
-      : { key: "search", label: "Buscar", route: "/searchPage", iconOn: "search", iconOff: "search" },
+    ...(isLandlord
+      ? [{ key: "posts", label: "Anunciar", route: "/myPosts", iconOn: "campaign", iconOff: "campaign" } as Tab]
+      : []),
     { key: "map", label: "Mapa", route: "/mapPage", iconOn: "map", iconOff: "map" },
     { key: "home", label: "Início", route: "/homePage", iconOn: "home", iconOff: "home" },
     { key: "favorites", label: "Favoritos", route: "/favorites", iconOn: "favorite", iconOff: "favorite-border" },

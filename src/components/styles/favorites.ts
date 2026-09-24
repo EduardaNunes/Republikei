@@ -64,7 +64,13 @@ export const styles = StyleSheet.create({
   },
 
   categoriesRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
     marginBottom: 20,
+  },
+  categoriesList: {
+    flex: 1,
   },
 
   sectionHeaderRow: {
@@ -77,6 +83,16 @@ export const styles = StyleSheet.create({
     color: colors.navy,
     fontSize: fontSize.text.big,
     fontWeight: "700",
+  },
+  sectionRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  clearLink: {
+    color: colors.primary,
+    fontSize: fontSize.text.small,
+    fontWeight: "600",
   },
   sectionCount: {
     color: colors.textMuted,

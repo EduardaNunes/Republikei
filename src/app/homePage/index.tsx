@@ -5,8 +5,8 @@ import AppText from "@/components/appText";
 import Logo from "@/components/logo";
 import NavigationBar from "@/components/navigationBar";
 import Categories from "@/components/categories";
+import FilterButton from "@/components/filterButton";
 import PostBlock from "@/components/postBlock";
-import Input from "@/components/input";
 import { MaterialIcons } from "@expo/vector-icons";
 import { colors } from "@/styles/colors";
 import { useHomePagePresenter } from "@/presenter/useHomePagePresenter";
@@ -20,9 +20,12 @@ export default function HomePage() {
     filteredPosts,
     selectedCategoryId,
     userId,
+    activeFilterCount,
+    hasActiveFilters,
     handlePostPress,
-    handleSearchPress,
     handleChatPress,
+    handleFilterPress,
+    handleClearFilters,
     setSelectedCategoryId,
     fetchPosts,
   } = useHomePagePresenter();
@@ -49,24 +52,12 @@ export default function HomePage() {
               <MaterialIcons name="chat-bubble-outline" size={20} color={colors.navy} />
               <View style={styles.iconDot} />
             </TouchableOpacity>
-            {/* TODO: apontar para as telas de chat/notificações quando existirem */}
+            {/* TODO: apontar para a tela de notificações quando existir */}
             <TouchableOpacity style={styles.iconButton}>
               <MaterialIcons name="notifications-none" size={20} color={colors.navy} />
               <View style={styles.iconDot} />
             </TouchableOpacity>
           </View>
-        </View>
-
-        <View style={styles.searchRow}>
-          <TouchableOpacity style={{ flex: 1 }} onPress={handleSearchPress} activeOpacity={0.8}>
-            <Input
-              title=""
-              placeholder="Pesquisar imóveis..."
-              autoCapitalize="none"
-              icon="search"
-              editable={false}
-            />
-          </TouchableOpacity>
         </View>
       </View>
 
@@ -76,17 +67,23 @@ export default function HomePage() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.categoriesRow}>
-          <Categories
-            selectedCategoryId={selectedCategoryId.toString()}
-            onCategorySelect={setSelectedCategoryId}
-          />
+          <View style={styles.categoriesList}>
+            <Categories
+              compact
+              selectedCategoryId={selectedCategoryId.toString()}
+              onCategorySelect={setSelectedCategoryId}
+            />
+          </View>
+          <FilterButton activeCount={activeFilterCount} onPress={handleFilterPress} />
         </View>
 
         <View style={styles.sectionHeaderRow}>
           <AppText style={styles.sectionTitle}>Vagas em Destaque</AppText>
-          <TouchableOpacity onPress={handleSearchPress}>
-            <AppText style={styles.sectionLink}>Ver todas</AppText>
-          </TouchableOpacity>
+          {hasActiveFilters && (
+            <TouchableOpacity onPress={handleClearFilters}>
+              <AppText style={styles.sectionLink}>Limpar filtros</AppText>
+            </TouchableOpacity>
+          )}
         </View>
 
         {filteredPosts.length > 0 ? (
@@ -130,7 +127,11 @@ export default function HomePage() {
             );
           })
         ) : (
-          <AppText style={styles.emptyText}>Nenhum anúncio encontrado.</AppText>
+          <AppText style={styles.emptyText}>
+            {hasActiveFilters
+              ? "Nenhum anúncio encontrado com esses filtros."
+              : "Nenhum anúncio encontrado."}
+          </AppText>
         )}
       </ScrollView>
 

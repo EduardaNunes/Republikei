@@ -1,11 +1,12 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "expo-router";
 import { Alert } from "react-native";
 import { Imovel } from "@/utils/Imovel";
 import { categories } from "@/utils/categories";
 import { avaliacaoPresenter } from "@/presenter/avaliacaoPresenter";
-import { User } from "@supabase/supabase-js";
+import { SearchContext } from "@/contexts/SearchContext";
+import { applySearchFilters, countActiveFilters } from "@/utils/searchFilters";
 
 interface postsState{
     all: Imovel[],
@@ -21,6 +22,10 @@ export function useHomePagePresenter() {
   // ================================================================================ //
 
   const router = useRouter();
+
+  // Filtros avançados da home (escolhidos na página de filtros)
+  const { filters, resetFilters } = useContext(SearchContext);
+  const homeFilters = filters.home;
 
   const [posts, setPosts] = useState<postsState>({
     all: [],
@@ -119,17 +124,20 @@ export function useHomePagePresenter() {
 
   useEffect(() => {fetchPosts()}, [fetchPosts]);
 
+  // Filtro rápido (categoria) + filtros avançados
   useEffect(() => {
-    const filtered = posts.all.filter(post => {
+    const byCategory = posts.all.filter(post => {
 
       if (posts.selectedCategory === "0") return true;
 
       const categoryName = categories.find(category => category.id === posts.selectedCategory)?.name;
       return post.tipoMoradiaEspecifico === categoryName;
     });
+
+    const filtered = applySearchFilters(byCategory, homeFilters);
     
     setPosts(prev => ({ ...prev, filtered }));
-  }, [posts.selectedCategory, posts.all]);
+  }, [posts.selectedCategory, posts.all, homeFilters]);
 
   // ================================================================================ //
   //                                    HANDLERS
@@ -139,13 +147,21 @@ export function useHomePagePresenter() {
     router.push(`/pvuLandLord/${postId}`);
   };
 
-  const handleSearchPress = () => {
-    router.push("/searchPage");
-  };
-
   const handleChatPress = () => {
     router.push("/chatHub");
   };
+
+  const handleFilterPress = () => {
+    router.push({ pathname: "/searchPage", params: { scope: "home" } });
+  };
+
+  const handleClearFilters = () => {
+    setSelectedCategoryId("0");
+    resetFilters("home");
+  };
+
+  const activeFilterCount = countActiveFilters(homeFilters);
+  const hasActiveFilters = posts.selectedCategory !== "0" || activeFilterCount > 0;
 
   // ================================================================================ //
   //                                PRESENTER RETURN
@@ -159,9 +175,12 @@ export function useHomePagePresenter() {
     selectedCategoryId: posts.selectedCategory,
     userType,
     userId,
+    activeFilterCount,
+    hasActiveFilters,
     setSelectedCategoryId,
     handlePostPress,
-    handleSearchPress,
+    handleFilterPress,
+    handleClearFilters,
     handleChatPress,
     fetchPosts
   };

@@ -46,11 +46,6 @@ export const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: colors.primary,
   },
-  searchRow: {
-    flexDirection: "row",
-    gap: 8,
-    marginTop: 12,
-  },
 
   // Content
   content: {
@@ -58,12 +53,19 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingTop: 20,
     paddingBottom: 100,
   },
 
+  // Filtros rápidos (categorias) + botão de filtros avançados
   categoriesRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
     marginBottom: 20,
+  },
+  categoriesList: {
+    flex: 1,
   },
 
   sectionHeaderRow: {

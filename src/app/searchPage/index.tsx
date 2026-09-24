@@ -1,16 +1,21 @@
 import { View, ScrollView, TouchableOpacity } from "react-native";
 import React, { useContext, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { styles } from "../../components/styles/searchPage";
 import AppText from "@/components/appText";
-import Logo from "@/components/logo";
-import NavigationBar from "@/components/navigationBar";
 import SelectableBlock from "@/components/selectableBlock";
-import { SearchContext } from "@/contexts/SearchContext";
+import {
+  INITIAL_SEARCH_STATE,
+  SearchContext,
+  SearchFilters,
+  SearchScope,
+} from "@/contexts/SearchContext";
 import { colors } from "@/styles/colors";
 import { tipoPadrao } from "@/utils/typesAux";
+import { countActiveFilters } from "@/utils/searchFilters";
 
 type IconName = keyof typeof MaterialIcons.glyphMap;
 
@@ -36,26 +41,32 @@ function FilterCard({ icon, title, children }: { icon: IconName; title: string; 
 //                                       SCREEN
 // ================================================================================ //
 
+// Página de filtros avançados. Não é mais uma aba: é aberta pelo ícone de filtro
+// da home e dos favoritos, e o parâmetro "scope" diz de qual delas veio.
 export default function SearchPage() {
 
   const router = useRouter();
-  const { filters, updateFilters, resetFilters } = useContext(SearchContext);
+  const insets = useSafeAreaInsets();
+
+  const { scope: scopeParam } = useLocalSearchParams<{ scope?: string }>();
+  const scope: SearchScope = scopeParam === "favorites" ? "favorites" : "home";
+
+  const { filters, applyFilters } = useContext(SearchContext);
+
+  // Rascunho: só vira filtro de verdade ao tocar em "Aplicar".
+  // Voltar sem aplicar descarta as mudanças.
+  const [draft, setDraft] = useState<SearchFilters>(filters[scope]);
 
   // O SelectableBlock guarda a seleção internamente e só lê o initialState
   // quando ele existe. Mudar essa key força o bloco a recomeçar do zero.
   const [resetKey, setResetKey] = useState(0);
 
-  const activeCount =
-    (filters.vacancyType ? 1 : 0) +
-    (filters.housingType ? 1 : 0) +
-    filters.characteristics.length +
-    (filters.isFurnished !== null ? 1 : 0) +
-    (filters.ranking ? 1 : 0);
+  const activeCount = countActiveFilters(draft);
 
   const furnishedInitialState: tipoPadrao | undefined =
-    filters.isFurnished === null
+    draft.isFurnished === null
       ? undefined
-      : filters.isFurnished
+      : draft.isFurnished
         ? { id: "question-sim", name: "Sim" }
         : { id: "question-nao", name: "Não" };
 
@@ -63,9 +74,18 @@ export default function SearchPage() {
   //                                     HANDLERS
   // ================================================================================ //
 
+  const updateDraft = (data: Partial<SearchFilters>) => {
+    setDraft((prev) => ({ ...prev, ...data }));
+  };
+
   const handleClear = () => {
-    resetFilters();
+    setDraft(INITIAL_SEARCH_STATE);
     setResetKey((prev) => prev + 1);
+  };
+
+  const handleApply = () => {
+    applyFilters(scope, draft);
+    router.back();
   };
 
   // ================================================================================ //
@@ -74,19 +94,19 @@ export default function SearchPage() {
 
   return (
     <View style={styles.screen}>
-      <View style={styles.header}>
-        <View style={styles.headerTopRow}>
-          <Logo />
-          <View style={styles.headerIcons}>
-            <TouchableOpacity style={styles.iconButton} onPress={() => router.push("/chatHub")}>
-              <MaterialIcons name="chat-bubble-outline" size={20} color={colors.navy} />
-              <View style={styles.iconDot} />
-            </TouchableOpacity>
-            {/* TODO: apontar para a tela de notificações quando existir */}
-            <TouchableOpacity style={styles.iconButton}>
-              <MaterialIcons name="notifications-none" size={20} color={colors.navy} />
-              <View style={styles.iconDot} />
-            </TouchableOpacity>
+      <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
+        <View style={styles.headerRow}>
+          <TouchableOpacity style={styles.roundButton} onPress={() => router.back()}>
+            <MaterialIcons name="chevron-left" size={24} color={colors.navy} />
+          </TouchableOpacity>
+
+          <View>
+            <AppText style={styles.title}>Filtros</AppText>
+            {activeCount > 0 && (
+              <AppText style={styles.subtitle}>
+                {activeCount} {activeCount === 1 ? "selecionado" : "selecionados"}
+              </AppText>
+            )}
           </View>
         </View>
       </View>
@@ -96,21 +116,12 @@ export default function SearchPage() {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.sectionHeaderRow}>
-          <AppText style={styles.sectionTitle}>Filtros</AppText>
-          {activeCount > 0 && (
-            <AppText style={styles.sectionCount}>
-              {activeCount} {activeCount === 1 ? "selecionado" : "selecionados"}
-            </AppText>
-          )}
-        </View>
-
         <FilterCard icon="people" title="Tipo de morador">
           <SelectableBlock
             key={`vacancy-${resetKey}`}
             type="vacancyType"
-            initialState={filters.vacancyType || undefined}
-            returnSelected={(val) => updateFilters({ vacancyType: val as tipoPadrao | null })}
+            initialState={draft.vacancyType || undefined}
+            returnSelected={(val) => updateDraft({ vacancyType: val as tipoPadrao | null })}
           />
         </FilterCard>
 
@@ -118,8 +129,8 @@ export default function SearchPage() {
           <SelectableBlock
             key={`housing-${resetKey}`}
             type="housingType"
-            initialState={filters.housingType || undefined}
-            returnSelected={(val) => updateFilters({ housingType: val as tipoPadrao | null })}
+            initialState={draft.housingType || undefined}
+            returnSelected={(val) => updateDraft({ housingType: val as tipoPadrao | null })}
           />
         </FilterCard>
 
@@ -127,8 +138,8 @@ export default function SearchPage() {
           <SelectableBlock
             key={`characteristics-${resetKey}`}
             type="characteristics"
-            initialState={filters.characteristics}
-            returnSelected={(val) => updateFilters({ characteristics: val as tipoPadrao[] })}
+            initialState={draft.characteristics}
+            returnSelected={(val) => updateDraft({ characteristics: val as tipoPadrao[] })}
           />
         </FilterCard>
 
@@ -139,7 +150,7 @@ export default function SearchPage() {
             initialState={furnishedInitialState}
             returnSelected={(val) => {
               const res = val as tipoPadrao | null;
-              updateFilters({
+              updateDraft({
                 isFurnished: res?.id === "question-sim" ? true : res?.id === "question-nao" ? false : null,
               });
             }}
@@ -150,28 +161,25 @@ export default function SearchPage() {
           <SelectableBlock
             key={`ranking-${resetKey}`}
             type="ranking"
-            initialState={filters.ranking || undefined}
-            returnSelected={(val) => updateFilters({ ranking: val as tipoPadrao | null })}
+            initialState={draft.ranking || undefined}
+            returnSelected={(val) => updateDraft({ ranking: val as tipoPadrao | null })}
           />
         </FilterCard>
-
-        <View style={styles.buttonsRow}>
-          <TouchableOpacity
-            style={[styles.outlineButton, activeCount === 0 && styles.outlineButtonDisabled]}
-            onPress={handleClear}
-            disabled={activeCount === 0}
-          >
-            <AppText style={styles.outlineButtonText}>Limpar</AppText>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.primaryButton} onPress={() => router.push("/searchResult")}>
-            <MaterialIcons name="search" size={20} color={colors.white} />
-            <AppText style={styles.primaryButtonText}>Pesquisar</AppText>
-          </TouchableOpacity>
-        </View>
       </ScrollView>
 
-      <NavigationBar />
+      <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 16) }]}>
+        <TouchableOpacity
+          style={[styles.outlineButton, activeCount === 0 && styles.outlineButtonDisabled]}
+          onPress={handleClear}
+          disabled={activeCount === 0}
+        >
+          <AppText style={styles.outlineButtonText}>Limpar</AppText>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.primaryButton} onPress={handleApply}>
+          <AppText style={styles.primaryButtonText}>Aplicar filtros</AppText>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

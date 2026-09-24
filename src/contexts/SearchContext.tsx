@@ -1,6 +1,10 @@
 import React, { createContext, useCallback, useState } from "react";
 import { tipoPadrao } from "@/utils/typesAux";
 
+// Cada tela que usa filtros avançados tem o seu próprio conjunto de filtros,
+// assim como os filtros rápidos de categoria.
+export type SearchScope = "home" | "favorites";
+
 export interface SearchFilters {
   vacancyType: tipoPadrao | null;
   housingType: tipoPadrao | null;
@@ -9,10 +13,12 @@ export interface SearchFilters {
   ranking: tipoPadrao | null;
 }
 
+type FiltersByScope = Record<SearchScope, SearchFilters>;
+
 interface SearchContextData {
-  filters: SearchFilters;
-  updateFilters: (newData: Partial<SearchFilters>) => void;
-  resetFilters: () => void;
+  filters: FiltersByScope;
+  applyFilters: (scope: SearchScope, newFilters: SearchFilters) => void;
+  resetFilters: (scope: SearchScope) => void;
 }
 
 export const SearchContext = createContext<SearchContextData>({} as SearchContextData);
@@ -25,19 +31,24 @@ export const INITIAL_SEARCH_STATE: SearchFilters = {
   ranking: null,
 };
 
-export function SearchContextProvider({ children }: { children: React.ReactNode }) {
-  const [filters, setFilters] = useState<SearchFilters>(INITIAL_SEARCH_STATE);
+const INITIAL_FILTERS_BY_SCOPE: FiltersByScope = {
+  home: INITIAL_SEARCH_STATE,
+  favorites: INITIAL_SEARCH_STATE,
+};
 
-  const updateFilters = useCallback((newData: Partial<SearchFilters>) => {
-    setFilters((prev) => ({ ...prev, ...newData }));
+export function SearchContextProvider({ children }: { children: React.ReactNode }) {
+  const [filters, setFilters] = useState<FiltersByScope>(INITIAL_FILTERS_BY_SCOPE);
+
+  const applyFilters = useCallback((scope: SearchScope, newFilters: SearchFilters) => {
+    setFilters((prev) => ({ ...prev, [scope]: newFilters }));
   }, []);
 
-  const resetFilters = useCallback(() => {
-    setFilters(INITIAL_SEARCH_STATE);
+  const resetFilters = useCallback((scope: SearchScope) => {
+    setFilters((prev) => ({ ...prev, [scope]: INITIAL_SEARCH_STATE }));
   }, []);
 
   return (
-    <SearchContext.Provider value={{ filters, updateFilters, resetFilters }}>
+    <SearchContext.Provider value={{ filters, applyFilters, resetFilters }}>
       {children}
     </SearchContext.Provider>
   );

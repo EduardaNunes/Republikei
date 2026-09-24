@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions, Platform } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 import { colors } from "@/styles/colors";
 import { fontSize } from "@/styles/fontSize";
 
@@ -11,25 +11,20 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.backgroundLight,
   },
 
-  // Header (mesmo padrão da home, favoritos, mapa e perfil)
+  // Header
   header: {
     backgroundColor: colors.white,
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === "ios" ? 12 : 24,
-    paddingBottom: 16,
+    paddingBottom: 14,
     borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,
   },
-  headerTopRow: {
+  headerRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: 12,
   },
-  headerIcons: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  iconButton: {
+  roundButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -37,14 +32,15 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: colors.backgroundLight,
   },
-  iconDot: {
-    position: "absolute",
-    top: 8,
-    right: 8,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.primary,
+  title: {
+    color: colors.navy,
+    fontSize: fontSize.title.medium,
+    fontWeight: "700",
+  },
+  subtitle: {
+    color: colors.textMuted,
+    fontSize: 12,
+    marginTop: 2,
   },
 
   // Content
@@ -54,30 +50,8 @@ export const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: 20,
     paddingTop: 20,
-    paddingBottom: 110,
+    paddingBottom: 24,
     gap: 16,
-  },
-
-  sectionHeaderRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    minHeight: 24,
-  },
-  sectionTitle: {
-    color: colors.navy,
-    fontSize: fontSize.text.big,
-    fontWeight: "700",
-  },
-  sectionCount: {
-    color: colors.textMuted,
-    fontSize: fontSize.text.small,
-    fontWeight: "600",
-  },
-  clearLink: {
-    color: colors.primary,
-    fontSize: fontSize.text.small,
-    fontWeight: "600",
   },
 
   // Cards de filtro
@@ -111,11 +85,15 @@ export const styles = StyleSheet.create({
     fontWeight: "700",
   },
 
-  // Botões
-  buttonsRow: {
+  // Rodapé fixo
+  footer: {
     flexDirection: "row",
     gap: 10,
-    marginTop: 4,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    backgroundColor: colors.white,
+    borderTopWidth: 1,
+    borderTopColor: colors.borderLight,
   },
   outlineButton: {
     flex: 1,
@@ -140,10 +118,8 @@ export const styles = StyleSheet.create({
     height: 48,
     borderRadius: 16,
     backgroundColor: colors.primary,
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 8,
     shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
